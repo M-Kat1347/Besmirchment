@@ -1,5 +1,7 @@
 package de.aelpecyem.besmirchment.client;
 
+import de.aelpecyem.besmirchment.client.model.BeelzebubEntityModel;
+import de.aelpecyem.besmirchment.client.model.WerepyreEntityModel;
 import de.aelpecyem.besmirchment.client.packet.FamiliarAbilityPacket;
 import de.aelpecyem.besmirchment.client.packet.WerepyreJumpPacket;
 import de.aelpecyem.besmirchment.client.renderer.*;
@@ -19,16 +21,20 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.FlyingItemEntityRenderer;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import org.lwjgl.glfw.GLFW;
 
@@ -37,21 +43,28 @@ public class BesmirchmentClient implements ClientModInitializer {
     public static final KeyBinding FAMILIAR_ABILITY = new KeyBinding("key." + Besmirchment.MODID +".familiar_ability", InputUtil.Type.KEYSYM, GLFW.GLFW_KEY_K, "itemGroup.besmirchment.group");
     public int abilityCooldown = 20;
     public static int fogTicks = 0;
+
+    public static final EntityModelLayer WEREPYRE_MODEL_LAYER = new EntityModelLayer(new Identifier(Besmirchment.MODID, "werepyre"), "main");
+    public static final EntityModelLayer BEELZEBUB_MODEL_LAYER = new EntityModelLayer(new Identifier(Besmirchment.MODID, "beelzebub"), "main");
+
     @Override
     public void onInitializeClient() {
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BSMObjects.PHYLACTERY);
 
         EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.FINAL_BROOM, FinalBroomEntityRenderer::new);
         EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WITCHY_DYE, FlyingItemEntityRenderer::new);
-        //EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.FINAL_BROOM, (dispatcher, context) -> new FinalBroomEntityRenderer(dispatcher));
-        //EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WITCHY_DYE, (dispatcher, context) -> new FlyingItemEntityRenderer<>(dispatcher, context.getItemRenderer()));
-        /*
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WEREPYRE, (dispatcher, context) -> new WerepyreEntityRenderer(dispatcher));
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.BEELZEBUB, (dispatcher, context) -> new BeelzebubEntityRenderer(dispatcher));
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.INFECTIOUS_SPIT, (dispatcher, context) -> new InfectiousSpitEntityRenderer(dispatcher));
+
+        EntityModelLayerRegistry.registerModelLayer(WEREPYRE_MODEL_LAYER, WerepyreEntityModel::getTexturedModelData);
+        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WEREPYRE, WerepyreEntityRenderer::new);
+        EntityModelLayerRegistry.registerModelLayer(BEELZEBUB_MODEL_LAYER, BeelzebubEntityModel::getTexturedModelData);
+        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.BEELZEBUB, BeelzebubEntityRenderer::new);
 
 
- */
+        //EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WEREPYRE, WerepyreEntityRenderer::new);
+        //EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.BEELZEBUB, (dispatcher, context) -> new BeelzebubEntityRenderer(dispatcher));
+        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.INFECTIOUS_SPIT, InfectiousSpitEntityRenderer::new);
+
+
         BlockEntityRendererRegistry.INSTANCE.register(BSMBlockEntityTypes.PHYLACTERY, ctx -> new PhylacteryBlockEntityRenderer());
         /*
         FabricModelPredicateProviderRegistry.register(BSMObjects.DEMONIC_DEED,
@@ -110,5 +123,4 @@ public class BesmirchmentClient implements ClientModInitializer {
         }
         return false;
     }
-
 }

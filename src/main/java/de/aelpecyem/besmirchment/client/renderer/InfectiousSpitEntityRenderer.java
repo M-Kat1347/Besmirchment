@@ -23,7 +23,7 @@ public class InfectiousSpitEntityRenderer extends EntityRenderer<InfectiousSpitE
     private static final Identifier TEXTURE = new Identifier("textures/entity/llama/spit.png");
     private final LlamaSpitEntityModel<InfectiousSpitEntity> model;
 
-    protected InfectiousSpitEntityRenderer(EntityRendererFactory.Context ctx) {
+    public InfectiousSpitEntityRenderer(EntityRendererFactory.Context ctx) {
         super(ctx);
         model = new LlamaSpitEntityModel<>(ctx.getPart(EntityModelLayers.LLAMA_SPIT));
     }

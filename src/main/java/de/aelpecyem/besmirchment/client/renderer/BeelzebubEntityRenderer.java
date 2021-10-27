@@ -1,5 +1,6 @@
 package de.aelpecyem.besmirchment.client.renderer;
 
+import de.aelpecyem.besmirchment.client.BesmirchmentClient;
 import de.aelpecyem.besmirchment.client.model.BeelzebubEntityModel;
 import de.aelpecyem.besmirchment.common.Besmirchment;
 import de.aelpecyem.besmirchment.common.entity.BeelzebubEntity;
@@ -16,8 +17,8 @@ import net.minecraft.util.Identifier;
 public class BeelzebubEntityRenderer extends MobEntityRenderer<BeelzebubEntity, BeelzebubEntityModel<BeelzebubEntity>> {
     private static final Identifier TEXTURE = Besmirchment.id("textures/entity/beelzebub.png");
 
-    public BeelzebubEntityRenderer(EntityRendererFactory.Context context, BeelzebubEntityModel<BeelzebubEntity> entityModel, float f) {
-        super(context, entityModel, f);
+    public BeelzebubEntityRenderer(EntityRendererFactory.Context context) {
+        super(context, new BeelzebubEntityModel<>(context.getPart(BesmirchmentClient.BEELZEBUB_MODEL_LAYER)), 0.5f);
     }
 
 
