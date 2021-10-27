@@ -7,6 +7,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
@@ -15,10 +16,10 @@ import net.minecraft.util.Identifier;
 public class BeelzebubEntityRenderer extends MobEntityRenderer<BeelzebubEntity, BeelzebubEntityModel<BeelzebubEntity>> {
     private static final Identifier TEXTURE = Besmirchment.id("textures/entity/beelzebub.png");
 
-    public BeelzebubEntityRenderer(EntityRenderDispatcher entityRenderDispatcher) {
-        super(entityRenderDispatcher, new BeelzebubEntityModel<>(), 0.5F);
-      //  this.addFeature(new HeldItemFeatureRenderer<>(this));
+    public BeelzebubEntityRenderer(EntityRendererFactory.Context context, BeelzebubEntityModel<BeelzebubEntity> entityModel, float f) {
+        super(context, entityModel, f);
     }
+
 
     @Override
     public void render(BeelzebubEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {

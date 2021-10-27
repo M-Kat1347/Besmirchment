@@ -2,6 +2,7 @@ package de.aelpecyem.besmirchment.common.entity;
 
 import de.aelpecyem.besmirchment.common.entity.interfaces.DyeableEntity;
 import de.aelpecyem.besmirchment.common.registry.BSMEntityTypes;
+import de.aelpecyem.besmirchment.common.registry.BSMUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.entity.Entity;
@@ -13,12 +14,14 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.projectile.LlamaSpitEntity;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 
 import java.util.HashSet;
@@ -40,17 +43,17 @@ public class InfectiousSpitEntity extends LlamaSpitEntity implements DyeableEnti
     @Environment(EnvType.CLIENT)
     public InfectiousSpitEntity(World world, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
         this(BSMEntityTypes.INFECTIOUS_SPIT, world);
-        this.updatePosition(x, y, z);
+        this.setPosition(x, y, z);
         this.setVelocity(velocityX, velocityY, velocityZ);
     }
 
     public void init(LivingEntity owner, LivingEntity target, Set<StatusEffectInstance> effects){
         setOwner(owner);
-        this.updatePosition(owner.getX() - (double) owner.getWidth() * (double) MathHelper.sin(owner.bodyYaw * 0.017453292F), owner.getEyeY() - 0.10000000149011612D, owner.getZ() + (double) owner.getWidth() * (double) MathHelper.cos(owner.bodyYaw * 0.017453292F));
+        this.setPosition(owner.getX() - (double) owner.getWidth() * (double) MathHelper.sin(owner.bodyYaw * 0.017453292F), owner.getEyeY() - 0.10000000149011612D, owner.getZ() + (double) owner.getWidth() * (double) MathHelper.cos(owner.bodyYaw * 0.017453292F));
         if (target != null) {
-            double targetX = target.getX() - this.getX();
-            double targetY = target.getBodyY(0.3333333333333333D) - getY();
-            double targetZ = target.getZ() - this.getZ();
+            float targetX = (float) (target.getX() - this.getX());
+            float targetY = (float) (target.getBodyY(0.3333333333333333D) - getY());
+            float targetZ = (float) (target.getZ() - this.getZ());
             float g = MathHelper.sqrt(targetX * targetX + targetZ * targetZ) * 0.2F;
             setVelocity(targetX, targetY + (double) g, targetZ, 1.5F, 10.0F);
         }
@@ -100,7 +103,8 @@ public class InfectiousSpitEntity extends LlamaSpitEntity implements DyeableEnti
             double b = (double)(j >> 0 & 255) / 255.0D;
 
             for(int k = 0; k < count; ++k) {
-                this.world.addParticle(new DustParticleEffect((float) r, (float)g, (float) b, 3), this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), getVelocity().x, getVelocity().y, getVelocity().z);
+                Vec3f rgb = new Vec3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB(random.nextFloat(), 1, 1)));
+                this.world.addParticle(new DustParticleEffect(rgb, 3), this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), getVelocity().x, getVelocity().y, getVelocity().z);
             }
 
         }
@@ -123,20 +127,20 @@ public class InfectiousSpitEntity extends LlamaSpitEntity implements DyeableEnti
     }
 
     @Override
-    public void writeCustomDataToTag(CompoundTag tag) {
-        super.writeCustomDataToTag(tag);
+    public void writeCustomDataToNbt(NbtCompound tag) {
+        super.writeCustomDataToNbt(tag);
         tag.putInt("Color", this.getColor());
         if (!this.effects.isEmpty()) {
-            ListTag listTag = new ListTag();
+            NbtList listTag = new NbtList();
             for (StatusEffectInstance effect : effects) {
-                listTag.add(effect.toTag(new CompoundTag()));
+                listTag.add(effect.writeNbt(new NbtCompound()));
             }
             tag.put("CustomPotionEffects", listTag);
         }
     }
 
-    public void readCustomDataFromTag(CompoundTag tag) {
-        super.readCustomDataFromTag(tag);
+    public void readCustomDataFromNbt(NbtCompound tag) {
+        super.readCustomDataFromNbt(tag);
         effects.addAll(PotionUtil.getCustomPotionEffects(tag));
         this.setColor(tag.getInt("Color"));
     }

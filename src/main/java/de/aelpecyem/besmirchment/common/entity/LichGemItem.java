@@ -35,11 +35,11 @@ public class LichGemItem extends Item {
     }
 
     public static boolean isSouled(ItemStack stack){
-        return stack.hasTag() && stack.getTag().getBoolean("Souled");
+        return stack.hasNbt() && stack.getNbt().getBoolean("Souled");
     }
 
     public static void setSouled(ItemStack stack, boolean souled){
-        stack.getOrCreateTag().putBoolean("Souled", souled);
+        stack.getOrCreateNbt().putBoolean("Souled", souled);
     }
 
     @Override

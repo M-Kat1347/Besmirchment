@@ -7,12 +7,12 @@ import de.aelpecyem.besmirchment.common.transformation.LichAccessor;
 import de.aelpecyem.besmirchment.common.transformation.WerepyreAccessor;
 import de.aelpecyem.besmirchment.common.transformation.WerepyreTransformation;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
+import moriyashiine.bewitchment.api.component.BloodComponent;
+import moriyashiine.bewitchment.api.component.MagicComponent;
+import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.event.AllowVampireBurn;
 import moriyashiine.bewitchment.api.event.AllowVampireHeal;
-import moriyashiine.bewitchment.api.interfaces.entity.BloodAccessor;
-import moriyashiine.bewitchment.api.interfaces.entity.MagicAccessor;
-import moriyashiine.bewitchment.api.interfaces.entity.TransformationAccessor;
-import moriyashiine.bewitchment.common.entity.interfaces.RespawnTimerAccessor;
+import moriyashiine.bewitchment.common.entity.component.RespawnTimerComponent;
 import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.BWDamageSources;
 import moriyashiine.bewitchment.common.registry.BWObjects;
@@ -34,7 +34,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.FoodComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -95,6 +95,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void tick(CallbackInfo ci){
+        PlayerEntity player = (PlayerEntity) (Object) this;
         if (getLastJumpTicks() < 200){
             setLastJumpTicks(getLastJumpTicks() + 1);
         }
@@ -108,7 +109,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
             }
         } else {
             if (BSMTransformations.isLich(this, false) && ((LichAccessor) this).getCachedSouls() == 0){
-                ((MagicAccessor) this).setMagic(0);
+                MagicComponent.get(player).setMagic(0);
             }
             if (age % 20 == 0){
                 if (BSMTransformations.isLich(this, true)) {
@@ -119,20 +120,20 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
                 }
                 if (BSMTransformations.isWerepyre(this, true)){
                     boolean beelzebubPledge = BSMTransformations.hasWerepyrePledge((PlayerEntity) (Object) this);
-                    BSMTransformations.handleNourish((PlayerEntity) (Object) this);
-                    if (((TransformationAccessor) this).getAlternateForm() && ((RespawnTimerAccessor) this).getRespawnTimer() <= 0 && world.isDay() && !world.isRaining() && world.isSkyVisible(getBlockPos())
+                    //BSMTransformations.handleNourish((PlayerEntity) (Object) this);
+                    if (TransformationComponent.get(player).isAlternateForm() && RespawnTimerComponent.get(player).getRespawnTimer() <= 0 && world.isDay() && !world.isRaining() && world.isSkyVisible(getBlockPos())
                             && AllowVampireBurn.EVENT.invoker().allowBurn((PlayerEntity) (Object) this)) {
                         setOnFireFor(8);
                     }
-                    WerepyreTransformation.handleStats((PlayerEntity) (Object) this, ((TransformationAccessor) this).getAlternateForm(), beelzebubPledge);
+                    WerepyreTransformation.handleStats((PlayerEntity) (Object) this, (TransformationComponent.get(player).isAlternateForm()), beelzebubPledge);
                     HungerManager hungerManager = ((PlayerEntity) (Object) this).getHungerManager();
-                    if (((BloodAccessor) this).getBlood() > 0 && AllowVampireHeal.EVENT.invoker().allowHeal((PlayerEntity) (Object) this, beelzebubPledge)) {
+                    if (BloodComponent.get(player).getBlood() > 0 && AllowVampireHeal.EVENT.invoker().allowHeal((PlayerEntity) (Object) this, beelzebubPledge)) {
                         if (age % (beelzebubPledge ? 30 : 40) == 0) {
                             if (getHealth() < getMaxHealth()) {
                                 heal(1);
                                 hungerManager.addExhaustion(3);
                             }
-                            if ((hungerManager.isNotFull() || hungerManager.getSaturationLevel() < 10) && ((BloodAccessor) this).drainBlood(1, false)) {
+                            if ((hungerManager.isNotFull() || hungerManager.getSaturationLevel() < 10) && (BloodComponent.get(player)).drainBlood(1, false)) {
                                 hungerManager.add(1, 20);
                             }
                         }
@@ -196,21 +197,21 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
     }
 
     @Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
-    private void handleFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> callbackInfo) {
+    private void handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (isSneaking() && (Object) this instanceof PlayerEntity && BewitchmentAPI.getFamiliar((PlayerEntity) (Object) this) == EntityType.CHICKEN) {
             callbackInfo.setReturnValue(false);
         }
     }
 
-    @Inject(method = "readCustomDataFromTag", at = @At("TAIL"))
-    private void readCustomDataFromTag(CompoundTag tag, CallbackInfo callbackInfo) {
+    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+    private void readCustomDataFromTag(NbtCompound tag, CallbackInfo callbackInfo) {
         setColor(tag.getInt("BSMColor"));
         setLastJumpTicks(tag.getInt("BSMLastJumpTicks"));
         setWerepyreVariant(tag.getInt("BSMWerepyreVariant"));
     }
 
-    @Inject(method = "writeCustomDataToTag", at = @At("TAIL"))
-    private void writeCustomDataToTag(CompoundTag tag, CallbackInfo callbackInfo) {
+    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+    private void writeCustomDataToTag(NbtCompound tag, CallbackInfo callbackInfo) {
         tag.putInt("BSMColor", getColor());
         tag.putInt("BSMLastJumpTicks", getLastJumpTicks());
         tag.putInt("BSMWerepyreVariant", getWerepyreVariant());

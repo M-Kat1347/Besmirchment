@@ -10,12 +10,9 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-public class PhylacteryBlockEntityRenderer extends BlockEntityRenderer<PhylacteryBlockEntity> {
+public class PhylacteryBlockEntityRenderer implements BlockEntityRenderer<PhylacteryBlockEntity> {
     private static final Identifier PHYLACTERY_TEXTURE = Besmirchment.id("textures/block/phylactery.png");
-    private static final PhylacteryOrbModel ORBS = new PhylacteryOrbModel();
-    public PhylacteryBlockEntityRenderer(BlockEntityRenderDispatcher dispatcher) {
-        super(dispatcher);
-    }
+
 
     @Override
     public void render(PhylacteryBlockEntity entity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {

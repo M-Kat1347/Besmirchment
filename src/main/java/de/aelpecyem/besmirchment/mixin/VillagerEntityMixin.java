@@ -6,7 +6,7 @@ import de.aelpecyem.besmirchment.common.entity.interfaces.VillagerWerepyreAccess
 import de.aelpecyem.besmirchment.common.registry.BSMEntityTypes;
 import de.aelpecyem.besmirchment.common.registry.BSMStatusEffects;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.interfaces.entity.CurseAccessor;
+import moriyashiine.bewitchment.api.component.CursesComponent;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -16,7 +16,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.village.VillageGossipType;
@@ -34,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(VillagerEntity.class)
 public abstract class VillagerEntityMixin extends MerchantEntity implements VillagerWerepyreAccessor {
     @Shadow @Final private VillagerGossips gossip;
-    @Unique private CompoundTag storedWerepyre;
+    @Unique private NbtCompound storedWerepyre;
     @Unique private int despawnTimer = 2400;
 
     public VillagerEntityMixin(EntityType<? extends MerchantEntity> entityType, World world) {
@@ -42,7 +42,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
     }
 
     @Override
-    public void setStoredWerepyre(CompoundTag storedWerepyre) {
+    public void setStoredWerepyre(NbtCompound storedWerepyre) {
         this.storedWerepyre = storedWerepyre;
     }
 
@@ -52,7 +52,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
             if (despawnTimer > 0) {
                 despawnTimer--;
                 if (despawnTimer == 0) {
-                    remove();
+                    remove(RemovalReason.DISCARDED);
                 }
             }
             if (age % 20 == 0 && world.isNight() && BewitchmentAPI.getMoonPhase(world) == 0 && world.isSkyVisible(getBlockPos())) {
@@ -60,20 +60,20 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
                 if (entity != null) {
                     PlayerLookup.tracking(this).forEach(player -> SpawnSmokeParticlesPacket.send(player, this));
                     world.playSound(null, getX(), getY(), getZ(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, getSoundCategory(), getSoundVolume(), getSoundPitch());
-                    entity.fromTag(storedWerepyre);
+                    entity.readNbt(storedWerepyre);
                     entity.updatePositionAndAngles(getX(), getY(), getZ(), random.nextFloat() * 360, 0);
                     entity.setHealth(entity.getMaxHealth() * (getHealth() / getMaxHealth()));
                     entity.setFireTicks(getFireTicks());
                     entity.clearStatusEffects();
                     getStatusEffects().forEach(entity::addStatusEffect);
-                    ((CurseAccessor) entity).getCurses().clear();
-                    ((CurseAccessor) this).getCurses().forEach(((CurseAccessor) entity)::addCurse);
+                    CursesComponent.get(entity).getCurses().clear();
+                    CursesComponent.get(this).getCurses().forEach((CursesComponent.get(entity))::addCurse);
                     if (despawnTimer >= 0) {
                         despawnTimer = 2400;
                     }
-                    entity.storedVillager = toTag(new CompoundTag());
+                    entity.storedVillager = writeNbt(new NbtCompound());
                     world.spawnEntity(entity);
-                    remove();
+                    remove(RemovalReason.DISCARDED);
                 }
             }
         }
@@ -84,8 +84,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
         despawnTimer = -1;
     }
 
-    @Inject(method = "readCustomDataFromTag", at = @At("TAIL"))
-    private void readCustomDataFromTag(CompoundTag tag, CallbackInfo callbackInfo) {
+    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+    private void readCustomDataFromTag(NbtCompound tag, CallbackInfo callbackInfo) {
         if (tag.contains("BSMStoredWerepyre")) {
             storedWerepyre = tag.getCompound("BSMStoredWerepyre");
         }
@@ -94,8 +94,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
         }
     }
 
-    @Inject(method = "writeCustomDataToTag", at = @At("TAIL"))
-    private void writeCustomDataToTag(CompoundTag tag, CallbackInfo callbackInfo) {
+    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+    private void writeCustomDataToTag(NbtCompound tag, CallbackInfo callbackInfo) {
         if (storedWerepyre != null) {
             tag.put("BSMStoredWerepyre", storedWerepyre);
         }

@@ -10,6 +10,7 @@ import moriyashiine.bewitchment.common.entity.living.WerewolfEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRenderDispatcher;
+import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -23,12 +24,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class WerewolfEntityRendererMixin extends MobEntityRenderer<WerewolfEntity, WerewolfEntityModel<WerewolfEntity>> {
     private static final Identifier UNTINTED_TEXTURE = Besmirchment.id("textures/entity/werewolf/untinted.png");
 
-    public WerewolfEntityRendererMixin(EntityRenderDispatcher entityRenderDispatcher, WerewolfEntityModel entityModel, float f) {
-        super(entityRenderDispatcher, entityModel, f);
+    public WerewolfEntityRendererMixin(EntityRendererFactory.Context context, WerewolfEntityModel<WerewolfEntity> entityModel, float f) {
+        super(context, entityModel, f);
     }
 
+
     @Inject(method = "<init>", at = @At("TAIL"))
-    private void injectConstructor(EntityRenderDispatcher entityRenderDispatcher, CallbackInfo ci){
+    private void injectConstructor(EntityRendererFactory.Context context, CallbackInfo ci){
         this.addFeature(new DyedWerewolfFeatureRenderer((WerewolfEntityRenderer) (Object) this));
     }
 

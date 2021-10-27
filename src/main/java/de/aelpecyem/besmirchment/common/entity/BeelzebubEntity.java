@@ -4,14 +4,13 @@ import com.google.common.collect.Sets;
 import de.aelpecyem.besmirchment.common.registry.BSMEntityTypes;
 import de.aelpecyem.besmirchment.common.registry.BSMSounds;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.interfaces.entity.Pledgeable;
-import moriyashiine.bewitchment.api.interfaces.entity.TransformationAccessor;
+import moriyashiine.bewitchment.api.component.TransformationComponent;
+import moriyashiine.bewitchment.api.entity.Pledgeable;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.misc.BWUtil;
 import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.*;
-import moriyashiine.bewitchment.mixin.StatusEffectAccessor;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
@@ -26,15 +25,15 @@ import net.minecraft.entity.boss.BossBar;
 import net.minecraft.entity.boss.ServerBossBar;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffectType;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.text.Text;
@@ -81,7 +80,7 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
         if (!world.isClient) {
             bossBar.setPercent(getHealth() / getMaxHealth());
             LivingEntity target = getTarget();
-            int timer = age + getEntityId();
+            int timer = age + getId();
             if (timer % 10 == 0) {
                 heal(1);
             }
@@ -201,12 +200,12 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
                     PlayerLookup.tracking(player).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, player));
                     SpawnSmokeParticlesPacket.send(player, player);
                     world.playSound(null, getBlockPos(), BWSoundEvents.ENTITY_GENERIC_PLING, player.getSoundCategory(), 1, 1);
-                    if (((TransformationAccessor) player).getAlternateForm()) {
+                    if (TransformationComponent.get(player).isAlternateForm()) {
                         TransformationAbilityPacket.useAbility(player, true);
                     }
-                    ((TransformationAccessor) player).getTransformation().onRemoved(player);
-                    ((TransformationAccessor) player).setTransformation(BWTransformations.HUMAN);
-                    ((TransformationAccessor) player).getTransformation().onAdded(player);
+                    TransformationComponent.get(player).getTransformation().onRemoved(player);
+                    TransformationComponent.get(player).setTransformation(BWTransformations.HUMAN);
+                    TransformationComponent.get(player).getTransformation().onAdded(player);
                 }
                 return ActionResult.success(client);
             }
@@ -219,10 +218,14 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
         return false;
     }
 
+    //TODO
+    /*
     @Override
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        return ((StatusEffectAccessor) effect.getEffectType()).bw_getType() == StatusEffectType.BENEFICIAL;
+        return ((StatusEffectAccessor) effect.getEffectType()).bw_getType() == StatusEffectCategory.BENEFICIAL;
     }
+
+     */
 
     @Override
     public boolean isAffectedBySplashPotions() {
@@ -247,7 +250,7 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
     }
 
     @Override
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
+    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
         return false;
     }
 
@@ -282,20 +285,20 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
     }
 
     @Override
-    public void readCustomDataFromTag(CompoundTag tag) {
-        super.readCustomDataFromTag(tag);
+    public void readCustomDataFromNbt(NbtCompound tag) {
+        super.readCustomDataFromNbt(tag);
         if (hasCustomName()) {
             bossBar.setName(getDisplayName());
         }
         timeSinceLastAttack = tag.getInt("TimeSinceLastAttack");
-        fromTagPledgeable(tag);
+        fromNbtPledgeable(tag);
     }
 
     @Override
-    public void writeCustomDataToTag(CompoundTag tag) {
-        super.writeCustomDataToTag(tag);
+    public void writeCustomDataToNbt(NbtCompound tag) {
+        super.writeCustomDataToNbt(tag);
         tag.putInt("TimeSinceLastAttack", timeSinceLastAttack);
-        toTagPledgeable(tag);
+        toNbtPledgeable(tag);
     }
 
     @Override
@@ -316,6 +319,6 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
         goalSelector.add(3, new LookAtEntityGoal(this, PlayerEntity.class, 8));
         goalSelector.add(3, new LookAroundGoal(this));
         targetSelector.add(0, new RevengeGoal(this));
-        targetSelector.add(1, new FollowTargetGoal<>(this, LivingEntity.class, 10, true, false, entity -> entity.getGroup() != BewitchmentAPI.DEMON && BWUtil.getArmorPieces(entity, stack -> stack.getItem() instanceof ArmorItem && ((ArmorItem) stack.getItem()).getMaterial() == BWMaterials.BESMIRCHED_ARMOR) < 3 && !(entity instanceof PlayerEntity && BewitchmentAPI.isPledged((PlayerEntity) entity, getPledgeID()))));
+        targetSelector.add(1, new ActiveTargetGoal<>(this, LivingEntity.class, 10, true, false, entity -> entity.getGroup() != BewitchmentAPI.DEMON && BWUtil.getArmorPieces(entity, stack -> stack.getItem() instanceof ArmorItem && ((ArmorItem) stack.getItem()).getMaterial() == BWMaterials.BESMIRCHED_ARMOR) < 3 && !(entity instanceof PlayerEntity && BewitchmentAPI.isPledged((PlayerEntity) entity, getPledgeID()))));
     }
 }

@@ -40,7 +40,7 @@ public class ScrollOfTormentItem extends Item {
             if (hit != null && hit.getEntity() instanceof PigEntity) {
                 world.createExplosion(hit.getEntity(), DamageSource.MAGIC, null, hit.getPos().x, hit.getPos().y, hit.getPos().z, 1, true, Explosion.DestructionType.NONE);
                 LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
-                lightning.updatePosition(hit.getPos().x, hit.getPos().y, hit.getPos().z);
+                lightning.setPosition(hit.getPos().x, hit.getPos().y, hit.getPos().z);
                 world.spawnEntity(lightning);
                 BeelzebubEntity beelzebub = BSMEntityTypes.BEELZEBUB.create(world);
                 beelzebub.updatePositionAndAngles(hit.getPos().x, hit.getPos().y, hit.getPos().z, user.getRandom().nextFloat() * 360, 0);

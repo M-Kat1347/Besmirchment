@@ -19,7 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class AbstractBlockStateMixin {
     @Inject(method = "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At("HEAD"), cancellable = true)
     private void getCollisionShape(BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir){
-        if (context instanceof NoClipContext && ((NoClipContext) context).bsm_isNoClipping() && !world.getBlockState(pos).getBlock().isIn(BSMTags.GHOST_IMPASSABLE)){
+        if (context instanceof NoClipContext && ((NoClipContext) context).bsm_isNoClipping()
+        && !BSMTags.GHOST_IMPASSABLE.contains(world.getBlockState(pos).getBlock())){
             cir.setReturnValue(VoxelShapes.empty());
         }
     }

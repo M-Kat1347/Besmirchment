@@ -8,46 +8,48 @@ import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 
 import java.util.UUID;
 
+
 public class PhylacteryBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
     public static final int MAX_SOULS = 8;
     public int souls;
-    public PhylacteryBlockEntity() {
-        super(BSMBlockEntityTypes.PHYLACTERY);
+    public PhylacteryBlockEntity(BlockPos pos, BlockState state) {
+        super(BSMBlockEntityTypes.PHYLACTERY, pos, state);
     }
 
+
     @Override
-    public void fromClientTag(CompoundTag compoundTag) {
+    public void fromClientTag(NbtCompound compoundTag) {
         souls = compoundTag.getInt("Souls");
     }
 
     @Override
-    public CompoundTag toClientTag(CompoundTag compoundTag) {
+    public NbtCompound toClientTag(NbtCompound compoundTag) {
         compoundTag.putInt("Souls", souls);
         return compoundTag;
     }
 
+
+
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
+    public NbtCompound writeNbt(NbtCompound tag) {
         toClientTag(tag);
-        return super.toTag(tag);
+        return super.writeNbt(tag);
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        fromClientTag(tag);
+    public void readNbt(NbtCompound nbt) {
+        super.readNbt(nbt);
+        fromClientTag(nbt);
     }
+
 
     public int addSouls(int amount){
         int cachedAmount = souls;

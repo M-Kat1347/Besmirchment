@@ -2,7 +2,7 @@ package de.aelpecyem.besmirchment.common.entity;
 
 import de.aelpecyem.besmirchment.common.entity.interfaces.VillagerWerepyreAccessor;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.interfaces.entity.CurseAccessor;
+import moriyashiine.bewitchment.api.component.CursesComponent;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
@@ -20,7 +20,7 @@ import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -32,7 +32,7 @@ import java.util.Random;
 
 public class WerepyreEntity extends BWHostileEntity {
     public static final TrackedData<Integer> JUMP_TICKS = DataTracker.registerData(WerepyreEntity.class, TrackedDataHandlerRegistry.INTEGER);
-    public CompoundTag storedVillager;
+    public NbtCompound storedVillager;
 
     @Environment(EnvType.CLIENT)
     public float jumpBeginProgress = 0;
@@ -51,17 +51,17 @@ public class WerepyreEntity extends BWHostileEntity {
             if (entity instanceof VillagerWerepyreAccessor) {
                 PlayerLookup.tracking(this).forEach(player -> SpawnSmokeParticlesPacket.send(player, this));
                 world.playSound(null, getX(), getY(), getZ(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, getSoundCategory(), getSoundVolume(), getSoundPitch());
-                entity.fromTag(storedVillager);
+                entity.readNbt(storedVillager);
                 entity.updatePositionAndAngles(getX(), getY(), getZ(), random.nextFloat() * 360, 0);
                 entity.setHealth(entity.getMaxHealth() * (getHealth() / getMaxHealth()));
                 entity.setFireTicks(getFireTicks());
                 entity.clearStatusEffects();
                 getStatusEffects().forEach(entity::addStatusEffect);
-                ((CurseAccessor) entity).getCurses().clear();
-                ((CurseAccessor) this).getCurses().forEach(((CurseAccessor) entity)::addCurse);
-                ((VillagerWerepyreAccessor) entity).setStoredWerepyre(toTag(new CompoundTag()));
+                CursesComponent.get(this).getCurses().clear();
+                CursesComponent.get(this).getCurses().forEach(CursesComponent.get(this)::addCurse);
+                ((VillagerWerepyreAccessor) entity).setStoredWerepyre(writeNbt(new NbtCompound()));
                 world.spawnEntity(entity);
-                remove();
+                remove(RemovalReason.DISCARDED);
             }
         }
     }
@@ -84,9 +84,10 @@ public class WerepyreEntity extends BWHostileEntity {
     }
 
     @Override
-    public boolean handleFallDamage(float fallDistance, float damageMultiplier) {
-        return super.handleFallDamage(Math.max(fallDistance - 12, 0), damageMultiplier);
+    public boolean handleFallDamage(float fallDistance, float damageMultiplier, DamageSource damageSource) {
+        return super.handleFallDamage(Math.max(fallDistance - 12, 0), damageMultiplier, damageSource);
     }
+
 
     protected boolean hasShiny() {
         return true;
@@ -113,7 +114,7 @@ public class WerepyreEntity extends BWHostileEntity {
         return BWSoundEvents.ENTITY_WEREWOLF_DEATH;
     }
 
-    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable CompoundTag entityTag) {
+    public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityTag) {
         EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityTag);
         if (this.dataTracker.get(VARIANT) != 0) {
             switch (world.getBiome(this.getBlockPos()).getCategory()) {
@@ -132,7 +133,7 @@ public class WerepyreEntity extends BWHostileEntity {
         }
 
         if (spawnReason == SpawnReason.NATURAL) {
-            storedVillager = EntityType.VILLAGER.create((World) world).toTag(new CompoundTag());
+            storedVillager = EntityType.VILLAGER.create((World) world).writeNbt(new NbtCompound());
         }
         return data;
     }
@@ -151,14 +152,14 @@ public class WerepyreEntity extends BWHostileEntity {
         dataTracker.set(JUMP_TICKS, ticks);
     }
 
-    public void readCustomDataFromTag(CompoundTag tag) {
-        super.readCustomDataFromTag(tag);
+    public void readCustomDataFromNbt(NbtCompound tag) {
+        super.readCustomDataFromNbt(tag);
         setLastJumpTime(tag.getInt("LastJumpTicks"));
     }
 
 
-    public void writeCustomDataToTag(CompoundTag tag) {
-        super.writeCustomDataToTag(tag);
+    public void writeCustomDataToNbt(NbtCompound tag) {
+        super.writeCustomDataToNbt(tag);
         tag.putInt("LastJumpTicks", getLastJumpTime());
     }
 
@@ -171,7 +172,7 @@ public class WerepyreEntity extends BWHostileEntity {
         goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8));
         goalSelector.add(5, new LookAroundGoal(this));
         targetSelector.add(0, new RevengeGoal(this));
-        targetSelector.add(1, new FollowTargetGoal<>(this, LivingEntity.class, 10, true, false, entity -> entity instanceof PlayerEntity || entity instanceof SheepEntity || entity instanceof MerchantEntity || entity.getGroup() == EntityGroup.ILLAGER));
+        targetSelector.add(1, new ActiveTargetGoal<>(this, LivingEntity.class, 10, true, false, entity -> entity instanceof PlayerEntity || entity instanceof SheepEntity || entity instanceof MerchantEntity || entity.getGroup() == EntityGroup.ILLAGER));
     }
 
     public static int getVariantsStatic() {

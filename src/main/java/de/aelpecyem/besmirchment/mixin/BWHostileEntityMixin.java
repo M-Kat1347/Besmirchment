@@ -7,7 +7,7 @@ import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -32,8 +32,8 @@ public abstract class BWHostileEntityMixin extends HostileEntity implements Dyea
         return dataTracker.get(COLOR);
     }
 
-    @Inject(method = "readCustomDataFromTag", at = @At("TAIL"))
-    private void readCustomDataFromTag(CompoundTag tag, CallbackInfo callbackInfo) {
+    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+    private void readCustomDataFromTag(NbtCompound tag, CallbackInfo callbackInfo) {
         if (tag.contains("BSMColor")) {
             setColor(tag.getInt("BSMColor"));
         }else{
@@ -41,8 +41,8 @@ public abstract class BWHostileEntityMixin extends HostileEntity implements Dyea
         }
     }
 
-    @Inject(method = "writeCustomDataToTag", at = @At("TAIL"))
-    private void writeCustomDataToTag(CompoundTag tag, CallbackInfo callbackInfo) {
+    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+    private void writeCustomDataToTag(NbtCompound tag, CallbackInfo callbackInfo) {
         tag.putInt("BSMColor", getColor());
     }
 

@@ -5,7 +5,7 @@ import de.aelpecyem.besmirchment.common.registry.BSMTransformations;
 import de.aelpecyem.besmirchment.common.transformation.LichAccessor;
 import de.aelpecyem.besmirchment.common.transformation.LichLogic;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.interfaces.entity.TransformationAccessor;
+import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.BWScaleTypes;
@@ -33,7 +33,7 @@ public class TransformationAbilityPacketMixin {
             cir.setReturnValue(true);
         }
         if (BSMTransformations.isLich(player, false)) {
-            if (((TransformationAccessor) player).getAlternateForm()) {
+            if (TransformationComponent.get(player).isAlternateForm()) {
                 cir.setReturnValue(true);
             } else {
                 ((LichAccessor) player).updateCachedSouls();
@@ -45,24 +45,24 @@ public class TransformationAbilityPacketMixin {
     @SuppressWarnings("UnresolvedMixinReference")
     @Inject(method = "useAbility", at = @At(value = "HEAD"), cancellable = true)
     private static void useAbility(PlayerEntity player, boolean forced, CallbackInfo ci){
-        if (((TransformationAccessor)player).getTransformation() == BSMTransformations.LICH){
+        if (TransformationComponent.get(player).getTransformation() == BSMTransformations.LICH){
             World world = player.world;
-            boolean isInAlternateForm = ((TransformationAccessor)player).getAlternateForm();
+            boolean isInAlternateForm = TransformationComponent.get(player).isAlternateForm();
             if (isInAlternateForm || BewitchmentAPI.drainMagic(player, 10, true)) {
                 world.playSound(null, player.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, player.getSoundCategory(), 1.0F, 1.0F);
-                ((TransformationAccessor) player).setAlternateForm(!isInAlternateForm);
+                TransformationComponent.get(player).setAlternateForm(!isInAlternateForm);
                 ci.cancel();
             }
         }
-        if (((TransformationAccessor)player).getTransformation() == BSMTransformations.WEREPYRE && (forced || BSMTransformations.hasWerepyrePledge(player))){
+        if (TransformationComponent.get(player).getTransformation() == BSMTransformations.WEREPYRE && (forced || BSMTransformations.hasWerepyrePledge(player))){
             World world = player.world;
-            boolean isInAlternateForm = ((TransformationAccessor)player).getAlternateForm();
+            boolean isInAlternateForm = TransformationComponent.get(player).isAlternateForm();
             ScaleData width = BWScaleTypes.MODIFY_WIDTH_TYPE.getScaleData(player);
             ScaleData height = BWScaleTypes.MODIFY_HEIGHT_TYPE.getScaleData(player);
             PlayerLookup.tracking(player).forEach((foundPlayer) -> SpawnSmokeParticlesPacket.send(foundPlayer, player));
             SpawnSmokeParticlesPacket.send(player, player);
             world.playSound(null, player.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, player.getSoundCategory(), 1.0F, 1.0F);
-            ((TransformationAccessor)player).setAlternateForm(!isInAlternateForm);
+            TransformationComponent.get(player).setAlternateForm(!isInAlternateForm);
             if (isInAlternateForm) {
                 width.setScale(width.getScale() / WEREPYRE_WIDTH);
                 height.setScale(height.getScale() / WEREPYRE_HEIGHT);

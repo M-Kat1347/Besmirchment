@@ -1,7 +1,7 @@
 package de.aelpecyem.besmirchment.common.entity.interfaces;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 
 public interface VillagerWerepyreAccessor {
-    void setStoredWerepyre(CompoundTag storedWerepyre);
+    void setStoredWerepyre(NbtCompound storedWerepyre);
 }

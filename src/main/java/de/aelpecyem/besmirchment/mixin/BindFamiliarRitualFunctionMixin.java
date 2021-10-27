@@ -4,14 +4,14 @@ import de.aelpecyem.besmirchment.common.Besmirchment;
 import de.aelpecyem.besmirchment.common.registry.BSMStatusEffects;
 import de.aelpecyem.besmirchment.common.registry.BSMTags;
 import moriyashiine.bewitchment.api.registry.RitualFunction;
-import moriyashiine.bewitchment.common.entity.interfaces.FamiliarAccessor;
+import moriyashiine.bewitchment.common.entity.component.FamiliarComponent;
 import moriyashiine.bewitchment.common.ritualfunction.BindFamiliarRitualFunction;
 import moriyashiine.bewitchment.common.world.BWUniversalWorldState;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleType;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
@@ -31,12 +31,12 @@ public abstract class BindFamiliarRitualFunctionMixin extends RitualFunction {
         super(startParticle, sacrifice);
     }
 
-    @Inject(method = "start", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/entity/LivingEntity.saveSelfToTag(Lnet/minecraft/nbt/CompoundTag;)Z", remap = true), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
-    private void start(ServerWorld world, BlockPos glyphPos, BlockPos effectivePos, Inventory inventory, boolean catFamiliar, CallbackInfo ci, boolean succeeded, ItemStack taglock, LivingEntity livingEntity, PlayerEntity closestPlayer, CompoundTag entityTag){
+    @Inject(method = "start", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/entity/LivingEntity.saveSelfNbt(Lnet/minecraft/nbt/NbtCompound;)Z", remap = true), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
+    private void start(ServerWorld world, BlockPos glyphPos, BlockPos effectivePos, Inventory inventory, boolean catFamiliar, CallbackInfo ci, boolean succeeded, ItemStack taglock, LivingEntity livingEntity, PlayerEntity closestPlayer, NbtCompound entityTag){
         if (Besmirchment.config.universalFamiliars.enable && livingEntity.hasStatusEffect(BSMStatusEffects.LOVE) && !livingEntity.getType().isIn(BSMTags.ILLEGAL_FAMILIARS)){
-            ((FamiliarAccessor)livingEntity).setFamiliar(true);
+            FamiliarComponent.get(livingEntity).setFamiliar(true);
             BWUniversalWorldState worldState = BWUniversalWorldState.get(world);
-            CompoundTag familiarTag = new CompoundTag();
+            NbtCompound familiarTag = new NbtCompound();
             familiarTag.putUuid("UUID", entityTag.getUuid("UUID"));
             familiarTag.putString("id", Registry.ENTITY_TYPE.getId(livingEntity.getType()).toString());
             worldState.familiars.add(new Pair<>(closestPlayer.getUuid(), familiarTag));

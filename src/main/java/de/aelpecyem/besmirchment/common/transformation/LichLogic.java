@@ -4,7 +4,7 @@ import de.aelpecyem.besmirchment.common.block.entity.PhylacteryBlockEntity;
 import de.aelpecyem.besmirchment.common.packet.LichRevivePacket;
 import de.aelpecyem.besmirchment.common.world.BSMWorldState;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.interfaces.entity.TransformationAccessor;
+import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.common.misc.BWUtil;
 import moriyashiine.bewitchment.common.registry.BWStatusEffects;
 import net.minecraft.block.entity.BlockEntity;
@@ -15,6 +15,7 @@ import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
@@ -95,12 +96,12 @@ public class LichLogic {
             lich.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 200, 0));
             lich.addStatusEffect(new StatusEffectInstance(BWStatusEffects.ETHEREAL, 200, 0));
             LichRevivePacket.send(lich);
-            if (lich instanceof TransformationAccessor && ((TransformationAccessor) lich).getAlternateForm()){
-                ((TransformationAccessor) lich).setAlternateForm(false);
+            if (lich instanceof PlayerEntity player && TransformationComponent.get(player).isAlternateForm()){
+                TransformationComponent.get(player).setAlternateForm(false);
             }
             if (lich instanceof ServerPlayerEntity && (silver || source.isOutOfWorld() || (lastRevive < 600 && lich.isSneaking()))) {
                 if (!phylactery.getLeft().equals(lich.world)) {
-                    ((ServerPlayerEntity) lich).teleport(phylactery.getLeft(), lich.getX(), lich.getY(), lich.getZ(), lich.yaw, lich.pitch);
+                    ((ServerPlayerEntity) lich).teleport(phylactery.getLeft(), lich.getX(), lich.getY(), lich.getZ(), lich.getYaw(), lich.getPitch());
                 }
                 BWUtil.attemptTeleport(lich, phylactery.getRight().getPos(), 2, false);
                 LichRevivePacket.send(lich);

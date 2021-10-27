@@ -33,7 +33,7 @@ public class WitchyDyeEntity extends ThrownItemEntity {
         if (!world.isClient) {
             Box box = this.getBoundingBox().expand(2.0D, 2.0D, 2.0D);
             List<LivingEntity> list = this.world.getNonSpectatingEntities(LivingEntity.class, box);
-            int color = getItem().hasTag() && getItem().getTag().contains("Color") ? getItem().getTag().getInt("Color") : -1;
+            int color = getItem().hasNbt() && getItem().getNbt().contains("Color") ? getItem().getNbt().getInt("Color") : -1;
             for (LivingEntity livingEntity : list) {
                 if (livingEntity instanceof DyeableEntity){
                     if (!(livingEntity instanceof PlayerEntity) || BewitchmentAPI.isWerewolf(livingEntity, false) || BSMTransformations.isLich(livingEntity, false)) {
@@ -55,7 +55,7 @@ public class WitchyDyeEntity extends ThrownItemEntity {
                 }
             }
             this.world.syncWorldEvent(2007, this.getBlockPos(), BSMObjects.WITCHY_DYE.getColor(this.getItem()));
-            this.remove();
+            this.remove(RemovalReason.DISCARDED);
         }
     }
 

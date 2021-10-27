@@ -14,6 +14,10 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 
 public class BeelzebubEntityModel<T extends BeelzebubEntity> extends BipedEntityModel<BeelzebubEntity> {
+    public BeelzebubEntityModel(ModelPart root) {
+        super(root);
+    }
+    /*
     private final ModelPart chest;
     private final ModelPart chest2_r1;
     private final ModelPart stomach;
@@ -752,4 +756,7 @@ public class BeelzebubEntityModel<T extends BeelzebubEntity> extends BipedEntity
         to.yaw = from.yaw;
         to.roll = from.roll;
     }
+
+     */
+
 }

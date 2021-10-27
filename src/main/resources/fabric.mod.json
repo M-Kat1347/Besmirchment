@@ -40,11 +40,11 @@
       "parent": "bewitchment"
     }
   },
-
+  "accessWidener": "besmirtchment.accesswidener",
   "depends": {
-    "bewitchment": ">=1.16.5-15",
+    "bewitchment": ">=1.17-12",
     "fabricloader": ">=0.7.4",
     "fabric": "*",
-    "minecraft": "1.16.x"
+    "minecraft": "1.17.x"
   }
 }

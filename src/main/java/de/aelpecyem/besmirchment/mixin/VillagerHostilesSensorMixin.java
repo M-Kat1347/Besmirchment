@@ -14,6 +14,7 @@ import java.util.Optional;
 
 @Mixin(VillagerHostilesSensor.class)
 public class VillagerHostilesSensorMixin {
+    /*
     @Inject(method = "getNearestHostile", at = @At("RETURN"), cancellable = true)
     private void getNearestHostile(LivingEntity entity, CallbackInfoReturnable<Optional<LivingEntity>> cir){
         if (!cir.getReturnValue().isPresent()){
@@ -23,4 +24,6 @@ public class VillagerHostilesSensorMixin {
             }
         }
     }
+
+     */
 }

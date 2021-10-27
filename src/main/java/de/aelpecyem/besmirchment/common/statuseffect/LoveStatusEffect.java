@@ -2,12 +2,12 @@ package de.aelpecyem.besmirchment.common.statuseffect;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectType;
+import net.minecraft.entity.effect.StatusEffectCategory;
 import net.minecraft.entity.passive.AnimalEntity;
 
 public class LoveStatusEffect extends StatusEffect {
     public LoveStatusEffect() {
-        super(StatusEffectType.NEUTRAL, 0xFF325B);
+        super(StatusEffectCategory.NEUTRAL, 0xFF325B);
     }
 
     @Override

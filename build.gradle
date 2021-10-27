@@ -1,19 +1,31 @@
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+sourceCompatibility = JavaVersion.VERSION_16
+targetCompatibility = JavaVersion.VERSION_16
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+minecraft {
+	accessWidener "src/main/resources/besmirtchment.accesswidener"
+}
+
 repositories {
 	maven {
 		name = "Bewitchment"
 		url = "https://www.cursemaven.com"
+	}
+	maven {
+		name = 'Ladysnake Mods'
+		url = 'https://ladysnake.jfrog.io/artifactory/mods'
+		content {
+			includeGroup 'io.github.ladysnake'
+			includeGroupByRegex 'io\\.github\\.onyxstudios.*'
+		}
 	}
 	maven {
 		name = "wood api"
@@ -22,10 +34,6 @@ repositories {
 	maven {
 		name = "reach"
 		url = "https://maven.jamieswhiteshirt.com/libs-release"
-	}
-	maven {
-		name = "pal"
-		url = "https://dl.bintray.com/ladysnake/libs"
 	}
 	maven {
 		name = "somnus"
@@ -59,10 +67,19 @@ repositories {
 	maven {
 		name = "Cotton"
 		url = "http://server.bbkr.space:8081/artifactory/libs-release/"
+		allowInsecureProtocol = true
 	}
 	maven {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven"
+	}
+	maven {
+		name "appleskin"
+		url "https://maven.ryanliptak.com/"
+	}
+	maven {
+		name "impersonate"
+		url "https://oss.sonatype.org/content/repositories/snapshots"
 	}
 
 	maven {
@@ -83,6 +100,7 @@ dependencies {
 	modImplementation "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
 
 	modImplementation "com.github.emilyploszaj:step-height-entity-attribute:${step_height_version}"
+	modImplementation "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
 	include "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
 
 	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
@@ -92,68 +110,37 @@ dependencies {
 	modImplementation("com.github.virtuoel:pehkui:${project.pehkui_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	modImplementation "io.github.ladysnake:Impersonate:${impersonate_version}"
+	modImplementation "io.github.ladysnake:impersonate:${impersonate_version}"
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 	modImplementation "com.github.emilyalexandra:trinkets:${trinkets_version}"
 
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api:${project.rei_version}"
-	modRuntime "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 
-	modImplementation "io.github.emilyalexandra:nourish:${project.nourish_version}"
+
 	modImplementation "curse.maven:bewitchment-394915:${project.bewitchment_version}"
 	include(modImplementation("io.github.ytg1234:fabric-recipe-conditions:${project.conditional_recipes_version}"))
 
-
-	modImplementation ("grondag:canvas-mc116:1.0.+"){
-		exclude(group: "net.fabricmc.fabric-api")
-		exclude(group: "me.shedaniel.cloth")
-		exclude(group: "io.github.prospector")
+	modCompileOnly("squeek.appleskin:appleskin-fabric:${appleskin_version}:api") {
+		transitive = false
 	}
 }
 
 processResources {
 	inputs.property "version", project.version
 
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
+	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
-
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
 }
 
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+	it.options.release = 16
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+java {
+	withSourcesJar()
 }
 
 jar {
 	from "LICENSE"
-}
-
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(remapJar) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
-
-	repositories {
-		// select the repositories you want to publish to
-		// uncomment to publish to the local maven
-		// mavenLocal()
-	}
 }

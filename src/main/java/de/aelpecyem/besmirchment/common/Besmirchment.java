@@ -11,13 +11,12 @@ import de.aelpecyem.besmirchment.common.transformation.WerepyreAccessor;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
+import moriyashiine.bewitchment.api.component.BloodComponent;
+import moriyashiine.bewitchment.api.component.CursesComponent;
+import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.event.AllowVampireBurn;
-import moriyashiine.bewitchment.api.event.BloodSetEvents;
 import moriyashiine.bewitchment.api.event.BloodSuckEvents;
 import moriyashiine.bewitchment.api.event.ReviveEvents;
-import moriyashiine.bewitchment.api.interfaces.entity.BloodAccessor;
-import moriyashiine.bewitchment.api.interfaces.entity.CurseAccessor;
-import moriyashiine.bewitchment.api.interfaces.entity.TransformationAccessor;
 import moriyashiine.bewitchment.api.registry.Transformation;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.entity.living.VampireEntity;
@@ -73,8 +72,8 @@ public class Besmirchment implements ModInitializer {
             ((DyeableEntity) newPlayer).setColor(((DyeableEntity) oldPlayer).getColor());
         });
         ReviveEvents.ON_REVIVE.register((playerEntity, source, itemStack) -> {
-            if (((CurseAccessor) playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY)) {
-                TransformationAccessor transformationAccessor = (TransformationAccessor) playerEntity;
+            if (CursesComponent.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY)) {
+                TransformationComponent transformationAccessor = TransformationComponent.get(playerEntity);
                 Transformation transformation = transformationAccessor.getTransformation();
                 if (transformation == BWTransformations.WEREWOLF || transformation == BWTransformations.HUMAN) { //no vampires
                     boolean sourceVampire = source.getSource() instanceof VampireEntity || (BewitchmentAPI.isVampire(source.getSource(), true) && source.getSource() instanceof PlayerEntity && BewitchmentAPI.isPledged((PlayerEntity) source.getSource(), BWPledges.LILITH));
@@ -104,8 +103,8 @@ public class Besmirchment implements ModInitializer {
                 int toGive = BWTags.HAS_BLOOD.contains(entity.getType()) ? 5 : entity instanceof AnimalEntity ? 1 : 0;
                 toGive = BloodSuckEvents.BLOOD_AMOUNT.invoker().onBloodSuck(player, (LivingEntity) entity, toGive);
                 if (toGive > 0) {
-                    BloodAccessor playerBlood = (BloodAccessor) player;
-                    BloodAccessor entityBlood = (BloodAccessor) entity;
+                    BloodComponent playerBlood = BloodComponent.get(player);
+                    BloodComponent entityBlood = BloodComponent.get((LivingEntity) entity);
                     if (playerBlood.fillBlood(toGive, true) && entityBlood.drainBlood(10, true)) {
                         if (!world.isClient && ((LivingEntity) entity).hurtTime == 0) {
                             BloodSuckEvents.ON_BLOOD_SUCK.invoker().onBloodSuck(player, (LivingEntity) entity, toGive);

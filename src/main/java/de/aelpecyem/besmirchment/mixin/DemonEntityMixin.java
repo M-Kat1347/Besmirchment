@@ -7,7 +7,7 @@ import de.aelpecyem.besmirchment.common.entity.ai.DemonSitGoal;
 import de.aelpecyem.besmirchment.common.entity.ai.DemonTrackAttackerGoal;
 import de.aelpecyem.besmirchment.common.entity.interfaces.TameableDemon;
 import de.aelpecyem.besmirchment.common.registry.BSMObjects;
-import moriyashiine.bewitchment.api.interfaces.entity.Pledgeable;
+import moriyashiine.bewitchment.api.entity.Pledgeable;
 import moriyashiine.bewitchment.common.entity.living.DemonEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.item.TaglockItem;
@@ -32,7 +32,7 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.ServerConfigHandler;
@@ -86,7 +86,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
         this.targetSelector.add(1, new DemonTrackAttackerGoal((DemonEntity) (TameableDemon) this));
         this.targetSelector.add(2, new DemonAttackWithOwnerGoal((DemonEntity) (TameableDemon) this));
         this.targetSelector.add(3, new RevengeGoal(this));
-        this.targetSelector.add(4, new FollowTargetGoal<>(this, LivingEntity.class, 10, true, false, (entity) -> !isTamed() && !(entity instanceof Pledgeable) && BWUtil.getArmorPieces(entity, (stack) -> stack.getItem() instanceof ArmorItem && ((ArmorItem) stack.getItem()).getMaterial() == BWMaterials.BESMIRCHED_ARMOR) < 3));
+        this.targetSelector.add(4, new ActiveTargetGoal<>(this, LivingEntity.class, 10, true, false, (entity) -> !isTamed() && !(entity instanceof Pledgeable) && BWUtil.getArmorPieces(entity, (stack) -> stack.getItem() instanceof ArmorItem && ((ArmorItem) stack.getItem()).getMaterial() == BWMaterials.BESMIRCHED_ARMOR) < 3));
         ci.cancel();
     }
 
@@ -106,7 +106,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
                 if (item == Items.CAKE) {
                     heal(40);
                     addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 1, 1200, true, true));
-                    if (!player.abilities.creativeMode) {
+                    if (!player.getAbilities().creativeMode) {
                         itemStack.decrement(1);
                     }
                     this.world.sendEntityStatus(this, (byte) 7);
@@ -123,7 +123,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
                     cir.setReturnValue(ActionResult.SUCCESS);
                 }
             } else if (Besmirchment.config.enableTamableDemons && !isTamed() && item == BSMObjects.DEMONIC_DEED && TaglockItem.hasTaglock(itemStack) && !isAttacking()) {
-                if (!player.abilities.creativeMode) {
+                if (!player.getAbilities().creativeMode) {
                     itemStack.damage(1, player, breakingPlayer -> itemStack.decrement(1));
                 }
                 setTamed(true);
@@ -137,17 +137,17 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
         }
     }
 
-    @Inject(method = "writeCustomDataToTag", at = @At("TAIL"))
-    public void writeCustomDataToTag(CompoundTag tag, CallbackInfo ci) {
+    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+    public void writeCustomDataToTag(NbtCompound tag, CallbackInfo ci) {
         if (this.getOwnerUuid() != null) {
             tag.putUuid("Owner", this.getOwnerUuid());
         }
         tag.putBoolean("Sitting", this.sitting);
     }
 
-    @Inject(method = "readCustomDataFromTag", at = @At("TAIL"))
-    public void readCustomDataFromTag(CompoundTag tag, CallbackInfo ci) {
-        super.readCustomDataFromTag(tag);
+    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+    public void readCustomDataFromTag(NbtCompound tag, CallbackInfo ci) {
+        super.readCustomDataFromNbt(tag);
         UUID ownerUUID;
         if (tag.containsUuid("Owner")) {
             ownerUUID = tag.getUuid("Owner");

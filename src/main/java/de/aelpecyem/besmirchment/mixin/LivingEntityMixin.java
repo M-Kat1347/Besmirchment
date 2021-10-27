@@ -9,9 +9,9 @@ import de.aelpecyem.besmirchment.common.registry.BSMTags;
 import de.aelpecyem.besmirchment.common.registry.BSMTransformations;
 import de.aelpecyem.besmirchment.common.transformation.LichAccessor;
 import de.aelpecyem.besmirchment.common.transformation.LichLogic;
-import moriyashiine.bewitchment.api.interfaces.entity.BloodAccessor;
-import moriyashiine.bewitchment.api.interfaces.entity.ContractAccessor;
-import moriyashiine.bewitchment.api.interfaces.entity.TransformationAccessor;
+import moriyashiine.bewitchment.api.component.BloodComponent;
+import moriyashiine.bewitchment.api.component.ContractsComponent;
+import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.common.registry.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -26,12 +26,14 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -47,6 +49,8 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
     private int bsm_cachedSouls = 0;
     @Environment(EnvType.CLIENT)
     private int bsm_lastRoll = 100;
+
+
 
     @Shadow
     protected abstract float getSoundVolume();
@@ -87,8 +91,8 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
     @ModifyVariable(method = "applyArmorToDamage", at = @At("HEAD"))
     private float modifyDamage1(float amount, DamageSource source) {
         if (source.isProjectile()) {
-            if (source.getAttacker() instanceof ContractAccessor) {
-                ContractAccessor accessor = (ContractAccessor) source.getAttacker();
+            if (source.getAttacker() instanceof PlayerEntity player) {
+                ContractsComponent accessor = ContractsComponent.get(player);
                 if (accessor.hasContract(BSMContracts.CONQUEST)) {
                     return amount * 2;
                 }
@@ -116,7 +120,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
             }
             //mathematically equal to not changing the blood at all
             if (BWTags.HAS_BLOOD.contains(getType()) && BSMTransformations.isWerepyre(this, true) && random.nextFloat() < (isSleeping() ? 1 / 50f : 1 / 500f)) {
-                ((BloodAccessor) livingEntity).drainBlood(1, false);
+                BloodComponent.get(livingEntity).drainBlood(1, false);
             }
         }
     }
@@ -136,16 +140,19 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
 
     @Inject(method = "eatFood", at = @At("HEAD"))
     private void eatFood(World world, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
-        if ((Object) this instanceof PlayerEntity && BSMTransformations.isLich(this, false) && hasStatusEffect(StatusEffects.WEAKNESS)) {
+        LivingEntity livingEntity = (LivingEntity) (Object) this;
+        if (livingEntity instanceof PlayerEntity player && BSMTransformations.isLich(this, false) && hasStatusEffect(StatusEffects.WEAKNESS)) {
             if (stack.getItem().equals(Items.GOLDEN_APPLE)) {
                 playSound(BWSoundEvents.ENTITY_GENERIC_TRANSFORM, 1, 1);
-                ((TransformationAccessor) this).setAlternateForm(false);
-                ((TransformationAccessor) this).getTransformation().onRemoved((PlayerEntity) (Object) this);
-                ((TransformationAccessor) this).setTransformation(BWTransformations.HUMAN);
-                ((TransformationAccessor) this).getTransformation().onAdded((PlayerEntity) (Object) this);
+                TransformationComponent.get(player).setAlternateForm(false);
+                TransformationComponent.get(player).getTransformation().onRemoved((PlayerEntity) (Object) this);
+                TransformationComponent.get(player).setTransformation(BWTransformations.HUMAN);
+                TransformationComponent.get(player).getTransformation().onAdded((PlayerEntity) (Object) this);
                 if (world.isClient) {
                     for (int i = 0; i < 20; i++) {
-                        world.addParticle(new DustParticleEffect(0.98F, 0.8F, 0, MathHelper.nextFloat(random, 1.2F, 3F)), getParticleX(1), getRandomBodyY(), getParticleZ(1), 0, 0, 0);
+                        Vec3f vecf = new Vec3f(Vec3d.unpackRgb(16711680));
+                        //TODO check vecf for right color
+                        world.addParticle(new DustParticleEffect(vecf,1F), getParticleX(1), getRandomBodyY(), getParticleZ(1), 0, 0, 0);
                     }
                 }
             }
@@ -223,20 +230,20 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
     }
 
     @Inject(method = "handleFallDamage", at = @At("HEAD"), cancellable = true)
-    private void handleFallDamage(float fallDistance, float damageMultiplier, CallbackInfoReturnable<Boolean> callbackInfo) {
+    private void handleFallDamage(float fallDistance, float damageMultiplier,DamageSource damageSource, CallbackInfoReturnable<Boolean> callbackInfo) {
         if (BSMTransformations.isWerepyre(this, false) && fallDistance <= 12) {
             callbackInfo.setReturnValue(false);
         }
     }
 
-    @Inject(method = "writeCustomDataToTag", at = @At("TAIL"))
-    private void writeCustomDataToTag(CompoundTag tag, CallbackInfo ci) {
+    @Inject(method = "writeCustomDataToNbt", at = @At("TAIL"))
+    private void writeCustomDataToTag(NbtCompound tag, CallbackInfo ci) {
         tag.putInt("BSMLastRevive", bsm_lastRevive);
         tag.putInt("BSMSoulCache", bsm_cachedSouls);
     }
 
-    @Inject(method = "readCustomDataFromTag", at = @At("TAIL"))
-    private void readCustomDataFromTag(CompoundTag tag, CallbackInfo ci) {
+    @Inject(method = "readCustomDataFromNbt", at = @At("TAIL"))
+    private void readCustomDataFromTag(NbtCompound tag, CallbackInfo ci) {
         bsm_lastRevive = tag.getInt("BSMLastRevive");
         bsm_cachedSouls = tag.getInt("BSMSoulCache");
         if (world instanceof ServerWorld) {

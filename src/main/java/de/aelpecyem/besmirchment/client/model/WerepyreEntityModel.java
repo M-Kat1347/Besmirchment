@@ -17,6 +17,10 @@ import net.minecraft.util.math.MathHelper;
 
 @Environment(EnvType.CLIENT)
 public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityModel<WerepyreEntity> {
+    public WerepyreEntityModel(ModelPart root) {
+        super(root);
+    }
+    /*
     private final ModelPart neck;
     private final ModelPart body;
     private final ModelPart tail01;
@@ -508,7 +512,7 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         copyRotation(neck, super.head);
         neck.setPivot(0, -18.2f, -1);
         neck.pitch -= 0.2531f;
-        copyRotation(body, super.torso);
+        copyRotation(body, super.body);
         body.setPivot(0, -12.7f, 0);
         body.pitch += 0.5672f;
         copyRotation(lArm01, super.leftArm);
@@ -612,4 +616,6 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         to.yaw = from.yaw;
         to.roll = from.roll;
     }
+
+     */
 }

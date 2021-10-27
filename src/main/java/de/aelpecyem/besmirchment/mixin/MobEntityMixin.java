@@ -3,6 +3,7 @@ package de.aelpecyem.besmirchment.mixin;
 import de.aelpecyem.besmirchment.common.entity.interfaces.TameableDemon;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,11 +25,13 @@ public class MobEntityMixin {
             }
         }
     }
-
-    @Inject(method = "canTarget(Lnet/minecraft/entity/LivingEntity;)Z", at = @At("HEAD"), cancellable = true)
-    public void canTarget(LivingEntity target, CallbackInfoReturnable<Boolean> cir) {
-        if (this instanceof TameableDemon && ((TameableDemon) this).isOwner(target)){
+/*
+    @Inject(method = "canTarget", at = @At("HEAD"), cancellable = true)
+    public void canTarget(EntityType<?> type, CallbackInfoReturnable<Boolean> cir) {
+        if (this instanceof TameableDemon && ((TameableDemon) this).isOwner(type.PLAYER)){
             cir.setReturnValue(false);
         }
     }
+
+ */
 }

@@ -22,7 +22,7 @@ public class SparklePacket {
 
     public static void send(LivingEntity entity){
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeInt(entity.getEntityId());
+        buf.writeInt(entity.getId());
         if (entity instanceof ServerPlayerEntity){
             ServerPlayNetworking.send((ServerPlayerEntity) entity, ID, buf);
         }

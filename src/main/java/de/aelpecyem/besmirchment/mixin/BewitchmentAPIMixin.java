@@ -7,6 +7,7 @@ import de.aelpecyem.besmirchment.common.registry.BSMEntityTypes;
 import de.aelpecyem.besmirchment.common.registry.BSMTransformations;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.item.PoppetItem;
+import moriyashiine.bewitchment.api.misc.PoppetData;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.BWObjects;
 import moriyashiine.bewitchment.common.registry.BWPledges;
@@ -16,6 +17,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -54,10 +56,10 @@ public class BewitchmentAPIMixin {
         }
     }
 
-    @Inject(method = "getPoppet", at = @At("HEAD"), cancellable = true)
-    private static void getPoppet(World world, PoppetItem item, Entity owner, PlayerEntity specificInventory, CallbackInfoReturnable<ItemStack> cir){
-        if (item == BWObjects.VAMPIRIC_POPPET && (BSMTransformations.isWerepyre(owner, true) ||BSMTransformations.isWerepyre(specificInventory, true))){
-            cir.setReturnValue(ItemStack.EMPTY);
+    @Inject(method = "getPoppetFromInventory", at = @At("HEAD"), cancellable = true)
+    private static void getPoppet(World world, PoppetItem item, Entity owner, DefaultedList<ItemStack> inventory, CallbackInfoReturnable<PoppetData> cir){
+        if (item == BWObjects.VAMPIRIC_POPPET && (BSMTransformations.isWerepyre(owner, true) || BSMTransformations.isWerepyre(owner, true))){
+            cir.setReturnValue(PoppetData.EMPTY);
         }
     }
 }

@@ -2,7 +2,7 @@ package de.aelpecyem.besmirchment.mixin;
 
 import de.aelpecyem.besmirchment.common.registry.BSMTransformations;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.interfaces.entity.BloodAccessor;
+import moriyashiine.bewitchment.api.component.BloodComponent;
 import moriyashiine.bewitchment.common.item.BottleOfBloodItem;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
@@ -18,7 +18,7 @@ public class BottleOfBloodItemMixin {
     @Inject(method = "finishUsing", at = @At("HEAD"), cancellable = true)
     private void finishUsing(ItemStack stack, World world, LivingEntity user, CallbackInfoReturnable<ItemStack> cir){
         if (BSMTransformations.isWerepyre(user, true)) {
-            ((BloodAccessor) user).fillBlood(20, false);
+            BloodComponent.get(user).fillBlood(20, false);
             cir.setReturnValue(Items.POTION.finishUsing(stack, world, user));
         }
     }

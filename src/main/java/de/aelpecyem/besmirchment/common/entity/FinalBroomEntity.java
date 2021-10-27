@@ -38,7 +38,7 @@ public class FinalBroomEntity extends DragonsBloodBroomEntity {
     public void pushAwayFrom(Entity entity) {
         if (entity instanceof LivingEntity && getVelocity().length() > 1){
             entity.damage(DamageSource.FLY_INTO_WALL, (float) Math.min(getVelocity().lengthSquared(), 10));
-            ((LivingEntity)entity).takeKnockback((float) getVelocity().length() * 0.5F, MathHelper.sin(this.yaw * 0.017453292F), (-MathHelper.cos(this.yaw * 0.017453292F)));
+            ((LivingEntity)entity).takeKnockback((float) getVelocity().length() * 0.5F, MathHelper.sin(this.getYaw() * 0.017453292F), (-MathHelper.cos(this.getYaw() * 0.017453292F)));
             this.setVelocity(this.getVelocity().multiply(0.6D, 1.0D, 0.6D));
         }
         super.pushAwayFrom(entity);

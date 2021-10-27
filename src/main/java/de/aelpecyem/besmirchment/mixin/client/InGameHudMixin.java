@@ -3,8 +3,7 @@ package de.aelpecyem.besmirchment.mixin.client;
 import com.mojang.blaze3d.systems.RenderSystem;
 import de.aelpecyem.besmirchment.common.registry.BSMTransformations;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.interfaces.entity.BloodAccessor;
-import moriyashiine.bewitchment.api.interfaces.entity.MagicAccessor;
+import moriyashiine.bewitchment.api.component.BloodComponent;
 import moriyashiine.bewitchment.common.Bewitchment;
 import moriyashiine.bewitchment.common.registry.BWTags;
 import net.fabricmc.api.EnvType;
@@ -50,7 +49,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
         if (BSMTransformations.isWerepyre(player, true)) {
             client.getTextureManager().bindTexture(BEWITCHMENT_GUI_ICONS_TEXTURE);
             drawBlood(matrices, player, scaledWidth / 2 + 82, scaledHeight - 39, 10);
-            if (player.isInSneakingPose() && client.targetedEntity instanceof BloodAccessor && BWTags.HAS_BLOOD.contains(client.targetedEntity.getType())) {
+            if (player.isInSneakingPose() && BloodComponent.maybeGet(player).isPresent() && BWTags.HAS_BLOOD.contains(client.targetedEntity.getType())) {
                 drawBlood(matrices, (LivingEntity) client.targetedEntity, scaledWidth / 2 + 13, scaledHeight / 2 + 9, 5);
             }
             client.getTextureManager().bindTexture(EMPTY_TEXTURE);
@@ -67,7 +66,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Unique
     private void drawBlood(MatrixStack matrices, LivingEntity entity, int x, int y, int droplets) {
-        BloodAccessor bloodAccessor = (BloodAccessor) entity;
+        BloodComponent bloodAccessor = BloodComponent.get(entity);
         int v = entity.hasStatusEffect(StatusEffects.HUNGER) ? 9 : 0;
         float blood = ((float) bloodAccessor.getBlood() / bloodAccessor.MAX_BLOOD * droplets);
         int full = (int) blood;

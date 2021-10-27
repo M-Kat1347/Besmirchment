@@ -5,7 +5,6 @@ import de.aelpecyem.besmirchment.common.item.WitchyDyeItem;
 import de.aelpecyem.besmirchment.common.registry.BSMObjects;
 import de.aelpecyem.besmirchment.common.registry.BSMUtil;
 import moriyashiine.bewitchment.api.registry.RitualFunction;
-import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.passive.SheepEntity;
@@ -20,6 +19,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
 
 import java.util.List;
@@ -41,8 +41,8 @@ public class ColorRitualFunction extends RitualFunction {
         super.tick(world, glyphPos, effectivePos, catFamiliar);
         if (world.isClient) {
             Random random = world.getRandom();
-            Vector3f rgb = new Vector3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB(random.nextFloat(), 1, 1)));
-            world.addParticle(new DustParticleEffect(rgb.getX(), rgb.getY(), rgb.getZ(), 1 + random.nextFloat()), effectivePos.getX() + 0.5 + random.nextGaussian() * 2, effectivePos.getY() + random.nextFloat() * 2, effectivePos.getZ() + 0.5 + random.nextGaussian() * 2, random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
+            Vec3f rgb = new Vec3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB(random.nextFloat(), 1, 1)));
+            world.addParticle(new DustParticleEffect(rgb, 1 + random.nextFloat()), effectivePos.getX() + 0.5 + random.nextGaussian() * 2, effectivePos.getY() + random.nextFloat() * 2, effectivePos.getZ() + 0.5 + random.nextGaussian() * 2, random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
         }else if (world.getTime() % 10 == 0){
             int amount = catFamiliar ? 12 : 4;
             Box box = new Box(effectivePos.add(-4, -2, -4), effectivePos.add(4, 2, 4));
@@ -59,7 +59,7 @@ public class ColorRitualFunction extends RitualFunction {
                             BSMObjects.WITCHY_DYE.setColor(stack, world.random.nextFloat() < 0.1F ? WitchyDyeItem.FUNNI_NUMBER : BSMUtil.HSBtoRGB(world.random.nextFloat(), 1, 1));
                             world.spawnEntity(new ItemEntity(world, entity.getX(), entity.getY(), entity.getZ(), stack));
                         }
-                        entity.remove();
+                        entity.remove(Entity.RemovalReason.DISCARDED);
                     }else {
                         ((DyeableItem) ((ItemEntity) entity).getStack().getItem()).setColor(((ItemEntity) entity).getStack(), color);
                     }

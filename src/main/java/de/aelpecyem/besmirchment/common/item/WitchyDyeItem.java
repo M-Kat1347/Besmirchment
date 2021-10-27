@@ -12,6 +12,7 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 
 import java.util.Collections;
@@ -24,15 +25,15 @@ public class WitchyDyeItem extends Item implements DyeableItem {
 
     public TypedActionResult<ItemStack> use(World world, PlayerEntity user, Hand hand) {
         ItemStack itemStack = user.getStackInHand(hand);
-        world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_SPLASH_POTION_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (RANDOM.nextFloat() * 0.4F + 0.8F));
+        world.playSound(null, user.getX(), user.getY(), user.getZ(), SoundEvents.ENTITY_SPLASH_POTION_THROW, SoundCategory.NEUTRAL, 0.5F, 0.4F / (MathHelper.nextFloat(world.random, 0,1) * 0.4F + 0.8F));
         if (!world.isClient) {
             ThrownItemEntity potion = new WitchyDyeEntity(world, user);
             potion.setItem(itemStack);
-            potion.setProperties(user, user.pitch, user.yaw, 0.0F, 0.8F, 1.0F);
+            potion.setProperties(user, user.getPitch(), user.getYaw(), 0.0F, 0.8F, 1.0F);
             world.spawnEntity(potion);
         }
         user.incrementStat(Stats.USED.getOrCreateStat(this));
-        if (!user.abilities.creativeMode) {
+        if (!user.getAbilities().creativeMode) {
             itemStack.decrement(1);
         }
 
@@ -41,31 +42,31 @@ public class WitchyDyeItem extends Item implements DyeableItem {
 
     @Override
     public int getColor(ItemStack stack){
-        if (stack.hasTag() && stack.getTag().contains("Color")){
-            return stack.getTag().getInt("Color");
+        if (stack.hasNbt() && stack.getNbt().contains("Color")){
+            return stack.getNbt().getInt("Color");
         }
         return 0xFFFFFF;
     }
 
     @Override
     public String getTranslationKey(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().contains("Color") ? super.getTranslationKey(stack) : "item." + Besmirchment.MODID + ".witchy_bleach";
+        return stack.hasNbt() && stack.getNbt().contains("Color") ? super.getTranslationKey(stack) : "item." + Besmirchment.MODID + ".witchy_bleach";
     }
 
     @Override
     public void setColor(ItemStack stack, int color) {
-        stack.getOrCreateTag().putInt("Color", color);
+        stack.getOrCreateNbt().putInt("Color", color);
     }
 
     @Override
     public boolean hasColor(ItemStack stack) {
-        return stack.hasTag() && stack.getTag().contains("Color");
+        return stack.hasNbt() && stack.getNbt().contains("Color");
     }
 
     @Override
     public void removeColor(ItemStack stack) {
-        if (stack.hasTag() && stack.getTag().contains("Color")) {
-            stack.getTag().remove("color");
+        if (stack.hasNbt() && stack.getNbt().contains("Color")) {
+            stack.getNbt().remove("color");
         }
     }
 
