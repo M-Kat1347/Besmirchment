@@ -22,20 +22,12 @@ public class WerepyreEntityRenderer extends MobEntityRenderer<WerepyreEntity, We
     private static final Identifier UNTINTED_TEXTURE = Besmirchment.id("textures/entity/werepyre/untinted.png");
 
     public WerepyreEntityRenderer(EntityRendererFactory.Context context) {
-        super(context, new WerepyreEntityModel<>(context.getPart(BesmirchmentClient.WEREPYRE_MODEL_LAYER)), 0.5f);
+        super(context, new WerepyreEntityModel<>(context.getPart(BesmirchmentClient.WEREPYRE_MODEL_LAYER)), 1f);
         this.addFeature(new HeldItemFeatureRenderer<>(this));
         this.addFeature(new DyedWerepyreFeatureRenderer(this));
     }
 
-
     @Override
-    public void render(WerepyreEntity mobEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i) {
-        if (mobEntity.isSneaking()){
-            matrixStack.translate(0, 0.1, 0);
-        }
-        super.render(mobEntity, f, g, matrixStack, vertexConsumerProvider, i);
-    }
-
     public Identifier getTexture(WerepyreEntity entity) {
         if (((DyeableEntity) entity).getColor() >= 0 || ((DyeableEntity) entity).getColor() == WitchyDyeItem.FUNNI_NUMBER){
             return UNTINTED_TEXTURE;
