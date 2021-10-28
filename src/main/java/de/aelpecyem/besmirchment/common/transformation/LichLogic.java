@@ -55,35 +55,31 @@ public class LichLogic {
         if (cachedSouls < 0){
             return;
         }
-        switch (cachedSouls){
-            case 0:
+        switch (cachedSouls) {
+            case 0 -> {
                 attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_0);
                 healthAttribute.addPersistentModifier(LICH_HEALTH_MODIFIER_0);
                 movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_0);
-                break;
-            case 1:
-            case 2:
+            }
+            case 1, 2 -> {
                 healthAttribute.addPersistentModifier(LICH_HEALTH_MODIFIER_1);
                 movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_1);
-                break;
-            case 3:
-            case 4:
+            }
+            case 3, 4 -> {
                 healthAttribute.addPersistentModifier(LICH_HEALTH_MODIFIER_2);
                 attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_1);
                 movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
-                break;
-            case 5:
+            }
+            case 5 -> {
                 attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_1);
                 armorAttribute.addPersistentModifier(LICH_ARMOR_MODIFIER);
                 movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
-                break;
-            case 6:
-            case 7:
-            case 8:
+            }
+            case 6, 7, 8 -> {
                 attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_2);
                 armorAttribute.addPersistentModifier(LICH_ARMOR_MODIFIER);
                 movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
-                break;
+            }
         }
     }
     public static boolean revive(LivingEntity lich, DamageSource source, int lastRevive) {

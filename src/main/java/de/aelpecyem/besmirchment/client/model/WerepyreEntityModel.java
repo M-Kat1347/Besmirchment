@@ -40,30 +40,29 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         super(root);
         this.neck = root.getChild("neck");
         this.body = root.getChild("body");
-        this.tail01 = root.getChild("tail01");
-        this.lWing01 = root.getChild("lWing01");
-        this.lWingMembrane01 = root.getChild("lWingMembrane01");
-        this.lWingMembrane02 = root.getChild("lWingMembrane02");
-        this.lWing02 = root.getChild("lWing02");
-        this.lWing03 = root.getChild("lWing03");
-        this.lWing04 = root.getChild("lWing04");
-        this.lWing05 = root.getChild("lWing05");
-        this.rWing01 = root.getChild("rWing01");
-        this.rWingMembrane01 = root.getChild("rWingMembrane01");
-        this.rWingMembrane02 = root.getChild("rWingMembrane02");
-        this.rWing02 = root.getChild("rWing02");
-        this.rWing03 = root.getChild("rWing03");
-        this.rWing04 = root.getChild("rWing04");
-        this.rWing05 = root.getChild("rWing05");
-        this.lLeg01 = root.getChild("lLeg01");
-        this.rLeg01 = root.getChild("rLeg01");
+        this.tail01 = body.getChild("stomach").getChild("tail01");
+        this.lWing01 = body.getChild("lWing01");
+        this.lWingMembrane01 = lWing01.getChild("lWingMembrane01");
+        this.lWing02 = lWing01.getChild("lWing02");
+        this.lWingMembrane02 = lWing02.getChild("lWingMembrane02");
+        this.lWing03 = lWing02.getChild("lWing03");
+        this.lWing04 = lWing03.getChild("lWing04");
+        this.lWing05 = lWing04.getChild("lWing05");
+        this.rWing01 = body.getChild("rWing01");
+        this.rWingMembrane01 = rWing01.getChild("rWingMembrane01");
+        this.rWing02 = rWing01.getChild("rWing02");
+        this.rWingMembrane02 = rWing02.getChild("rWingMembrane02");
+        this.rWing03 = rWing02.getChild("rWing03");
+        this.rWing04 = rWing03.getChild("rWing04");
+        this.rWing05 = rWing04.getChild("rWing05");
+        this.lLeg01 = body.getChild("stomach").getChild("lLeg01");
+        this.rLeg01 = body.getChild("stomach").getChild("rLeg01");
         this.lArm01 = root.getChild("lArm01");
         this.rArm01 = root.getChild("rArm01");
     }
     public static TexturedModelData getTexturedModelData() {
-        ModelData modelData = BipedEntityModel.getModelData(Dilation.NONE, 0);
-        ModelPartData root = modelData.getRoot();
-
+        ModelData data = BipedEntityModel.getModelData(Dilation.NONE, 0);
+        ModelPartData root = data.getRoot();
         ModelPartData body = root.addChild("body",
         ModelPartBuilder.create()
         .uv(49, 15).cuboid(-5.5F, -3.3F, -2.0F, 11.0F, 11.0F, 8.0F),
@@ -378,95 +377,13 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         ModelPartBuilder.create()
         .uv(90, 0).cuboid(-3.5F, 2.0F, 0.0F, 7.0F, 7.0F, 2.0F, new Dilation(0.1F, 0.1F, 0.1F)),
         ModelTransform.of(0.0F, 0.0F, -2.9F, 1.9635F, 0.0F, 0.0F));
-        root.addChild("body", ModelPartBuilder.create().uv(49,15).cuboid(-5.5F, -3.3F, -2.0F, 11.0F, 11.0F, 8.0F), ModelTransform.pivot(0.0F,-12.7F,0.0F));
-        root.addChild("head", ModelPartBuilder.create().uv(1,2).cuboid(-0.5F, 0.7F, -0.4F, 1.0F, 1.0F, 1.0F), ModelTransform.pivot(0.0F,-2.0F,2.0F));
-        root.addChild("stomach", ModelPartBuilder.create().uv(16,16).cuboid(-5.0F, 0.0F, -3.0F, 10.0F, 12.0F, 6.0F), ModelTransform.pivot(0.0F,6.9F,2.6F));
-        root.addChild("tail01", ModelPartBuilder.create().uv(112,18).cuboid(-1.5F, 0.0F, -1.5F, 3.0F, 4.0F, 3.0F), ModelTransform.pivot(0.0F,8.6F,2.0F));
-        root.addChild("tail02", ModelPartBuilder.create().uv(115,27).cuboid(-1.0F, 0.0F, -1.0F, 2.0F, 7.0F, 2.0F), ModelTransform.pivot(0.0F,3.7F,0.0F));
-        root.addChild("tail03", ModelPartBuilder.create().uv(112,40).cuboid(-1.5F, 0.2F, -1.5F, 3.0F, 4.0F, 3.0F, new Dilation(-0.2F)), ModelTransform.pivot(0.0F,6.5F,0.1F));
-        root.addChild("tail04", ModelPartBuilder.create().uv(116,7).cuboid(-1.0F, 0.0F, -2.0F, 2.0F, 7.0F, 2.0F, new Dilation(-0.1F)), ModelTransform.pivot(0.0F,0.0F,0.4F));
-        root.addChild("fur06", ModelPartBuilder.create().uv(90,52).cuboid(-2.0F, -1.0F, 0.0F, 4.0F, 5.0F, 2.0F), ModelTransform.pivot(0.0F,6.6F,1.5F));
-        root.addChild("fur05", ModelPartBuilder.create().uv(90,43).cuboid(-2.0F, -1.0F, 0.0F, 4.0F, 5.0F, 2.0F), ModelTransform.pivot(0.0F,4.7F,1.6F));
-        root.addChild("fur04", ModelPartBuilder.create().uv(90,35).cuboid(-2.5F, -1.0F, 0.0F, 5.0F, 4.0F, 2.0F), ModelTransform.pivot(0.0F,-0.3F,4.9F));
-        root.addChild("fur03", ModelPartBuilder.create().uv(90,24).cuboid(-4.0F, -1.0F, 0.0F, 8.0F, 7.0F, 2.0F), ModelTransform.pivot(0.0F,-3.6F,4.5F));
-        root.addChild("fur02", ModelPartBuilder.create().uv(90,11).cuboid(-5.0F, -1.0F, 0.0F, 10.0F, 8.0F, 2.0F), ModelTransform.pivot(0.0F,-4.7F,3.4F));
-        root.addChild("lWing01", ModelPartBuilder.create().uv(78,99).cuboid(-1.7F, -0.5F, -1.1F, 2.0F, 4.0F, 9.0F), ModelTransform.pivot(2.5F,1.2F,6.4F));
-        root.addChild("lWing02", ModelPartBuilder.create().uv(93,114).cuboid(-1.7243F, -1.5568F, -1.8828F, 2.0F, 3.0F, 11.0F), ModelTransform.pivot(0.346F,0.3487F,9.1164F));
-        root.addChild("lWing03", ModelPartBuilder.create().uv(108,99).cuboid(-1.7F, -0.7F, -1.9F, 2.0F, 13.0F, 3.0F), ModelTransform.pivot(0.1F,-0.5F,9.1F));
-        root.addChild("lWing04", ModelPartBuilder.create().uv(118,99).cuboid(-1.2F, -0.4F, -0.9F, 1.0F, 17.0F, 2.0F), ModelTransform.pivot(0.0F,11.7F,0.0F));
-        root.addChild("lWing05", ModelPartBuilder.create().uv(124,99).cuboid(-0.3F, -1.0F, -1.0F, 1.0F, 15.0F, 1.0F), ModelTransform.pivot(-0.7F,17.0F,0.0F));
-        root.addChild("lWingMembrane03", ModelPartBuilder.create().uv(0,62).cuboid(-0.6F, -9.6F, -29.5F, 0.0F, 37.0F, 29.0F), ModelTransform.pivot(0.0F,7.7F,-0.4F));
-        root.addChild("lWingMembrane02", ModelPartBuilder.create().uv(54,38).cuboid(-0.554F, -2.2513F, -13.2836F, 0.0F, 30.0F, 25.0F), ModelTransform.pivot(-0.046F,0.5513F,7.4836F));
-        root.addChild("lWingFur2", ModelPartBuilder.create().uv(90,24).cuboid(-4.5F, 0.0F, -2.0F, 8.0F, 7.0F, 2.0F), ModelTransform.pivot(-2.1F,0.3F,2.7F));
-        root.addChild("lWingMembrane01", ModelPartBuilder.create().uv(0,50).cuboid(-0.7F, -9.2F, 0.6F, 0.0F, 22.0F, 16.0F), ModelTransform.pivot(0.0F,5.9F,-5.0F));
-        root.addChild("lWingFur01", ModelPartBuilder.create().uv(90,11).cuboid(-7.5F, 1.0F, -2.0F, 10.0F, 8.0F, 2.0F), ModelTransform.pivot(-2.0F,1.5F,7.1F));
-        root.addChild("rWing01", ModelPartBuilder.create().uv(78,99).cuboid(-0.3F, -0.5F, -1.1F, 2.0F, 4.0F, 9.0F, true), ModelTransform.pivot(-2.5F,1.2F,6.4F));
-        root.addChild("rWing02", ModelPartBuilder.create().uv(93,114).cuboid(-0.2757F, -1.5568F, -1.8828F, 2.0F, 3.0F, 11.0F, true), ModelTransform.pivot(-0.346F,0.3487F,9.1164F));
-        root.addChild("rWing03", ModelPartBuilder.create().uv(108,99).cuboid(-0.3F, -0.7F, -1.9F, 2.0F, 13.0F, 3.0F, true), ModelTransform.pivot(-0.1F,-0.5F,9.1F));
-        root.addChild("rWing04", ModelPartBuilder.create().uv(118,99).cuboid(0.2F, -0.4F, -0.9F, 1.0F, 17.0F, 2.0F, true), ModelTransform.pivot(0.0F,11.7F,0.0F));
-        root.addChild("rWing05", ModelPartBuilder.create().uv(124,99).cuboid(-0.7F, -1.0F, -1.0F, 1.0F, 15.0F, 1.0F, true), ModelTransform.pivot(0.7F,17.0F,0.0F));
-        root.addChild("rWingMembrane03", ModelPartBuilder.create().uv(0,62).cuboid(0.6F, -9.6F, -29.5F, 0.0F, 37.0F, 29.0F, true), ModelTransform.pivot(0.0F,7.7F,-0.4F));
-        root.addChild("rWingMembrane02", ModelPartBuilder.create().uv(54,38).cuboid(0.554F, -2.2513F, -13.2836F, 0.0F, 30.0F, 25.0F, true), ModelTransform.pivot(0.046F,0.5513F,7.4836F));
-        root.addChild("rWingFur02", ModelPartBuilder.create().uv(90,24).cuboid(-3.5F, 0.0F, -2.0F, 8.0F, 7.0F, 2.0F, true), ModelTransform.pivot(2.1F,0.3F,2.7F));
-        root.addChild("rWingMembrane01", ModelPartBuilder.create().uv(0,50).cuboid(0.7F, -9.2F, 0.6F, 0.0F, 22.0F, 16.0F, true), ModelTransform.pivot(0.0F,5.9F,-5.0F));
-        root.addChild("rWingFur01", ModelPartBuilder.create().uv(90,11).cuboid(-2.5F, 1.0F, -2.0F, 10.0F, 8.0F, 2.0F, true), ModelTransform.pivot(2.0F,1.5F,7.1F));
-        root.addChild("lLeg01", ModelPartBuilder.create().uv(11,46).cuboid(-2.3F, -1.1F, -1.9F, 5.0F, 13.0F, 5.0F), ModelTransform.pivot(2.7F,10.2F,-0.4F));
-        root.addChild("lLeg02", ModelPartBuilder.create().uv(0,35).cuboid(-2.01F, 0.4F, -2.0F, 4.0F, 7.0F, 4.0F), ModelTransform.pivot(0.0F,9.8F,0.5F));
-        root.addChild("lLeg03", ModelPartBuilder.create().uv(0,22).cuboid(-1.5F, 0.0F, -1.5F, 3.0F, 10.0F, 3.0F), ModelTransform.pivot(0.0F,5.9F,0.8F));
-        root.addChild("lFoot", ModelPartBuilder.create().uv(0,14).cuboid(-2.0F, 0.0F, -2.8F, 4.0F, 2.0F, 5.0F), ModelTransform.pivot(0.0F,8.7F,-1.2F));
-        root.addChild("lFootClaw01", ModelPartBuilder.create().uv(1,48).cuboid(-0.5F, -0.5F, -1.7F, 1.0F, 2.0F, 3.0F), ModelTransform.pivot(-1.3F,0.5F,-2.6F));
-        root.addChild("lFootClaw02", ModelPartBuilder.create().uv(1,48).cuboid(-0.5F, -0.5F, -1.7F, 1.0F, 2.0F, 3.0F), ModelTransform.pivot(0.0F,0.5F,-2.6F));
-        root.addChild("lFootClaw03", ModelPartBuilder.create().uv(1,48).cuboid(-0.5F, -0.5F, -1.7F, 1.0F, 2.0F, 3.0F), ModelTransform.pivot(1.3F,0.5F,-2.6F));
-        root.addChild("rLeg01", ModelPartBuilder.create().uv(11,46).cuboid(-2.7F, -1.1F, -1.9F, 5.0F, 13.0F, 5.0F, true), ModelTransform.pivot(-2.7F,10.2F,-0.4F));
-        root.addChild("rLeg02", ModelPartBuilder.create().uv(0,35).cuboid(-1.99F, 0.4F, -2.0F, 4.0F, 7.0F, 4.0F, true), ModelTransform.pivot(0.0F,9.8F,0.5F));
-        root.addChild("rLeg03", ModelPartBuilder.create().uv(0,22).cuboid(-1.5F, 0.0F, -1.5F, 3.0F, 10.0F, 3.0F, true), ModelTransform.pivot(0.0F,5.9F,0.8F));
-        root.addChild("rFoot", ModelPartBuilder.create().uv(0,14).cuboid(-2.0F, 0.0F, -2.8F, 4.0F, 2.0F, 5.0F, true), ModelTransform.pivot(0.0F,8.7F,-1.2F));
-        root.addChild("rFootClaw01", ModelPartBuilder.create().uv(1,48).cuboid(-0.5F, -0.5F, -1.7F, 1.0F, 2.0F, 3.0F, true), ModelTransform.pivot(1.3F,0.5F,-2.6F));
-        root.addChild("rFootClaw02", ModelPartBuilder.create().uv(1,48).cuboid(-0.5F, -0.5F, -1.7F, 1.0F, 2.0F, 3.0F, true), ModelTransform.pivot(0.0F,0.5F,-2.6F));
-        root.addChild("rFootClaw03", ModelPartBuilder.create().uv(1,48).cuboid(-0.5F, -0.5F, -1.7F, 1.0F, 2.0F, 3.0F, true), ModelTransform.pivot(-1.3F,0.5F,-2.6F));
-        root.addChild("neck", ModelPartBuilder.create().uv(0,0).cuboid(-3.5F, -1.5F, -1.0F, 7.0F, 5.0F, 5.0F), ModelTransform.pivot(0.0F,-18.2F,-1.0F));
-        root.addChild("head2", ModelPartBuilder.create().uv(44,0).cuboid(-4.0F, -3.0F, -4.4F, 8.0F, 6.0F, 7.0F), ModelTransform.pivot(0.0F,-0.5F,-3.6F));
-        root.addChild("jawUpperLeft", ModelPartBuilder.create().uv(20,36).cuboid(-1.1F, -1.0F, -2.0F, 2.0F, 4.0F, 2.0F).uv(69,42).cuboid(-0.11F, -0.7F, -4.1F, 1.0F, 2.0F, 4.0F), ModelTransform.pivot(1.2F,-5.1F,-1.5F));
-        root.addChild("upperTeethLeft01", ModelPartBuilder.create().uv(56,37).cuboid(-0.6F, 2.0F, -1.8F, 1.0F, 4.0F, 2.0F), ModelTransform.pivot(0.4F,-2.8F,-1.0F));
-        root.addChild("upperTeethLeft02", ModelPartBuilder.create().uv(63,38).cuboid(-2.27F, 2.4F, -1.4F, 3.0F, 0.0F, 1.0F), ModelTransform.pivot(0.0F,-3.2F,-1.0F));
-        root.addChild("jawUpperRight", ModelPartBuilder.create().uv(20,36).cuboid(-0.9F, -1.0F, -2.0F, 2.0F, 4.0F, 2.0F, true).uv(69,42).cuboid(-0.81F, -0.7F, -4.1F, 1.0F, 2.0F, 4.0F, true), ModelTransform.pivot(-1.2F,-5.1F,-1.5F));
-        root.addChild("upperTeethRight", ModelPartBuilder.create().uv(56,37).cuboid(-0.4F, 2.0F, -1.8F, 1.0F, 4.0F, 2.0F, true), ModelTransform.pivot(-0.4F,-2.8F,-1.0F));
-        root.addChild("jawLower", ModelPartBuilder.create().uv(39,37).cuboid(-2.0F, -3.9F, -1.5F, 4.0F, 4.0F, 1.0F), ModelTransform.pivot(0.0F,-2.1F,-3.0F));
-        root.addChild("lowerTeeth01", ModelPartBuilder.create().uv(63,41).cuboid(-1.6F, 2.3F, -0.6F, 1.0F, 3.0F, 1.0F), ModelTransform.pivot(0.0F,-5.7F,0.1F));
-        root.addChild("lowerTeeth02", ModelPartBuilder.create().uv(63,41).cuboid(0.6F, 2.3F, -0.7F, 1.0F, 3.0F, 1.0F), ModelTransform.pivot(0.0F,0.0F,0.0F));
-        root.addChild("lEar01", ModelPartBuilder.create().uv(77,0).cuboid(0.0F, -2.0F, -2.6F, 1.0F, 5.0F, 4.0F, true), ModelTransform.pivot(2.8F,-0.1F,2.8F));
-        root.addChild("lEar02", ModelPartBuilder.create().uv(81,11).cuboid(-1.4F, 2.0F, -2.4F, 1.0F, 7.0F, 2.0F, true), ModelTransform.pivot(-0.3F,-3.0F,-0.5F));
-        root.addChild("rEar01", ModelPartBuilder.create().uv(77,0).cuboid(-1.0F, -2.0F, -2.6F, 1.0F, 5.0F, 4.0F), ModelTransform.pivot(-2.8F,-0.1F,2.8F));
-        root.addChild("rEar02", ModelPartBuilder.create().uv(81,11).cuboid(0.4F, 2.0F, -2.4F, 1.0F, 7.0F, 2.0F), ModelTransform.pivot(0.3F,-3.0F,-0.5F));
-        root.addChild("lCheekFur", ModelPartBuilder.create().uv(26,4).cuboid(0.0F, -0.8F, -3.3F, 0.0F, 6.0F, 5.0F, true), ModelTransform.pivot(3.5F,-0.5F,-0.6F));
-        root.addChild("rCheekFur", ModelPartBuilder.create().uv(26,4).cuboid(0.0F, -0.8F, -3.3F, 0.0F, 6.0F, 5.0F), ModelTransform.pivot(-3.5F,-0.5F,-0.6F));
-        root.addChild("snout", ModelPartBuilder.create().uv(29,35).cuboid(-1.5F, -2.2F, -2.0F, 3.0F, 4.0F, 2.0F), ModelTransform.pivot(0.0F,-4.2F,-0.1F));
-        root.addChild("fur01", ModelPartBuilder.create().uv(90,0).cuboid(-3.5F, 2.0F, 0.0F, 7.0F, 7.0F, 2.0F, new Dilation(0.1F)), ModelTransform.pivot(0.0F,0.0F,-2.9F));
-        root.addChild("lArm01", ModelPartBuilder.create().uv(32,47).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F), ModelTransform.pivot(5.5F,-15.0F,2.0F));
-        root.addChild("lArm02", ModelPartBuilder.create().uv(49,46).cuboid(-1.5F, -1.0F, -1.5F, 3.0F, 13.0F, 3.0F), ModelTransform.pivot(0.0F,11.5F,0.0F));
-        root.addChild("lArmFur", ModelPartBuilder.create().uv(62,50).cuboid(-0.5F, -0.5F, 1.5F, 1.0F, 8.0F, 4.0F), ModelTransform.pivot(0.4F,-4.0F,0.0F));
-        root.addChild("lClawJoint", ModelPartBuilder.create().uv(0,0).cuboid(-0.4F, 1.5F, -0.5F, 1.0F, 1.0F, 1.0F), ModelTransform.pivot(0.0F,8.6F,0.0F));
-        root.addChild("lClaw01", ModelPartBuilder.create().uv(27,0).cuboid(-1.4F, 1.2F, -1.6F, 2.0F, 5.0F, 1.0F), ModelTransform.pivot(1.0F,0.2F,0.0F));
-        root.addChild("lClaw02", ModelPartBuilder.create().uv(27,0).cuboid(-1.4F, 1.2F, -0.5F, 2.0F, 5.0F, 1.0F), ModelTransform.pivot(1.0F,0.2F,-0.1F));
-        root.addChild("lClaw03", ModelPartBuilder.create().uv(27,0).cuboid(-1.4F, 1.2F, -0.5F, 2.0F, 5.0F, 1.0F), ModelTransform.pivot(1.0F,0.2F,0.8F));
-        root.addChild("rArm01", ModelPartBuilder.create().uv(32,47).cuboid(-2.0F, 0.0F, -2.0F, 4.0F, 12.0F, 4.0F, true), ModelTransform.pivot(-5.5F,-15.0F,2.0F));
-        root.addChild("rArm02", ModelPartBuilder.create().uv(49,46).cuboid(-1.5F, -1.0F, -1.5F, 3.0F, 13.0F, 3.0F, true), ModelTransform.pivot(0.0F,11.5F,0.0F));
-        root.addChild("rArmFur", ModelPartBuilder.create().uv(62,50).cuboid(-0.5F, -0.5F, 1.5F, 1.0F, 8.0F, 4.0F, true), ModelTransform.pivot(-0.4F,-4.0F,0.0F));
-        root.addChild("rClawJoint", ModelPartBuilder.create().uv(0,0).cuboid(-0.6F, 1.5F, -0.5F, 1.0F, 1.0F, 1.0F, true), ModelTransform.pivot(0.0F,8.6F,0.0F));
-        root.addChild("rClaw01", ModelPartBuilder.create().uv(27,0).cuboid(-0.6F, 1.2F, -1.6F, 2.0F, 5.0F, 1.0F, true), ModelTransform.pivot(-1.0F,0.2F,0.0F));
-        root.addChild("rClaw02", ModelPartBuilder.create().uv(27,0).cuboid(-0.6F, 1.2F, -0.5F, 2.0F, 5.0F, 1.0F, true), ModelTransform.pivot(-1.0F,0.2F,-0.1F));
-        root.addChild("rClaw03", ModelPartBuilder.create().uv(27,0).cuboid(-0.6F, 1.2F, -0.5F, 2.0F, 5.0F, 1.0F, true), ModelTransform.pivot(-1.0F,0.2F,0.8F));
-        root.addChild("neck", ModelPartBuilder.create(), ModelTransform.pivot(0F,-18.2F,1F));
-        root.addChild("body", ModelPartBuilder.create(), ModelTransform.pivot(0F,-12.7F,0F));
-        root.addChild("lArm01", ModelPartBuilder.create(), ModelTransform.pivot(5.5F,15F,2F));
-        root.addChild("rArm01", ModelPartBuilder.create(), ModelTransform.pivot(-5.5F,15F,2F));
 
-
-        return TexturedModelData.of(modelData,128,128);
+        return TexturedModelData.of(data,128,128);
 
     }
     @Override
     public void setAngles(WerepyreEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+/*
         this.body.pitch = 0.5672F;
         this.tail01.pitch = 0.1047F;
         this.lWing01.pitch = -0.2618F;
@@ -494,6 +411,9 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         this.rArm01.pitch = 0.1745F;
         this.rArm01.yaw = 0.0873F;
         this.rArm01.roll = 0.2356F;
+
+ */
+
         realArm = false;
         super.setAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
         realArm = true;
@@ -571,10 +491,12 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
     }
     @Override
     public void render(MatrixStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
-        body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         neck.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         lArm01.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         rArm01.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+        matrixStack.translate(0F,-0.85F,0F);
+        body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
+
     }
     public void setRotationAngle(ModelPart bone, float x, float y, float z) {
         bone.pitch = x;
