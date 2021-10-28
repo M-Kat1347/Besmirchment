@@ -66,11 +66,10 @@ public class BesmirchmentClient implements ClientModInitializer {
 
 
         BlockEntityRendererRegistry.INSTANCE.register(BSMBlockEntityTypes.PHYLACTERY, ctx -> new PhylacteryBlockEntityRenderer());
-        /*
-        FabricModelPredicateProviderRegistry.register(BSMObjects.DEMONIC_DEED,
-        Besmirchment.id("variant"), (stack, world, entity) -> TaglockItem.hasTaglock(stack) ? 1 : 0);
 
-         */
+        FabricModelPredicateProviderRegistry.register(BSMObjects.DEMONIC_DEED,
+        Besmirchment.id("variant"), (stack, world, entity, seed) -> TaglockItem.hasTaglock(stack) ? 1 : 0);
+
 
         ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 1 ? BSMObjects.WITCHY_DYE.getColor(stack) == WitchyDyeItem.FUNNI_NUMBER ? BSMUtil.HSBtoRGB(
                 ((MinecraftClient.getInstance().world.getTime() + MinecraftClient.getInstance().getTickDelta()) % 100) / 100F,

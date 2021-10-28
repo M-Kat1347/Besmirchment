@@ -218,14 +218,13 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
         return false;
     }
 
-    //TODO
-    /*
+
     @Override
     public boolean canHaveStatusEffect(StatusEffectInstance effect) {
-        return ((StatusEffectAccessor) effect.getEffectType()).bw_getType() == StatusEffectCategory.BENEFICIAL;
+        return (effect.getEffectType()).getCategory() == StatusEffectCategory.BENEFICIAL;
     }
 
-     */
+
 
     @Override
     public boolean isAffectedBySplashPotions() {

@@ -104,8 +104,8 @@ public class FamiliarAbilityPacket {
             player.swingHand(hand);
         }else if (EntityType.LLAMA.equals(familiar) || EntityType.TRADER_LLAMA.equals(familiar)){
             InfectiousSpitEntity spit = BSMEntityTypes.INFECTIOUS_SPIT.create(world);
-            //TODO
-            //spit.init(player, null, player.getStatusEffects().stream().filter(instance -> ((StatusEffectAccessor) instance.getEffectType()).bw_getType() == StatusEffectCategory.HARMFUL).map(instance -> new StatusEffectInstance(instance.getEffectType(), 200, instance.getAmplifier())).collect(Collectors.toSet()));
+            spit.init(player, null, player.getStatusEffects().stream().filter(instance -> (instance.getEffectType()).getCategory() == StatusEffectCategory.HARMFUL)
+            .map(instance -> new StatusEffectInstance(instance.getEffectType(), 200, instance.getAmplifier())).collect(Collectors.toSet()));
             spit.setProperties(player, player.getPitch(), player.headYaw, 0, 2, 0);
             if (!player.isSilent()) {
                 player.world.playSound(null, player.getX(), player.getY(), player.getZ(), BSMSounds.ENTITY_GENERIC_SPIT, player.getSoundCategory(), 1.0F, 1.0F + (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F);
