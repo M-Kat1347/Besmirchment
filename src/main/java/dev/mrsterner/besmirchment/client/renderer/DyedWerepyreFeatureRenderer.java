@@ -8,6 +8,7 @@ import dev.mrsterner.besmirchment.common.item.WitchyDyeItem;
 import dev.mrsterner.besmirchment.common.registry.BSMUtil;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRendererContext;

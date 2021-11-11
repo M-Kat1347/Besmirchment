@@ -68,7 +68,6 @@ public class WerepyreEntity extends BWHostileEntity {
 
     @Override
     public void tickMovement() {
-        System.out.println(jumpBeginProgress);
         super.tickMovement();
         if (getLastJumpTime() < 200) {
             setLastJumpTime(getLastJumpTime() + 1);
@@ -119,17 +118,10 @@ public class WerepyreEntity extends BWHostileEntity {
         EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityTag);
         if (this.dataTracker.get(VARIANT) != 0) {
             switch (world.getBiome(this.getBlockPos()).getCategory()) {
-                case FOREST:
-                    this.dataTracker.set(VARIANT, random.nextBoolean() ? 2 : 3);
-                    break;
-                case TAIGA:
-                    this.dataTracker.set(VARIANT, random.nextBoolean() ? 1 : 4);
-                    break;
-                case ICY:
-                    this.dataTracker.set(VARIANT, random.nextBoolean() ? 3 : 4);
-                    break;
-                default:
-                    this.dataTracker.set(VARIANT, this.random.nextInt(this.getVariants() - 1) + 1);
+                case FOREST -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 2 : 3);
+                case TAIGA -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 1 : 4);
+                case ICY -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 3 : 4);
+                default -> this.dataTracker.set(VARIANT, this.random.nextInt(this.getVariants() - 1) + 1);
             }
         }
 

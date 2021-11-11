@@ -13,8 +13,8 @@ import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 @Environment(EnvType.CLIENT)
 public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityModel<WerepyreEntity> {
-    private final ModelPart neck;
-    private final ModelPart body;
+    public final ModelPart neck;
+    public final ModelPart body;
     private final ModelPart tail01;
     private final ModelPart lWing01;
     private final ModelPart lWingMembrane01;
@@ -32,8 +32,8 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
     private final ModelPart rWing05;
     private final ModelPart lLeg01;
     private final ModelPart rLeg01;
-    private final ModelPart lArm01;
-    private final ModelPart rArm01;
+    public final ModelPart lArm01;
+    public final ModelPart rArm01;
     private boolean realArm = false;
     public WerepyreEntityModel(ModelPart root) {
         super(root);
@@ -64,15 +64,15 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         ModelPartData root = data.getRoot();
         ModelPartData body = root.addChild("body",
         ModelPartBuilder.create()
-        .uv(49, 15).cuboid(-5.5F, -3.3F, -2.0F, 11.0F, 11.0F, 8.0F),
-        ModelTransform.of(0.0F, -12.7F, 0.0F, 0.5672F, 0.0F, 0.0F));
+        .uv(49, 15).cuboid(-5.5F, /*-11.6F*/-3.3F, /*8.5F*/-2.0F, 11.0F, 11.0F, 8.0F),
+        ModelTransform.of(0.0F, -0F, 0.0F, 0.5672F, 0.0F, 0.0F));
         body.addChild("head",
         ModelPartBuilder.create()
         .uv(1, 2).cuboid(-0.5F, 0.7F, -0.4F, 1.0F, 1.0F, 1.0F),
         ModelTransform.of(0.0F, -2.0F, 2.0F, 0.0F, 0.0F, 0.0F));
         ModelPartData stomach = body.addChild("stomach",
         ModelPartBuilder.create()
-        .uv(16, 16).cuboid(-5.0F, 0.0F, -3.0F, 10.0F, 12.0F, 6.0F),
+        .uv(16, 16).cuboid(-5.0F, 0.0F/*-11.6F*/, -3.0F, 10.0F, 12.0F, 6.0F),
         ModelTransform.of(0.0F, 6.9F, 2.6F, -0.3927F, 0.0F, 0.0F));
         ModelPartData tail01 = stomach.addChild("tail01",
         ModelPartBuilder.create()
@@ -506,6 +506,7 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         }
 
 
+
     }
     @Override
     public void render(MatrixStack matrixStack, VertexConsumer buffer, int packedLight, int packedOverlay, float red, float green, float blue, float alpha) {
@@ -524,5 +525,6 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         to.yaw = from.yaw;
         to.roll = from.roll;
     }
+
 
 }

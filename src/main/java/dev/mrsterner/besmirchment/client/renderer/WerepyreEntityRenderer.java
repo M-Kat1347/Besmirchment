@@ -11,6 +11,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.MobEntityRenderer;
+import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.feature.HeldItemFeatureRenderer;
 import net.minecraft.util.Identifier;
 
@@ -19,11 +20,15 @@ public class WerepyreEntityRenderer extends MobEntityRenderer<WerepyreEntity, We
     private static Identifier[] TEXTURES;
     private static final Identifier UNTINTED_TEXTURE = Besmirchment.id("textures/entity/werepyre/untinted.png");
 
+
     public WerepyreEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new WerepyreEntityModel<>(context.getPart(BesmirchmentClient.WEREPYRE_MODEL_LAYER)), 1f);
         this.addFeature(new HeldItemFeatureRenderer<>(this));
         this.addFeature(new DyedWerepyreFeatureRenderer(this));
     }
+
+
+
 
     @Override
     public Identifier getTexture(WerepyreEntity entity) {
