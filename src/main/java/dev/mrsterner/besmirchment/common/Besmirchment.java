@@ -72,8 +72,8 @@ public class Besmirchment implements ModInitializer {
             ((DyeableEntity) newPlayer).setColor(((DyeableEntity) oldPlayer).getColor());
         });
         ReviveEvents.ON_REVIVE.register((playerEntity, source, itemStack) -> {
-            if (CursesComponent.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY)) {
-                TransformationComponent transformationAccessor = TransformationComponent.get(playerEntity);
+            if (BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY)) {
+                TransformationComponent transformationAccessor = BWComponents.TRANSFORMATION_COMPONENT.get(playerEntity);
                 Transformation transformation = transformationAccessor.getTransformation();
                 if (transformation == BWTransformations.WEREWOLF || transformation == BWTransformations.HUMAN) { //no vampires
                     boolean sourceVampire = source.getSource() instanceof VampireEntity || (BewitchmentAPI.isVampire(source.getSource(), true) && source.getSource() instanceof PlayerEntity && BewitchmentAPI.isPledged((PlayerEntity) source.getSource(), BWPledges.LILITH));
@@ -103,8 +103,8 @@ public class Besmirchment implements ModInitializer {
                 int toGive = BWTags.HAS_BLOOD.contains(entity.getType()) ? 5 : entity instanceof AnimalEntity ? 1 : 0;
                 toGive = BloodSuckEvents.BLOOD_AMOUNT.invoker().onBloodSuck(player, (LivingEntity) entity, toGive);
                 if (toGive > 0) {
-                    BloodComponent playerBlood = BloodComponent.get(player);
-                    BloodComponent entityBlood = BloodComponent.get((LivingEntity) entity);
+                    BloodComponent playerBlood = BWComponents.BLOOD_COMPONENT.get(player);
+                    BloodComponent entityBlood = BWComponents.BLOOD_COMPONENT.get((LivingEntity) entity);
                     if (playerBlood.fillBlood(toGive, true) && entityBlood.drainBlood(10, true)) {
                         if (!world.isClient && ((LivingEntity) entity).hurtTime == 0) {
                             BloodSuckEvents.ON_BLOOD_SUCK.invoker().onBloodSuck(player, (LivingEntity) entity, toGive);

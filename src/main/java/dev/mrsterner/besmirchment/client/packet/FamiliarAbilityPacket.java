@@ -8,7 +8,8 @@ import dev.mrsterner.besmirchment.common.registry.BSMSounds;
 import io.netty.buffer.Unpooled;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.MagicComponent;
-import moriyashiine.bewitchment.common.entity.component.PolymorphComponent;
+import moriyashiine.bewitchment.common.component.entity.PolymorphComponent;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWStatusEffects;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -81,9 +82,9 @@ public class FamiliarAbilityPacket {
             if (hit != null && hit.getEntity() instanceof PlayerEntity && BewitchmentAPI.drainMagic(player,50, true)){
                 PlayerEntity polyMorphPlayer = (PlayerEntity) hit.getEntity();
                 /*
-                PolymorphComponent.maybeGet(polyMorphPlayer).ifPresent(thisPolymorphComponent -> {
+                BWComponents.POLYMORPH_COMPONENT.maybeGet(polyMorphPlayer).ifPresent(thisPolymorphComponent -> {
                     if (thisPolymorphComponent.getUuid() != null) {
-                        PolymorphComponent.get(target).ifPresent(targetPolymorphComponent -> {
+                        BWComponents.POLYMORPH_COMPONENT.get(target).ifPresent(targetPolymorphComponent -> {
                             targetPolymorphComponent.setUuid(thisPolymorphComponent.getUuid());
                             targetPolymorphComponent.setName(thisPolymorphComponent.getName());
                         });
@@ -91,8 +92,10 @@ public class FamiliarAbilityPacket {
                 });
 
                  */
-                PolymorphComponent.get(player).setUuid(polyMorphPlayer.getUuid());
-                PolymorphComponent.get(player).setName(polyMorphPlayer.getDisplayName().getString());
+
+
+                BWComponents.POLYMORPH_COMPONENT.get(player).setUuid(polyMorphPlayer.getUuid());
+                BWComponents.POLYMORPH_COMPONENT.get(player).setName(polyMorphPlayer.getDisplayName().getString());
                 player.addStatusEffect(new StatusEffectInstance(BWStatusEffects.POLYMORPH, 2400, 0, true, false, false));
                 BewitchmentAPI.drainMagic(player,50, false);
             }
@@ -106,7 +109,7 @@ public class FamiliarAbilityPacket {
             InfectiousSpitEntity spit = BSMEntityTypes.INFECTIOUS_SPIT.create(world);
             spit.init(player, null, player.getStatusEffects().stream().filter(instance -> (instance.getEffectType()).getCategory() == StatusEffectCategory.HARMFUL)
             .map(instance -> new StatusEffectInstance(instance.getEffectType(), 200, instance.getAmplifier())).collect(Collectors.toSet()));
-            spit.setProperties(player, player.getPitch(), player.headYaw, 0, 2, 0);
+            spit.setVelocity(player, player.getPitch(), player.headYaw, 0, 2, 0);
             if (!player.isSilent()) {
                 player.world.playSound(null, player.getX(), player.getY(), player.getZ(), BSMSounds.ENTITY_GENERIC_SPIT, player.getSoundCategory(), 1.0F, 1.0F + (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F);
             }
@@ -127,7 +130,7 @@ public class FamiliarAbilityPacket {
                         world.setBlockState(grassPos, Blocks.DIRT.getDefaultState(), 2);
                         player.heal(0.5F);
                         player.getHungerManager().add(2, 0.5F);
-                        MagicComponent.get(player).fillMagic(5, false);
+                        BWComponents.MAGIC_COMPONENT.get(player).fillMagic(5, false);
                         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENTITY_COW_MILK, SoundCategory.PLAYERS, 0.7F, 0.6F + player.getRandom().nextFloat() * 0.5F);
                     }
                 }

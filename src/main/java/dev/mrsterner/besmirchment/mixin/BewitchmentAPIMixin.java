@@ -24,8 +24,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.List;
+
 @Mixin(value = BewitchmentAPI.class, remap = false)
 public class BewitchmentAPIMixin {
+
+
     @Environment(EnvType.CLIENT)
     @Inject(method = "getTransformedPlayerEntity", at = @At("RETURN"), cancellable = true)
     private static void getTransformedPlayerEntity(PlayerEntity player, CallbackInfoReturnable<LivingEntity> cir){
@@ -57,7 +61,7 @@ public class BewitchmentAPIMixin {
     }
 
     @Inject(method = "getPoppetFromInventory", at = @At("HEAD"), cancellable = true)
-    private static void getPoppet(World world, PoppetItem item, Entity owner, DefaultedList<ItemStack> inventory, CallbackInfoReturnable<PoppetData> cir){
+    private static void getPoppet(World world, PoppetItem item, Entity owner, List<ItemStack> inventory, CallbackInfoReturnable<PoppetData> cir){
         if (item == BWObjects.VAMPIRIC_POPPET && (BSMTransformations.isWerepyre(owner, true) || BSMTransformations.isWerepyre(owner, true))){
             cir.setReturnValue(PoppetData.EMPTY);
         }

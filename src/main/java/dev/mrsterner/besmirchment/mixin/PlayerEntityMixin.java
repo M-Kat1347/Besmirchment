@@ -12,8 +12,9 @@ import moriyashiine.bewitchment.api.component.MagicComponent;
 import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.event.AllowVampireBurn;
 import moriyashiine.bewitchment.api.event.AllowVampireHeal;
-import moriyashiine.bewitchment.common.entity.component.RespawnTimerComponent;
+import moriyashiine.bewitchment.common.component.entity.RespawnTimerComponent;
 import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWDamageSources;
 import moriyashiine.bewitchment.common.registry.BWObjects;
 import moriyashiine.bewitchment.common.registry.BWStatusEffects;
@@ -108,7 +109,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
             }
         } else {
             if (BSMTransformations.isLich(this, false) && ((LichAccessor) this).getCachedSouls() == 0){
-                MagicComponent.get(player).setMagic(0);
+                BWComponents.MAGIC_COMPONENT.get(player).setMagic(0);
             }
             if (age % 20 == 0){
                 if (BSMTransformations.isLich(this, true)) {
@@ -120,19 +121,20 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
                 if (BSMTransformations.isWerepyre(this, true)){
                     boolean beelzebubPledge = BSMTransformations.hasWerepyrePledge((PlayerEntity) (Object) this);
                     //BSMTransformations.handleNourish((PlayerEntity) (Object) this);
-                    if (TransformationComponent.get(player).isAlternateForm() && RespawnTimerComponent.get(player).getRespawnTimer() <= 0 && world.isDay() && !world.isRaining() && world.isSkyVisible(getBlockPos())
+
+                    if (BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm() && BWComponents.RESPAWN_TIMER_COMPONENT.get(player).getRespawnTimer() <= 0 && world.isDay() && !world.isRaining() && world.isSkyVisible(getBlockPos())
                             && AllowVampireBurn.EVENT.invoker().allowBurn((PlayerEntity) (Object) this)) {
                         setOnFireFor(8);
                     }
-                    WerepyreTransformation.handleStats((PlayerEntity) (Object) this, (TransformationComponent.get(player).isAlternateForm()), beelzebubPledge);
+                    WerepyreTransformation.handleStats((PlayerEntity) (Object) this, (BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm()), beelzebubPledge);
                     HungerManager hungerManager = ((PlayerEntity) (Object) this).getHungerManager();
-                    if (BloodComponent.get(player).getBlood() > 0 && AllowVampireHeal.EVENT.invoker().allowHeal((PlayerEntity) (Object) this, beelzebubPledge)) {
+                    if (BWComponents.BLOOD_COMPONENT.get(player).getBlood() > 0 && AllowVampireHeal.EVENT.invoker().allowHeal((PlayerEntity) (Object) this, beelzebubPledge)) {
                         if (age % (beelzebubPledge ? 30 : 40) == 0) {
                             if (getHealth() < getMaxHealth()) {
                                 heal(1);
                                 hungerManager.addExhaustion(3);
                             }
-                            if ((hungerManager.isNotFull() || hungerManager.getSaturationLevel() < 10) && (BloodComponent.get(player)).drainBlood(1, false)) {
+                            if ((hungerManager.isNotFull() || hungerManager.getSaturationLevel() < 10) && (BWComponents.BLOOD_COMPONENT.get(player)).drainBlood(1, false)) {
                                 hungerManager.add(1, 20);
                             }
                         }

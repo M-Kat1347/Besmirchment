@@ -12,7 +12,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Arm;
 import net.minecraft.util.math.MathHelper;
 @Environment(EnvType.CLIENT)
-public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityModel<WerepyreEntity> {
+public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityModel<T> {
     public final ModelPart neck;
     public final ModelPart body;
     private final ModelPart tail01;
@@ -381,7 +381,7 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
 
     }
     @Override
-    public void setAngles(WerepyreEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
+    public void setAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
 /*
         this.body.pitch = 0.5672F;
         this.tail01.pitch = 0.1047F;
@@ -415,17 +415,20 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
 
         realArm = false;
         super.setAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-
         realArm = true;
         copyRotation(neck, super.head);
+        neck.setPivot(0, -18.2f, -1);
         neck.pitch -= 0.2531f;
         copyRotation(body, super.body);
+        body.setPivot(0, -12.7f, 0);
         body.pitch += 0.5672f;
         copyRotation(lArm01, super.leftArm);
+        lArm01.setPivot(5.5f, -15, 2);
         lArm01.pitch += 0.1745f;
         lArm01.yaw -= 0.0873f;
         lArm01.roll -= 0.2356f;
         copyRotation(rArm01, super.rightArm);
+        rArm01.setPivot(-5.5f, -15, 2);
         rArm01.pitch += 0.1745f;
         rArm01.yaw += 0.0873f;
         rArm01.roll += 0.2356f;
@@ -469,25 +472,25 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
             rWing01.yaw += -MathHelper.sin(ageInTicks / 8) / 8;
         }
         if (flying) {
-            /*
+
             neck.pivotY += 2;
             neck.pivotZ -= 4;
             body.pivotY += 2;
             body.pivotZ -= 4;
-            */
+
 
             body.pitch += 0.5f;
-/*
+
             lArm01.pivotY += 2;
             lArm01.pivotZ -= 4;
             rArm01.pivotY += 2;
             rArm01.pivotZ -= 4;
 
- */
+
 
 
         } else if (entity.isSneaking()) {
-            /*
+
             neck.pivotY += 2;
             neck.pivotZ -= 4;
             body.pivotY += 2;
@@ -500,7 +503,7 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
             rLeg01.pitch -= 0.5f;
             lLeg01.pitch -= 0.5f;
 
-             */
+
 
 
         }
@@ -513,7 +516,7 @@ public class WerepyreEntityModel<T extends WerepyreEntity> extends BipedEntityMo
         neck.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         lArm01.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
         rArm01.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
-        matrixStack.translate(0F,-0.85F,0F);
+       // matrixStack.translate(0F,-0.85F,0F);
         body.render(matrixStack, buffer, packedLight, packedOverlay, red, green, blue, alpha);
 
     }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.mrsterner.besmirchment.common.registry.BSMTransformations;
 import moriyashiine.bewitchment.api.component.BloodComponent;
 import moriyashiine.bewitchment.common.Bewitchment;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWTags;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -67,7 +68,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
 
     @Unique
     private void drawBlood(MatrixStack matrices, LivingEntity entity, int x, int y, int droplets) {
-        BloodComponent bloodAccessor = BloodComponent.get(entity);
+        BloodComponent bloodAccessor = BWComponents.BLOOD_COMPONENT.get(entity);
         int v = entity.hasStatusEffect(StatusEffects.HUNGER) ? 9 : 0;
         float blood = ((float) bloodAccessor.getBlood() / bloodAccessor.MAX_BLOOD * droplets);
         int full = (int) blood;

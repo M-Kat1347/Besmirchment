@@ -5,6 +5,7 @@ import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.CursesComponent;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -57,8 +58,8 @@ public class WerepyreEntity extends BWHostileEntity {
                 entity.setFireTicks(getFireTicks());
                 entity.clearStatusEffects();
                 getStatusEffects().forEach(entity::addStatusEffect);
-                CursesComponent.get(this).getCurses().clear();
-                CursesComponent.get(this).getCurses().forEach(CursesComponent.get(this)::addCurse);
+                BWComponents.CURSES_COMPONENT.get(this).getCurses().clear();
+                BWComponents.CURSES_COMPONENT.get(this).getCurses().forEach(BWComponents.CURSES_COMPONENT.get(this)::addCurse);
                 ((VillagerWerepyreAccessor) entity).setStoredWerepyre(writeNbt(new NbtCompound()));
                 world.spawnEntity(entity);
                 remove(RemovalReason.DISCARDED);

@@ -4,7 +4,8 @@ import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.registry.BSMStatusEffects;
 import dev.mrsterner.besmirchment.common.registry.BSMTags;
 import moriyashiine.bewitchment.api.registry.RitualFunction;
-import moriyashiine.bewitchment.common.entity.component.FamiliarComponent;
+import moriyashiine.bewitchment.common.component.entity.FamiliarComponent;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.ritualfunction.BindFamiliarRitualFunction;
 import moriyashiine.bewitchment.common.world.BWUniversalWorldState;
 import net.minecraft.entity.LivingEntity;
@@ -34,7 +35,7 @@ public abstract class BindFamiliarRitualFunctionMixin extends RitualFunction {
     @Inject(method = "start", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/entity/LivingEntity.saveSelfNbt(Lnet/minecraft/nbt/NbtCompound;)Z", remap = true), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void start(ServerWorld world, BlockPos glyphPos, BlockPos effectivePos, Inventory inventory, boolean catFamiliar, CallbackInfo ci, boolean succeeded, ItemStack taglock, LivingEntity livingEntity, PlayerEntity closestPlayer, NbtCompound entityTag){
         if (Besmirchment.config.universalFamiliars.enable && livingEntity.hasStatusEffect(BSMStatusEffects.LOVE) && !livingEntity.getType().isIn(BSMTags.ILLEGAL_FAMILIARS)){
-            FamiliarComponent.get(livingEntity).setFamiliar(true);
+            BWComponents.FAMILIAR_COMPONENT.get(livingEntity).setFamiliar(true);
             BWUniversalWorldState worldState = BWUniversalWorldState.get(world);
             NbtCompound familiarTag = new NbtCompound();
             familiarTag.putUuid("UUID", entityTag.getUuid("UUID"));

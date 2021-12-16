@@ -3,6 +3,7 @@ package dev.mrsterner.besmirchment.mixin;
 import dev.mrsterner.besmirchment.common.registry.BSMTransformations;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.BloodComponent;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWDamageSources;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
@@ -30,7 +31,7 @@ public class BWDamageSourcesMixin {
     private static float handleWerepyreDamage(LivingEntity entity, DamageSource source, float amount) {
         if (!isEffective(source, true)) {
             if (entity.getHealth() - amount < 1) {
-                BloodComponent bloodAccessor = BloodComponent.get(entity);
+                BloodComponent bloodAccessor = BWComponents.BLOOD_COMPONENT.get(entity);
                 while (entity.getHealth() - amount <= 0 && bloodAccessor.getBlood() > 0) {
                     amount--;
                     bloodAccessor.drainBlood(2, false);

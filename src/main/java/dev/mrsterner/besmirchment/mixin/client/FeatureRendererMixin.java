@@ -33,13 +33,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Environment(EnvType.CLIENT)
-@Mixin(value = FeatureRenderer.class, remap = false)
+@Mixin(FeatureRenderer.class)
 public abstract class FeatureRendererMixin<T extends Entity, M extends EntityModel<T>> {
 
 
     @Inject(method = "renderModel", at = @At("HEAD"), cancellable = true)
     private static <T extends LivingEntity> void renderModel(EntityModel<T> model, Identifier texture, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, T entity, float red, float green, float blue, CallbackInfo ci){
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(texture));
+        /*
         if(model instanceof WerepyreEntityModel werepyreEntityModel){
             matrices.translate(0F,0.85F,0F);
             werepyreEntityModel.neck.render(matrices, vertexConsumer, light, LivingEntityRenderer.getOverlay(entity, 0.0F), red, green, blue, 1.0F);
@@ -50,5 +51,6 @@ public abstract class FeatureRendererMixin<T extends Entity, M extends EntityMod
             ci.cancel();
         }
 
+         */
     }
 }

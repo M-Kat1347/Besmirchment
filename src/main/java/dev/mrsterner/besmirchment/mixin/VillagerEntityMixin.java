@@ -8,6 +8,7 @@ import dev.mrsterner.besmirchment.common.registry.BSMStatusEffects;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.CursesComponent;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.Entity;
@@ -66,8 +67,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
                     entity.setFireTicks(getFireTicks());
                     entity.clearStatusEffects();
                     getStatusEffects().forEach(entity::addStatusEffect);
-                    CursesComponent.get(entity).getCurses().clear();
-                    CursesComponent.get(this).getCurses().forEach((CursesComponent.get(entity))::addCurse);
+                    BWComponents.CURSES_COMPONENT.get(entity).getCurses().clear();
+                    BWComponents.CURSES_COMPONENT.get(this).getCurses().forEach((BWComponents.CURSES_COMPONENT.get(entity))::addCurse);
                     if (despawnTimer >= 0) {
                         despawnTimer = 2400;
                     }

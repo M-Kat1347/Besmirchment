@@ -4,7 +4,6 @@ import dev.mrsterner.besmirchment.common.registry.BSMBlockEntityTypes;
 import dev.mrsterner.besmirchment.common.transformation.LichAccessor;
 import dev.mrsterner.besmirchment.common.transformation.LichLogic;
 import dev.mrsterner.besmirchment.common.world.BSMWorldState;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -13,11 +12,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.World;
 
 import java.util.UUID;
 
 
-public class PhylacteryBlockEntity extends BlockEntity implements BlockEntityClientSerializable {
+public class PhylacteryBlockEntity extends BlockEntity   {
     public static final int MAX_SOULS = 8;
     public int souls;
     public PhylacteryBlockEntity(BlockPos pos, BlockState state) {
@@ -25,29 +25,21 @@ public class PhylacteryBlockEntity extends BlockEntity implements BlockEntityCli
     }
 
 
-    @Override
-    public void fromClientTag(NbtCompound compoundTag) {
-        souls = compoundTag.getInt("Souls");
-    }
-
-    @Override
-    public NbtCompound toClientTag(NbtCompound compoundTag) {
-        compoundTag.putInt("Souls", souls);
-        return compoundTag;
+    public void sync(World world, BlockPos pos) {
+        ((ServerWorld) world).getChunkManager().markForUpdate(pos);
     }
 
 
-
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
-        toClientTag(tag);
-        return super.writeNbt(tag);
+    public void writeNbt(NbtCompound tag) {
+        tag.putInt("Souls", souls);
+        super.writeNbt(tag);
     }
 
     @Override
     public void readNbt(NbtCompound nbt) {
         super.readNbt(nbt);
-        fromClientTag(nbt);
+        souls = nbt.getInt("Souls");
     }
 
 

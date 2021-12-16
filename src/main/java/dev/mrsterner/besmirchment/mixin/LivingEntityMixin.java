@@ -92,7 +92,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
     private float modifyDamage1(float amount, DamageSource source) {
         if (source.isProjectile()) {
             if (source.getAttacker() instanceof PlayerEntity player) {
-                ContractsComponent accessor = ContractsComponent.get(player);
+                ContractsComponent accessor = BWComponents.CONTRACTS_COMPONENT.get(player);
                 if (accessor.hasContract(BSMContracts.CONQUEST)) {
                     return amount * 2;
                 }
@@ -120,7 +120,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
             }
             //mathematically equal to not changing the blood at all
             if (BWTags.HAS_BLOOD.contains(getType()) && BSMTransformations.isWerepyre(this, true) && random.nextFloat() < (isSleeping() ? 1 / 50f : 1 / 500f)) {
-                BloodComponent.get(livingEntity).drainBlood(1, false);
+                BWComponents.BLOOD_COMPONENT.get(livingEntity).drainBlood(1, false);
             }
         }
     }
@@ -144,10 +144,10 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
         if (livingEntity instanceof PlayerEntity player && BSMTransformations.isLich(this, false) && hasStatusEffect(StatusEffects.WEAKNESS)) {
             if (stack.getItem().equals(Items.GOLDEN_APPLE)) {
                 playSound(BWSoundEvents.ENTITY_GENERIC_TRANSFORM, 1, 1);
-                TransformationComponent.get(player).setAlternateForm(false);
-                TransformationComponent.get(player).getTransformation().onRemoved((PlayerEntity) (Object) this);
-                TransformationComponent.get(player).setTransformation(BWTransformations.HUMAN);
-                TransformationComponent.get(player).getTransformation().onAdded((PlayerEntity) (Object) this);
+                BWComponents.TRANSFORMATION_COMPONENT.get(player).setAlternateForm(false);
+                BWComponents.TRANSFORMATION_COMPONENT.get(player).getTransformation().onRemoved((PlayerEntity) (Object) this);
+                BWComponents.TRANSFORMATION_COMPONENT.get(player).setTransformation(BWTransformations.HUMAN);
+                BWComponents.TRANSFORMATION_COMPONENT.get(player).getTransformation().onAdded((PlayerEntity) (Object) this);
                 if (world.isClient) {
                     for (int i = 0; i < 20; i++) {
                         Vec3f vecf = new Vec3f(Vec3d.unpackRgb(16711680));

@@ -1,8 +1,6 @@
 package dev.mrsterner.besmirchment.common.registry;
 
 import dev.mrsterner.besmirchment.common.Besmirchment;
-import io.github.ytg1234.recipeconditions.api.RecipeConds;
-import io.github.ytg1234.recipeconditions.api.condition.util.RecipeCondsUtil;
 import vazkii.patchouli.api.PatchouliAPI;
 
 @SuppressWarnings("ConstantConditions")
@@ -19,7 +17,7 @@ public class BSMConditions {
         PatchouliAPI.get().setConfigFlag("bsm_tamable_Demons", Besmirchment.config.enableTamableDemons);
         PatchouliAPI.get().setConfigFlag("bsm_sunscreen", Besmirchment.config.enableSunscreen);
         PatchouliAPI.get().setConfigFlag("bsm_lichdom", Besmirchment.config.enableLichdom);
-        BSMUtil.register(RecipeConds.RECIPE_CONDITION, "bsm_config", RecipeCondsUtil.stringParam(BSMConditions::getOption));
+        //BSMUtil.register(RecipeConds.RECIPE_CONDITION, "bsm_config", RecipeCondsUtil.stringParam(BSMConditions::getOption));
     }
 
     public static boolean getOption(String key){

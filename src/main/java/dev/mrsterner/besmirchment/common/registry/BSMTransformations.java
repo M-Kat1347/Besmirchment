@@ -6,6 +6,7 @@ import dev.mrsterner.besmirchment.common.transformation.WerepyreTransformation;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.registry.Transformation;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWRegistries;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -20,13 +21,13 @@ public class BSMTransformations {
 
     public static boolean isLich(Entity entity, boolean isGost){
         if(entity instanceof PlayerEntity player){
-            return TransformationComponent.get(player).getTransformation() == LICH && (!isGost || TransformationComponent.get((PlayerEntity) entity).isAlternateForm());
+            return BWComponents.TRANSFORMATION_COMPONENT.get(player).getTransformation() == LICH && (!isGost || BWComponents.TRANSFORMATION_COMPONENT.get((PlayerEntity) entity).isAlternateForm());
         }
         return false;
     }
     public static boolean isWerepyre(Entity entity, boolean includeHumanForm) {
-        if (entity instanceof PlayerEntity player && TransformationComponent.get(player).getTransformation() == WEREPYRE) {
-            return includeHumanForm || TransformationComponent.get(player).isAlternateForm();
+        if (entity instanceof PlayerEntity player && BWComponents.TRANSFORMATION_COMPONENT.get(player).getTransformation() == WEREPYRE) {
+            return includeHumanForm || BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm();
         } else {
             return entity instanceof WerepyreEntity;
         }

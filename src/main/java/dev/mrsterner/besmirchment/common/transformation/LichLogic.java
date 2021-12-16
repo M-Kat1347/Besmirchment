@@ -6,6 +6,7 @@ import dev.mrsterner.besmirchment.common.world.BSMWorldState;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.common.misc.BWUtil;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWStatusEffects;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
@@ -92,8 +93,8 @@ public class LichLogic {
             lich.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 200, 0));
             lich.addStatusEffect(new StatusEffectInstance(BWStatusEffects.ETHEREAL, 200, 0));
             LichRevivePacket.send(lich);
-            if (lich instanceof PlayerEntity player && TransformationComponent.get(player).isAlternateForm()){
-                TransformationComponent.get(player).setAlternateForm(false);
+            if (lich instanceof PlayerEntity player && BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm()){
+                BWComponents.TRANSFORMATION_COMPONENT.get(player).setAlternateForm(false);
             }
             if (lich instanceof ServerPlayerEntity && (silver || source.isOutOfWorld() || (lastRevive < 600 && lich.isSneaking()))) {
                 if (!phylactery.getLeft().equals(lich.world)) {

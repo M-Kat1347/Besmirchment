@@ -29,7 +29,7 @@ public class WitchyDyeItem extends Item implements DyeableItem {
         if (!world.isClient) {
             ThrownItemEntity potion = new WitchyDyeEntity(world, user);
             potion.setItem(itemStack);
-            potion.setProperties(user, user.getPitch(), user.getYaw(), 0.0F, 0.8F, 1.0F);
+            potion.setVelocity(user, user.getPitch(), user.getYaw(), 0.0F, 0.8F, 1.0F);
             world.spawnEntity(potion);
         }
         user.incrementStat(Stats.USED.getOrCreateStat(this));

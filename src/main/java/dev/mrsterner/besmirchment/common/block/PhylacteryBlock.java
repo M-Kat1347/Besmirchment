@@ -79,6 +79,7 @@ public class PhylacteryBlock extends Block implements BlockEntityProvider, Water
                     player.sendMessage(new TranslatableText("message.besmirchment.phylactery_souls", ((PhylacteryBlockEntity) phylactery).souls), true);
                 }
             }
+            ((PhylacteryBlockEntity) phylactery).sync(world,pos);
         }
 
         return ActionResult.success(client);
@@ -91,7 +92,7 @@ public class PhylacteryBlock extends Block implements BlockEntityProvider, Water
 
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
         if (state.get(Properties.WATERLOGGED)) {
-            world.getFluidTickScheduler().schedule(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
+            world.createAndScheduleFluidTick(pos, Fluids.WATER, Fluids.WATER.getTickRate(world));
         }
 
         return super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);

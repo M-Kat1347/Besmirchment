@@ -6,6 +6,7 @@ import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.CursesComponent;
 import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.registry.RitualFunction;
+import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWCurses;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -28,7 +29,7 @@ public class ReachLichdomRitualFunction extends RitualFunction {
         if (BSMTransformations.isLich(closestPlayer, false)){
             closestPlayer.sendMessage(new TranslatableText("message.besmirchment.no_liches"), true);
             return false;
-        }else if (!CursesComponent.get(closestPlayer).hasCurse(BWCurses.APATHY)){
+        }else if (!BWComponents.CURSES_COMPONENT.get(closestPlayer).hasCurse(BWCurses.APATHY)){
             closestPlayer.sendMessage(new TranslatableText("message.besmirchment.needs_apathy"), true);
             return false;
         }
@@ -38,14 +39,14 @@ public class ReachLichdomRitualFunction extends RitualFunction {
     @Override
     public void start(ServerWorld world, BlockPos glyphPos, BlockPos effectivePos, Inventory inventory, boolean catFamiliar) {
         PlayerEntity closestPlayer = world.getClosestPlayer((double)effectivePos.getX() + 0.5D, (double)effectivePos.getY() + 0.5D, (double)effectivePos.getZ() + 0.5D, 8.0D, false);
-        if (!BSMTransformations.isLich(closestPlayer, false) && CursesComponent.get(closestPlayer).hasCurse(BWCurses.APATHY)){
-            TransformationComponent.get(closestPlayer).getTransformation().onRemoved(closestPlayer);
-            TransformationComponent.get(closestPlayer).setAlternateForm(false);
-            TransformationComponent.get(closestPlayer).setTransformation(BSMTransformations.LICH);
-            TransformationComponent.get(closestPlayer).getTransformation().onAdded(closestPlayer);
+        if (!BSMTransformations.isLich(closestPlayer, false) && BWComponents.CURSES_COMPONENT.get(closestPlayer).hasCurse(BWCurses.APATHY)){
+            BWComponents.TRANSFORMATION_COMPONENT.get(closestPlayer).getTransformation().onRemoved(closestPlayer);
+            BWComponents.TRANSFORMATION_COMPONENT.get(closestPlayer).setAlternateForm(false);
+            BWComponents.TRANSFORMATION_COMPONENT.get(closestPlayer).setTransformation(BSMTransformations.LICH);
+            BWComponents.TRANSFORMATION_COMPONENT.get(closestPlayer).getTransformation().onAdded(closestPlayer);
             LichRevivePacket.send(closestPlayer);
             if (catFamiliar){
-                CursesComponent.get(closestPlayer).removeCurse(BWCurses.APATHY);
+                BWComponents.CURSES_COMPONENT.get(closestPlayer).removeCurse(BWCurses.APATHY);
                 closestPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.HEALTH_BOOST, 1200, 2, true, true));
                 closestPlayer.addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 1200, 0, true, true));
             }
