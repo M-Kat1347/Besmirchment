@@ -7,14 +7,14 @@
   "advancement": "bewitchment:hidden_unlocks/altars",
   "pages": [
     {
-      "type": "text",
-      "text": "This potion affects $(marked)animals$() and $(item)Villagers$().$(br)While under this potion effect, the affected entity will be willing to breed, though normal breeding cooldowns still apply.$(br)Additionally, almost anything under this potion effect can, theoretically, be bound as $(l:bewitchment:rituals/binding)Familiar$()."
+      "type": "patchouli:text",
+      "text": "This potion affects animals and Villagers. While under this potion effect, the affected entity will be willing to breed, though normal breeding cooldowns still apply. Additionally, almost anything under this potion effect can, theoretically, be bound as $(l:bewitchment:rituals/binding)Familiar$()."
     },
     {
-      "type": "spotlight",
+      "type": "patchouli:spotlight",
       "title": "Love",
       "item": "minecraft:rose_bush",
-      "text": "$(o)flooshed$()"
+      "text": "flooshed"
     }
   ]
 }

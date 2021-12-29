@@ -19,6 +19,7 @@ import moriyashiine.bewitchment.api.event.BloodSuckEvents;
 import moriyashiine.bewitchment.api.event.ReviveEvents;
 import moriyashiine.bewitchment.api.registry.Transformation;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.common.Bewitchment;
 import moriyashiine.bewitchment.common.entity.living.VampireEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.*;
@@ -71,17 +72,18 @@ public class Besmirchment implements ModInitializer {
             ((WerepyreAccessor) newPlayer).setWerepyreVariant(((WerepyreAccessor) oldPlayer).getWerepyreVariant());
             ((DyeableEntity) newPlayer).setColor(((DyeableEntity) oldPlayer).getColor());
         });
+        /*
         ReviveEvents.ON_REVIVE.register((playerEntity, source, itemStack) -> {
-            if (BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY)) {
-                TransformationComponent transformationAccessor = BWComponents.TRANSFORMATION_COMPONENT.get(playerEntity);
-                Transformation transformation = transformationAccessor.getTransformation();
+            if ((BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY) || !Bewitchment.config.enableCurses)) {
+                TransformationComponent transformationComponent = BWComponents.TRANSFORMATION_COMPONENT.get(playerEntity);
+                Transformation transformation = transformationComponent.getTransformation();
                 if (transformation == BWTransformations.WEREWOLF || transformation == BWTransformations.HUMAN) { //no vampires
                     boolean sourceVampire = source.getSource() instanceof VampireEntity || (BewitchmentAPI.isVampire(source.getSource(), true) && source.getSource() instanceof PlayerEntity && BewitchmentAPI.isPledged((PlayerEntity) source.getSource(), BWPledges.LILITH));
                     boolean sourceWerepyre = source.getSource() instanceof WerepyreEntity || (BSMTransformations.isWerepyre(source.getSource(), true) && BSMTransformations.hasWerepyrePledge((PlayerEntity) source.getSource()));
                     if ((transformation == BWTransformations.WEREWOLF && sourceVampire) || (transformation == BWTransformations.HUMAN && sourceWerepyre)) {
-                        transformationAccessor.getTransformation().onRemoved(playerEntity);
-                        transformationAccessor.setTransformation(BSMTransformations.WEREPYRE);
-                        transformationAccessor.getTransformation().onAdded(playerEntity);
+                        transformationComponent.getTransformation().onRemoved(playerEntity);
+                        transformationComponent.setTransformation(BSMTransformations.WEREPYRE);
+                        transformationComponent.getTransformation().onAdded(playerEntity);
                         PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
                         SpawnSmokeParticlesPacket.send(playerEntity, playerEntity);
                         playerEntity.world.playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
@@ -98,6 +100,8 @@ public class Besmirchment implements ModInitializer {
                 }
             }
         });
+
+         */
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof LivingEntity && hand == Hand.MAIN_HAND && player.isSneaking() && entity.isAlive() && BSMTransformations.isWerepyre(player, true) && player.getStackInHand(hand).isEmpty()) {
                 int toGive = BWTags.HAS_BLOOD.contains(entity.getType()) ? 5 : entity instanceof AnimalEntity ? 1 : 0;

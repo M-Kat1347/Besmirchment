@@ -6,13 +6,13 @@
   "flag": "bsm_elite_coffin",
   "pages": [
     {
-      "type": "text",
+      "type": "patchouli:text",
       "text": "The $(item)Elite Coffin$() is the only $(l:bewitchment:tools/coffins)Coffin$() for the truest witches. Using the power of the primal colors, it conjures a magic glow of light around it."
     },
     {
-      "type": "crafting",
+      "type": "patchouli:crafting",
       "recipe": "besmirchment:elite_coffin",
-      "text": "$(o)Finally, RGB-Coffin$()."
+      "text": "Finally, RGB-Coffin."
     }
   ]
 }

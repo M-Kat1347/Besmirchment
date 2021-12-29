@@ -28,6 +28,9 @@
     ],
     "modmenu": [
       "dev.mrsterner.besmirchment.client.compat.BSMModMenu"
+    ],
+    "appleskin": [
+      "dev.mrsterner.besmirchment.client.compat.BSMAppleskin"
     ]
   },
   "mixins": [

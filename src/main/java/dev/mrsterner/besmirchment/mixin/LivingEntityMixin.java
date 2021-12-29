@@ -3,18 +3,27 @@ package dev.mrsterner.besmirchment.mixin;
 import dev.mrsterner.besmirchment.client.renderer.LichRollAccessor;
 import dev.mrsterner.besmirchment.common.block.entity.PhylacteryBlockEntity;
 import dev.mrsterner.besmirchment.common.entity.LichGemItem;
+import dev.mrsterner.besmirchment.common.entity.WerepyreEntity;
 import dev.mrsterner.besmirchment.common.registry.BSMContracts;
 import dev.mrsterner.besmirchment.common.registry.BSMObjects;
 import dev.mrsterner.besmirchment.common.registry.BSMTags;
 import dev.mrsterner.besmirchment.common.registry.BSMTransformations;
 import dev.mrsterner.besmirchment.common.transformation.LichAccessor;
 import dev.mrsterner.besmirchment.common.transformation.LichLogic;
+import dev.mrsterner.besmirchment.common.transformation.WerepyreAccessor;
+import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.component.BloodComponent;
 import moriyashiine.bewitchment.api.component.ContractsComponent;
 import moriyashiine.bewitchment.api.component.TransformationComponent;
+import moriyashiine.bewitchment.api.registry.Transformation;
+import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.common.Bewitchment;
+import moriyashiine.bewitchment.common.entity.living.VampireEntity;
+import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityGroup;
 import net.minecraft.entity.EntityType;
@@ -43,6 +52,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+@SuppressWarnings("ConstantConditions")
 @Mixin(value = LivingEntity.class, priority = 999)
 public abstract class LivingEntityMixin extends Entity implements LichRollAccessor, LichAccessor {
     private int bsm_lastRevive = 0;
@@ -167,6 +177,33 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                 bsm_lastRevive = 0;
             }
             updateCachedSouls();
+        }
+        if (!world.isClient) {
+                if (cir.getReturnValue() && (Object) this instanceof PlayerEntity playerEntity && (BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY) || !Bewitchment.config.enableCurses)) {
+                    TransformationComponent transformationComponent = BWComponents.TRANSFORMATION_COMPONENT.get(playerEntity);
+                    Transformation transformation = transformationComponent.getTransformation();
+                    if (transformation == BWTransformations.WEREWOLF || transformation == BWTransformations.HUMAN) { //no vampires
+                        boolean sourceVampire = source.getSource() instanceof VampireEntity || (BewitchmentAPI.isVampire(source.getSource(), true) && source.getSource() instanceof PlayerEntity && BewitchmentAPI.isPledged((PlayerEntity) source.getSource(), BWPledges.LILITH));
+                        boolean sourceWerepyre = source.getSource() instanceof WerepyreEntity || (BSMTransformations.isWerepyre(source.getSource(), true) && BSMTransformations.hasWerepyrePledge((PlayerEntity) source.getSource()));
+                        if ((transformation == BWTransformations.WEREWOLF && sourceVampire) || (transformation == BWTransformations.HUMAN && sourceWerepyre)) {
+                            transformationComponent.getTransformation().onRemoved(playerEntity);
+                            transformationComponent.setTransformation(BSMTransformations.WEREPYRE);
+                            transformationComponent.getTransformation().onAdded(playerEntity);
+                            PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
+                            SpawnSmokeParticlesPacket.send(playerEntity, playerEntity);
+                            playerEntity.world.playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
+                            int variant = -1;
+                            if (source.getSource() instanceof WerepyreEntity) {
+                                variant = source.getSource().getDataTracker().get(BWHostileEntity.VARIANT);
+                            } else if (source.getSource() instanceof WerepyreAccessor && BSMTransformations.hasWerepyrePledge((PlayerEntity) source.getSource())) {
+                                variant = ((WerepyreAccessor) source.getSource()).getWerepyreVariant();
+                            }
+                            if (variant > -1) {
+                                ((WerepyreAccessor) playerEntity).setWerepyreVariant(variant);
+                            }
+                        }
+                    }
+                }
         }
     }
 
