@@ -19,15 +19,5 @@ public class BSMAppleskin implements AppleSkinApi {
                 exhaustion.isCanceled = true;
             }
         });
-        HUDOverlayEvent.Saturation.EVENT.register(saturation -> {
-            if (BewitchmentAPI.isVampire(MinecraftClient.getInstance().player, true)) {
-                saturation.isCanceled = true;
-            }
-        });
-        HUDOverlayEvent.Exhaustion.EVENT.register(exhaustion -> {
-            if (BewitchmentAPI.isVampire(MinecraftClient.getInstance().player, true)) {
-                exhaustion.isCanceled = true;
-            }
-        });
     }
 }
