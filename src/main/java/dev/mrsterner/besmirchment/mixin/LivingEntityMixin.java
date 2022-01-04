@@ -20,6 +20,7 @@ import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.Bewitchment;
 import moriyashiine.bewitchment.common.entity.living.VampireEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
+import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -254,9 +255,9 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                 LichLogic.addAttributes((LivingEntity) (Object) this, bsm_cachedSouls);
             }
         }
-       /* if (BSMTransformations.isLich(this, true)) {
+       if (BSMTransformations.isLich(this, true)) {
             TransformationAbilityPacket.useAbility((PlayerEntity) (Object) this, true);
-        }*/
+        }
     }
 
     @Inject(method = "getGroup", at = @At("HEAD"), cancellable = true)

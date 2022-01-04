@@ -5,6 +5,7 @@ import dev.mrsterner.besmirchment.common.transformation.LichAccessor;
 import dev.mrsterner.besmirchment.common.transformation.LichLogic;
 import dev.mrsterner.besmirchment.common.world.BSMWorldState;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
@@ -26,7 +27,9 @@ public class PhylacteryBlockEntity extends BlockEntity   {
 
 
     public void sync(World world, BlockPos pos) {
-        ((ServerWorld) world).getChunkManager().markForUpdate(pos);
+        if (world != null && !world.isClient) {
+            world.updateListeners(pos, getCachedState(), getCachedState(), Block.NOTIFY_LISTENERS);
+        }
     }
 
 

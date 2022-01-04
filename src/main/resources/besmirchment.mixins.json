@@ -25,7 +25,6 @@
     "VillagerHostilesSensorMixin"
   ],
   "client": [
-    "client.FeatureRendererMixin",
     "client.BackgroundRendererMixin",
     "client.ClientPlayNetworkHandlerMixin",
     "client.DemonEntityRendererMixin",
