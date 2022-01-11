@@ -84,46 +84,41 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
     private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
-        if (this.world.isClient) {
-            boolean bl = this.isOwner(player) || this.isTamed() || item == Items.BONE && !this.isTamed();
-            cir.setReturnValue(bl ? ActionResult.CONSUME : ActionResult.PASS);
-        } else {
-            if (this.isTamed() && player.isSneaking()) { //add guard mode instead ig?
-                if (world.random.nextFloat() < 0.1) {
-                    heal(2);
-                    this.world.sendEntityStatus(this, (byte) 7);
-                }
-                if (item == Items.CAKE) {
-                    heal(40);
-                    addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 1, 1200, true, true));
-                    if (!player.getAbilities().creativeMode) {
-                        itemStack.decrement(1);
-                    }
-                    this.world.sendEntityStatus(this, (byte) 7);
-                    cir.setReturnValue(ActionResult.SUCCESS);
-                    return;
-                }
-                ActionResult actionResult = super.interactMob(player, hand);
-                if ((!actionResult.isAccepted() || this.isBaby()) && this.isOwner(player)) {
-                    this.setSitting(!this.isSitting());
-                    player.sendMessage(new TranslatableText(Besmirchment.MODID + ".message.demon_" + (isSitting() ? "sit" : "follow")), true);
-                    this.jumping = false;
-                    this.navigation.stop();
-                    this.setTarget(null);
-                    cir.setReturnValue(ActionResult.SUCCESS);
-                }
-            } else if (Besmirchment.config.enableTamableDemons && !isTamed() && item == BSMObjects.DEMONIC_DEED && TaglockItem.hasTaglock(itemStack) && !isAttacking()) {
+        if (!this.world.isClient && this.isTamed() && player.isSneaking()) { //add guard mode instead ig?
+            if (world.random.nextFloat() < 0.1) {
+                heal(2);
+                this.world.sendEntityStatus(this, (byte) 7);
+            }
+            if (item == Items.CAKE) {
+                heal(40);
+                addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 1, 1200, true, true));
                 if (!player.getAbilities().creativeMode) {
-                    itemStack.damage(1, player, breakingPlayer -> itemStack.decrement(1));
+                    itemStack.decrement(1);
                 }
-                setTamed(true);
-                this.setOwnerUuid(TaglockItem.getTaglockUUID(itemStack));
-                this.navigation.stop();
-                this.setTarget(null);
-                this.setSitting(true);
                 this.world.sendEntityStatus(this, (byte) 7);
                 cir.setReturnValue(ActionResult.SUCCESS);
+                return;
             }
+            ActionResult actionResult = super.interactMob(player, hand);
+            if ((!actionResult.isAccepted() || this.isBaby()) && this.isOwner(player)) {
+                this.setSitting(!this.isSitting());
+                player.sendMessage(new TranslatableText(Besmirchment.MODID + ".message.demon_" + (isSitting() ? "sit" : "follow")), true);
+                this.jumping = false;
+                this.navigation.stop();
+                this.setTarget(null);
+                cir.setReturnValue(ActionResult.SUCCESS);
+            }
+        } else if (Besmirchment.config.enableTamableDemons && !isTamed() && item == BSMObjects.DEMONIC_DEED && TaglockItem.hasTaglock(itemStack) && !isAttacking()) {
+            if (!player.getAbilities().creativeMode) {
+                itemStack.damage(1, player, breakingPlayer -> itemStack.decrement(1));
+            }
+            setTamed(true);
+            this.setOwnerUuid(TaglockItem.getTaglockUUID(itemStack));
+            this.navigation.stop();
+            this.setTarget(null);
+            this.setSitting(true);
+            this.world.sendEntityStatus(this, (byte) 7);
+            cir.setReturnValue(ActionResult.SUCCESS);
         }
     }
 
