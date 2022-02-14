@@ -2,6 +2,6 @@
   "replace": false,
   "values": [
 	"minecraft:player",
-    "#bewitchment:untaglockable"
+    "#bewitchment:taglock_blacklist"
   ]
 }

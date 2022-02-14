@@ -182,8 +182,8 @@ public class WerepyreEntity extends BWHostileEntity {
         return phase == 0;
     }
 
-    public static boolean canSpawn(EntityType<WerepyreEntity> type, WorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
-        return world.getDifficulty() != Difficulty.PEACEFUL && world.getLevelProperties().getTime() > 24000L && isValidMoonPhase(world);
+    public static boolean canSpawn(EntityType<WerepyreEntity> type, ServerWorldAccess world, SpawnReason spawnReason, BlockPos pos, Random random) {
+        return world.getDifficulty() != Difficulty.PEACEFUL && world.getLevelProperties().getTime() > 24000L && isValidMoonPhase(world) && HostileEntity.canSpawnInDark(type, world, spawnReason, pos, random);
     }
 
     public class PounceAtTargetGoal extends Goal {

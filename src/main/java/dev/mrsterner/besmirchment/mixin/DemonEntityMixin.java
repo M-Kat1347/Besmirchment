@@ -7,7 +7,9 @@ import dev.mrsterner.besmirchment.common.entity.ai.DemonSitGoal;
 import dev.mrsterner.besmirchment.common.entity.ai.DemonTrackAttackerGoal;
 import dev.mrsterner.besmirchment.common.entity.interfaces.TameableDemon;
 import dev.mrsterner.besmirchment.common.registry.BSMObjects;
+import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.api.entity.Pledgeable;
+import moriyashiine.bewitchment.common.entity.DemonMerchant;
 import moriyashiine.bewitchment.common.entity.living.DemonEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.item.TaglockItem;
@@ -22,9 +24,11 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
+import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
+import net.minecraft.entity.passive.MerchantEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.Item;
@@ -52,33 +56,43 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Mixin(DemonEntity.class)
-public abstract class DemonEntityMixin extends BWHostileEntity implements TameableDemon {
+public abstract class DemonEntityMixin extends BWHostileEntity implements TameableDemon, DemonMerchant {
+    protected DemonEntityMixin(EntityType<? extends HostileEntity> entityType, World world) {
+        super(entityType, world);
+    }
 
     private static final TrackedData<Byte> TAMEABLE_FLAGS = DataTracker.registerData(DemonEntity.class, TrackedDataHandlerRegistry.BYTE);
     private static final TrackedData<Optional<UUID>> OWNER_UUID = DataTracker.registerData(DemonEntity.class, TrackedDataHandlerRegistry.OPTIONAL_UUID);
     private boolean sitting;
 
-    protected DemonEntityMixin(EntityType<? extends HostileEntity> entityType, World world) {
-        super(entityType, world);
+    @Nullable
+    @Override
+    public LivingEntity getTarget() {
+        return super.getTarget();
     }
+
 
     @Inject(method = "initGoals", at = @At("HEAD"), cancellable = true) //look i did the bad
     private void initGoals(CallbackInfo ci) {
         this.goalSelector.add(0, new SwimGoal(this));
-        this.goalSelector.add(1, new DemonSitGoal((DemonEntity) (TameableDemon) this));
-        this.goalSelector.add(2, new MeleeAttackGoal(this, 1.0D, true));
-        this.goalSelector.add(3, new DemonFollowOwnerGoal((DemonEntity) (TameableDemon) this, 1.0D, 10.0F, 2.0F, false));
+        this.goalSelector.add(2, new MeleeAttackGoal(this, 1, true));
+        this.goalSelector.add(3, new WanderAroundFarGoal(this, 1));
+        this.goalSelector.add(4, new LookAtEntityGoal(this, PlayerEntity.class, 8));
+        this.goalSelector.add(5, new LookAroundGoal(this));
+        this.targetSelector.add(0, new RevengeGoal(this));
+        this.targetSelector.add(1, new ActiveTargetGoal<>(this, LivingEntity.class, 10, true, false, entity -> !isTamed() && !(entity instanceof ArmorStandEntity) && BWUtil.getArmorPieces(entity, stack -> stack.getItem() instanceof ArmorItem && ((ArmorItem) stack.getItem()).getMaterial() == BWMaterials.BESMIRCHED_ARMOR) < 3 && (entity.getGroup() != BewitchmentAPI.DEMON || entity instanceof PlayerEntity)));
 
-        this.goalSelector.add(4, new WanderAroundFarGoal(this, 1.0D));
-        this.goalSelector.add(5, new LookAtEntityGoal(this, PlayerEntity.class, 8.0F));
-        this.goalSelector.add(6, new LookAroundGoal(this));
+        this.goalSelector.add(1, new DemonSitGoal((DemonEntity) (TameableDemon) this));
+        this.goalSelector.add(3, new DemonFollowOwnerGoal((DemonEntity) (TameableDemon) this, 1.0D, 10.0F, 2.0F, false));
 
         this.targetSelector.add(1, new DemonTrackAttackerGoal((DemonEntity) (TameableDemon) this));
         this.targetSelector.add(2, new DemonAttackWithOwnerGoal((DemonEntity) (TameableDemon) this));
-        this.targetSelector.add(3, new RevengeGoal(this));
-        this.targetSelector.add(4, new ActiveTargetGoal<>(this, LivingEntity.class, 10, true, false, (entity) -> !isTamed() && !(entity instanceof Pledgeable) && BWUtil.getArmorPieces(entity, (stack) -> stack.getItem() instanceof ArmorItem && ((ArmorItem) stack.getItem()).getMaterial() == BWMaterials.BESMIRCHED_ARMOR) < 3));
         ci.cancel();
     }
+
+
+
+
 
     @Inject(method = "interactMob", at = @At("HEAD"), cancellable = true)
     private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
@@ -241,4 +255,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
             return null;
         }
     }
+
+
+
 }
