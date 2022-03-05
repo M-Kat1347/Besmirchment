@@ -79,54 +79,54 @@ public class LichLogic {
         switch (cachedSouls) {
             case 0 -> {
                 if (!attackDamageAttribute.hasModifier(LICH_STRENGTH_MODIFIER_0)) {
-                    attackDamageAttribute.removeModifier(LICH_STRENGTH_MODIFIER_0);
+                    attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_0);
                 }
                 if (!healthAttribute.hasModifier(LICH_HEALTH_MODIFIER_0)) {
-                    healthAttribute.removeModifier(LICH_HEALTH_MODIFIER_0);
+                    healthAttribute.addPersistentModifier(LICH_HEALTH_MODIFIER_0);
                 }
                 if (!movementSpeedAttribute.hasModifier(LICH_MOVEMENT_SPEED_MODIFIER_0)) {
-                    movementSpeedAttribute.removeModifier(LICH_MOVEMENT_SPEED_MODIFIER_0);
+                    movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_0);
                 }
             }
             case 1, 2 -> {
                 if (!healthAttribute.hasModifier(LICH_HEALTH_MODIFIER_1)) {
-                    healthAttribute.removeModifier(LICH_HEALTH_MODIFIER_1);
+                    healthAttribute.addPersistentModifier(LICH_HEALTH_MODIFIER_1);
                 }
                 if (!movementSpeedAttribute.hasModifier(LICH_MOVEMENT_SPEED_MODIFIER_1)) {
-                    movementSpeedAttribute.removeModifier(LICH_MOVEMENT_SPEED_MODIFIER_1);
+                    movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_1);
                 }
             }
             case 3, 4 -> {
                 if (!healthAttribute.hasModifier(LICH_HEALTH_MODIFIER_2)) {
-                    healthAttribute.removeModifier(LICH_HEALTH_MODIFIER_2);
+                    healthAttribute.addPersistentModifier(LICH_HEALTH_MODIFIER_2);
                 }
                 if (!attackDamageAttribute.hasModifier(LICH_STRENGTH_MODIFIER_1)) {
-                    attackDamageAttribute.removeModifier(LICH_STRENGTH_MODIFIER_1);
+                    attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_1);
                 }
                 if (!movementSpeedAttribute.hasModifier(LICH_MOVEMENT_SPEED_MODIFIER_2)) {
-                    movementSpeedAttribute.removeModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
+                    movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
                 }
             }
             case 5 -> {
                 if (!attackDamageAttribute.hasModifier(LICH_STRENGTH_MODIFIER_1)) {
-                    attackDamageAttribute.removeModifier(LICH_STRENGTH_MODIFIER_1);
+                    attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_1);
                 }
                 if (!armorAttribute.hasModifier(LICH_ARMOR_MODIFIER)) {
-                    armorAttribute.removeModifier(LICH_ARMOR_MODIFIER);
+                    armorAttribute.addPersistentModifier(LICH_ARMOR_MODIFIER);
                 }
                 if (!movementSpeedAttribute.hasModifier(LICH_MOVEMENT_SPEED_MODIFIER_2)) {
-                    movementSpeedAttribute.removeModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
+                    movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
                 }
             }
             case 6, 7, 8 -> {
                 if (!attackDamageAttribute.hasModifier(LICH_STRENGTH_MODIFIER_2)) {
-                    attackDamageAttribute.removeModifier(LICH_STRENGTH_MODIFIER_2);
+                    attackDamageAttribute.addPersistentModifier(LICH_STRENGTH_MODIFIER_2);
                 }
                 if (!armorAttribute.hasModifier(LICH_ARMOR_MODIFIER)) {
-                    armorAttribute.removeModifier(LICH_ARMOR_MODIFIER);
+                    armorAttribute.addPersistentModifier(LICH_ARMOR_MODIFIER);
                 }
                 if (!movementSpeedAttribute.hasModifier(LICH_MOVEMENT_SPEED_MODIFIER_2)) {
-                    movementSpeedAttribute.removeModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
+                    movementSpeedAttribute.addPersistentModifier(LICH_MOVEMENT_SPEED_MODIFIER_2);
                 }
             }
         }
