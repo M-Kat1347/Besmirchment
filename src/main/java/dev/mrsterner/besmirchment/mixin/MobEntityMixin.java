@@ -34,7 +34,6 @@ public abstract class MobEntityMixin {
     @Inject(method = "canTarget", at = @At("HEAD"), cancellable = true)
     public void canTarget(EntityType<?> type, CallbackInfoReturnable<Boolean> cir) {
         if (this instanceof TameableDemon tameableDemon && tameableDemon.isOwner(getTarget()) && getTarget() != null){
-            System.out.println(getTarget());
             cir.setReturnValue(false);
         }
     }

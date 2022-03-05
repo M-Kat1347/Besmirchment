@@ -9,11 +9,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
@@ -24,6 +28,22 @@ public class PhylacteryBlockEntity extends BlockEntity   {
     public PhylacteryBlockEntity(BlockPos pos, BlockState state) {
         super(BSMBlockEntityTypes.PHYLACTERY, pos, state);
     }
+
+
+    @Override
+    public NbtCompound toInitialChunkDataNbt() {
+        NbtCompound nbt = super.toInitialChunkDataNbt();
+        writeNbt(nbt);
+        return nbt;
+    }
+
+    @Nullable
+    @Override
+    public Packet<ClientPlayPacketListener> toUpdatePacket() {
+        return BlockEntityUpdateS2CPacket.create(this);
+    }
+
+
 
 
     public void sync(World world, BlockPos pos) {
@@ -75,6 +95,7 @@ public class PhylacteryBlockEntity extends BlockEntity   {
                     }
                 }
             }
+            worldState.markDirty();
         }
     }
 }

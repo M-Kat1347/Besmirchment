@@ -55,5 +55,7 @@
   "text.autoconfig.besmirchment.option.universalFamiliars.enable": "Enable Universal Familiars",
   "text.autoconfig.besmirchment.option.universalFamiliars.villagerFamiliarReputationBase": "Villager: Reputation Gain",
   "text.autoconfig.besmirchment.option.universalFamiliars.chickenFamiliarEggChance": "Chicken: Egg Chance",
-  "text.autoconfig.besmirchment.option.twoPlusTwo": "2 + 2 = "
+  "text.autoconfig.besmirchment.option.twoPlusTwo": "2 + 2 = ",
+  "transformation.besmirchment.lich": "Litch",
+  "transformation.besmirchment.werepyre": "Werepyre"
 }
