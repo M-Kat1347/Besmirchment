@@ -130,7 +130,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                 damage(BWDamageSources.MAGIC_COPY, damage);
             }
             //mathematically equal to not changing the blood at all
-            if (BWTags.HAS_BLOOD.contains(getType()) && BSMTransformations.isWerepyre(this, true) && random.nextFloat() < (isSleeping() ? 1 / 50f : 1 / 500f)) {
+            if (getType().isIn(BWTags.HAS_BLOOD) && BSMTransformations.isWerepyre(this, true) && random.nextFloat() < (isSleeping() ? 1 / 50f : 1 / 500f)) {
                 BWComponents.BLOOD_COMPONENT.get(livingEntity).drainBlood(1, false);
             }
         }

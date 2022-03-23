@@ -50,7 +50,7 @@ public abstract class InGameHudMixin extends DrawableHelper {
             RenderSystem.setShaderTexture(0, BEWITCHMENT_GUI_ICONS_TEXTURE);
             drawBlood(matrices, player, scaledWidth / 2 + 82, scaledHeight - 39, 10);
 
-            if (player.isInSneakingPose() && client.targetedEntity instanceof LivingEntity livingEntity && BWTags.HAS_BLOOD.contains(client.targetedEntity.getType())) {
+            if (player.isInSneakingPose() && client.targetedEntity instanceof LivingEntity livingEntity && client.targetedEntity.getType().isIn(BWTags.HAS_BLOOD)) {
                 drawBlood(matrices,livingEntity, scaledWidth / 2 + 13, scaledHeight / 2 + 9, 5);
             }
 

@@ -81,7 +81,7 @@ public class BesmirchmentClient implements ClientModInitializer {
                     if (shouldObscureVision(minecraftClient.player)){
                         fogTicks = 10;
                     }
-                    if (minecraftClient.options.keySprint.isPressed()){
+                    if (minecraftClient.options.sprintKey.isPressed()){
                         minecraftClient.player.setSprinting(true);
                     }
                     minecraftClient.player.setVelocity(minecraftClient.player.getRotationVector().multiply(minecraftClient.player.isSprinting() ? 0.8F : 0.5F));

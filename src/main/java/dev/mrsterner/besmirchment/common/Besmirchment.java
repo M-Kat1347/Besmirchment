@@ -75,7 +75,7 @@ public class Besmirchment implements ModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof LivingEntity && hand == Hand.MAIN_HAND && player.isSneaking() && entity.isAlive() && BSMTransformations.isWerepyre(player, true) && player.getStackInHand(hand).isEmpty()) {
-                int toGive = BWTags.HAS_BLOOD.contains(entity.getType()) ? 5 : entity instanceof AnimalEntity ? 1 : 0;
+                int toGive = entity.getType().isIn(BWTags.HAS_BLOOD) ? 5 : entity instanceof AnimalEntity ? 1 : 0;
                 toGive = BloodSuckEvents.BLOOD_AMOUNT.invoker().onBloodSuck(player, (LivingEntity) entity, toGive);
                 if (toGive > 0) {
                     BloodComponent playerBlood = BWComponents.BLOOD_COMPONENT.get(player);

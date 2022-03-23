@@ -26,6 +26,7 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.*;
+import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
@@ -118,7 +119,7 @@ public class WerepyreEntity extends BWHostileEntity {
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityTag) {
         EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityTag);
         if (this.dataTracker.get(VARIANT) != 0) {
-            switch (world.getBiome(this.getBlockPos()).getCategory()) {
+            switch (Biome.getCategory(world.getBiome(this.getBlockPos()))) {
                 case FOREST -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 2 : 3);
                 case TAIGA -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 1 : 4);
                 case ICY -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 3 : 4);
