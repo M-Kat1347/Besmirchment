@@ -23,7 +23,7 @@ public class WerepyreEntityRenderer extends MobEntityRenderer<WerepyreEntity, We
 
     public WerepyreEntityRenderer(EntityRendererFactory.Context context) {
         super(context, new WerepyreEntityModel<>(context.getPart(BesmirchmentClient.WEREPYRE_MODEL_LAYER)), 1f);
-        this.addFeature(new HeldItemFeatureRenderer<>(this));
+        this.addFeature(new HeldItemFeatureRenderer<>(this, context.getHeldItemRenderer()));
         this.addFeature(new DyedWerepyreFeatureRenderer(this));
     }
 

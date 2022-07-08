@@ -1,5 +1,6 @@
 package dev.mrsterner.besmirchment.mixin;
 
+import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.WerepyreEntity;
 import dev.mrsterner.besmirchment.common.entity.interfaces.VillagerWerepyreAccessor;
@@ -128,8 +129,8 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
     }
     @Inject(method = "getReputation", at = @At("RETURN"), cancellable = true)
     private void getReputation(PlayerEntity player, CallbackInfoReturnable<Integer> cir){
-        if (cir.getReturnValue() < Besmirchment.config.universalFamiliars.villagerFamiliarReputationBase && BewitchmentAPI.getFamiliar(player) == EntityType.VILLAGER){
-            cir.setReturnValue(Besmirchment.config.universalFamiliars.villagerFamiliarReputationBase);
+        if (cir.getReturnValue() < BSMConfig.villagerFamiliarReputationBase && BewitchmentAPI.getFamiliar(player) == EntityType.VILLAGER){
+            cir.setReturnValue(BSMConfig.villagerFamiliarReputationBase);
         }
     }
 }

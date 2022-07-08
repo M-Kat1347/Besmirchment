@@ -2,7 +2,6 @@ package dev.mrsterner.besmirchment.common.entity;
 
 import dev.mrsterner.besmirchment.common.entity.interfaces.VillagerWerepyreAccessor;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.component.CursesComponent;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.BWComponents;
@@ -10,6 +9,7 @@ import moriyashiine.bewitchment.common.registry.BWSoundEvents;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.entity.*;
 import net.minecraft.entity.ai.goal.*;
 import net.minecraft.entity.damage.DamageSource;
@@ -25,11 +25,13 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.random.Random;
+import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.*;
+import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.EnumSet;
-import java.util.Random;
 
 public class WerepyreEntity extends BWHostileEntity {
     public static final TrackedData<Integer> JUMP_TICKS = DataTracker.registerData(WerepyreEntity.class, TrackedDataHandlerRegistry.INTEGER);
@@ -118,11 +120,17 @@ public class WerepyreEntity extends BWHostileEntity {
     public EntityData initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, @Nullable EntityData entityData, @Nullable NbtCompound entityTag) {
         EntityData data = super.initialize(world, difficulty, spawnReason, entityData, entityTag);
         if (this.dataTracker.get(VARIANT) != 0) {
-            switch (world.getBiome(this.getBlockPos()).getCategory()) {
-                case FOREST -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 2 : 3);
-                case TAIGA -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 1 : 4);
-                case ICY -> this.dataTracker.set(VARIANT, random.nextBoolean() ? 3 : 4);
-                default -> this.dataTracker.set(VARIANT, this.random.nextInt(this.getVariants() - 1) + 1);
+            RegistryEntry<Biome> biome = world.getBiome(getBlockPos());
+
+            if (biome.isIn(ConventionalBiomeTags.FOREST)) {
+                dataTracker.set(VARIANT, random.nextBoolean() ? 2 : 3);
+            } else if (biome.isIn(ConventionalBiomeTags.TAIGA)) {
+                dataTracker.set(VARIANT, random.nextBoolean() ? 1 : 4);
+            }
+            if (biome.isIn(ConventionalBiomeTags.ICY)) {
+                dataTracker.set(VARIANT, random.nextBoolean() ? 3 : 4);
+            } else {
+                dataTracker.set(VARIANT, this.random.nextInt(this.getVariants() - 1) + 1);
             }
         }
 

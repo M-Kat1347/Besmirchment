@@ -1,5 +1,6 @@
 package dev.mrsterner.besmirchment.common.item;
 
+import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.BeelzebubEntity;
 import dev.mrsterner.besmirchment.common.registry.BSMEntityTypes;
@@ -34,7 +35,7 @@ public class ScrollOfTormentItem extends Item {
 
     @Override
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {
-        if (!world.isClient && Besmirchment.config.mobs.enableBeelzebub && user instanceof PlayerEntity && BewitchmentAPI.drainMagic((PlayerEntity) user, 1, false)) {
+        if (!world.isClient && BSMConfig.enableBeelzebub && user instanceof PlayerEntity && BewitchmentAPI.drainMagic((PlayerEntity) user, 1, false)) {
             EntityHitResult hit = BSMUtil.hitscanEntity(world, user, 8, (target) -> target instanceof LivingEntity && !target.isSpectator() && user.canSee(target));
             if (hit != null && hit.getEntity() instanceof PigEntity) {
                 world.createExplosion(hit.getEntity(), DamageSource.MAGIC, null, hit.getPos().x, hit.getPos().y, hit.getPos().z, 1, true, Explosion.DestructionType.NONE);
@@ -53,7 +54,7 @@ public class ScrollOfTormentItem extends Item {
 
     @Override
     public void usageTick(World world, LivingEntity user, ItemStack stack, int remainingUseTicks) {
-        if (!Besmirchment.config.mobs.enableBeelzebub){
+        if (!BSMConfig.enableBeelzebub){
             return;
         }
         EntityHitResult hit = BSMUtil.hitscanEntity(world, user, 8, (target) -> target instanceof LivingEntity && !target.isSpectator() && user.canSee(target));

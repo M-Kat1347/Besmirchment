@@ -17,6 +17,7 @@ import moriyashiine.bewitchment.api.component.ContractsComponent;
 import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.registry.Transformation;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.common.BWConfig;
 import moriyashiine.bewitchment.common.Bewitchment;
 import moriyashiine.bewitchment.common.entity.living.VampireEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
@@ -130,7 +131,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                 damage(BWDamageSources.MAGIC_COPY, damage);
             }
             //mathematically equal to not changing the blood at all
-            if (BWTags.HAS_BLOOD.contains(getType()) && BSMTransformations.isWerepyre(this, true) && random.nextFloat() < (isSleeping() ? 1 / 50f : 1 / 500f)) {
+            if (getType().isIn(BWTags.HAS_BLOOD) && BSMTransformations.isWerepyre(this, true) && random.nextFloat() < (isSleeping() ? 1 / 50f : 1 / 500f)) {
                 BWComponents.BLOOD_COMPONENT.get(livingEntity).drainBlood(1, false);
             }
         }
@@ -180,7 +181,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
             updateCachedSouls();
         }
         if (!world.isClient) {
-                if (cir.getReturnValue() && (Object) this instanceof PlayerEntity playerEntity && (BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY) || !Bewitchment.config.enableCurses)) {
+                if (cir.getReturnValue() && (Object) this instanceof PlayerEntity playerEntity && (BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY) || !BWConfig.enableCurses)) {
                     TransformationComponent transformationComponent = BWComponents.TRANSFORMATION_COMPONENT.get(playerEntity);
                     Transformation transformation = transformationComponent.getTransformation();
                     if (transformation == BWTransformations.WEREWOLF || transformation == BWTransformations.HUMAN) { //no vampires

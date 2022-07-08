@@ -8,6 +8,7 @@ import dev.mrsterner.besmirchment.common.packet.SparklePacket;
 import dev.mrsterner.besmirchment.common.registry.*;
 import dev.mrsterner.besmirchment.common.transformation.LichAccessor;
 import dev.mrsterner.besmirchment.common.transformation.WerepyreAccessor;
+import eu.midnightdust.lib.config.MidnightConfig;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
@@ -19,6 +20,7 @@ import moriyashiine.bewitchment.api.event.BloodSuckEvents;
 import moriyashiine.bewitchment.api.event.ReviveEvents;
 import moriyashiine.bewitchment.api.registry.Transformation;
 import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.common.BWConfig;
 import moriyashiine.bewitchment.common.Bewitchment;
 import moriyashiine.bewitchment.common.entity.living.VampireEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
@@ -45,12 +47,10 @@ import net.minecraft.util.Identifier;
 public class Besmirchment implements ModInitializer {
     public static final String MODID = "besmirchment";
     public static final ItemGroup BESMIRCHMENT = FabricItemGroupBuilder.create(Besmirchment.id("group")).icon(() -> new ItemStack(BSMObjects.FINAL_BROOM)).build();
-    public static BSMConfig config;
 
     @Override
     public void onInitialize() {
-        AutoConfig.register(BSMConfig.class, GsonConfigSerializer::new);
-        config = AutoConfig.getConfigHolder(BSMConfig.class).getConfig();
+        MidnightConfig.init(MODID, BSMConfig.class);
         BSMConditions.init();
         BSMContracts.init();
         BSMEntityTypes.init();
@@ -75,7 +75,7 @@ public class Besmirchment implements ModInitializer {
 
         UseEntityCallback.EVENT.register((player, world, hand, entity, hitResult) -> {
             if (entity instanceof LivingEntity && hand == Hand.MAIN_HAND && player.isSneaking() && entity.isAlive() && BSMTransformations.isWerepyre(player, true) && player.getStackInHand(hand).isEmpty()) {
-                int toGive = BWTags.HAS_BLOOD.contains(entity.getType()) ? 5 : entity instanceof AnimalEntity ? 1 : 0;
+                int toGive = entity.getType().isIn(BWTags.HAS_BLOOD) ? 5 : entity instanceof AnimalEntity ? 1 : 0;
                 toGive = BloodSuckEvents.BLOOD_AMOUNT.invoker().onBloodSuck(player, (LivingEntity) entity, toGive);
                 if (toGive > 0) {
                     BloodComponent playerBlood = BWComponents.BLOOD_COMPONENT.get(player);
@@ -107,7 +107,7 @@ public class Besmirchment implements ModInitializer {
             return true;
         });
         ReviveEvents.ON_REVIVE.register((playerEntity, source, itemStack) -> {
-            if ((BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY) || !Bewitchment.config.enableCurses)) {
+            if ((BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY) || !BWConfig.enableCurses)) {
                 TransformationComponent transformationComponent = BWComponents.TRANSFORMATION_COMPONENT.get(playerEntity);
                 Transformation transformation = transformationComponent.getTransformation();
                 if (transformation == BWTransformations.WEREWOLF || transformation == BWTransformations.HUMAN) { //no vampires

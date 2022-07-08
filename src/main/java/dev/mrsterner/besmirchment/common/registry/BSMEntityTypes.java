@@ -1,11 +1,15 @@
 package dev.mrsterner.besmirchment.common.registry;
 
+import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.entity.*;
 import moriyashiine.bewitchment.common.entity.living.WerewolfEntity;
+import moriyashiine.bewitchment.common.registry.BWWorldGenerators;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
+import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.fabricmc.fabric.mixin.object.builder.SpawnRestrictionAccessor;
 import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
@@ -15,7 +19,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 
-import static dev.mrsterner.besmirchment.common.Besmirchment.config;
+import java.util.function.Predicate;
+
 
 @SuppressWarnings("ConstantConditions")
 public class BSMEntityTypes {
@@ -34,9 +39,27 @@ public class BSMEntityTypes {
         FabricDefaultAttributeRegistry.register(WEREPYRE, WerewolfEntity.createAttributes());
         BSMUtil.register(Registry.ENTITY_TYPE, "beelzebub", BEELZEBUB);
         FabricDefaultAttributeRegistry.register(BEELZEBUB, BeelzebubEntity.createAttributes());
-        if (config.mobs.werepyreWeight > 0) {
-            BiomeModifications.addSpawn(BiomeSelectors.foundInOverworld().and(context -> !context.getBiome().getSpawnSettings().getSpawnEntries(BSMEntityTypes.WEREPYRE.getSpawnGroup()).isEmpty() && context.getBiome().getCategory() != Biome.Category.OCEAN && (context.getBiome().getCategory() == Biome.Category.TAIGA || context.getBiome().getCategory() == Biome.Category.FOREST || context.getBiome().getCategory() == Biome.Category.ICY)), BSMEntityTypes.WEREPYRE.getSpawnGroup(), BSMEntityTypes.WEREPYRE, config.mobs.werepyreWeight, config.mobs.werepyreMinGroupCount, config.mobs.werepyreMaxGroupCount);
-            SpawnRestrictionAccessor.callRegister(BSMEntityTypes.WEREPYRE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.WORLD_SURFACE_WG, WerepyreEntity::canSpawn);
+        if (BSMConfig.werepyreWeight > 0) {
+            if (registerEntitySpawn(BSMEntityTypes.WEREPYRE, BiomeSelectors.foundInOverworld().and(
+                    context -> !context.getBiome().getSpawnSettings().getSpawnEntries(BSMEntityTypes.WEREPYRE.getSpawnGroup()).isEmpty()).and(BiomeSelectors.tag(ConventionalBiomeTags.TAIGA).or(BiomeSelectors.tag(ConventionalBiomeTags.FOREST))), BSMConfig.werepyreWeight, BSMConfig.werepyreMinGroupCount, BSMConfig.werepyreMaxGroupCount)) {
+                SpawnRestrictionAccessor.callRegister(BSMEntityTypes.WEREPYRE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WerepyreEntity::canSpawn);
+            }
         }
+    }
+
+    private static boolean registerEntitySpawn(EntityType<?> type, Predicate<BiomeSelectionContext> predicate, int weight, int minGroupSize, int maxGroupSize) {
+        if (weight < 0) {
+            throw new UnsupportedOperationException("Could not register entity type " + type.getTranslationKey() + ": weight " + weight + " cannot be negative.");
+        } else if (minGroupSize < 0) {
+            throw new UnsupportedOperationException("Could not register entity type " + type.getTranslationKey() + ": minGroupSize " + minGroupSize + " cannot be negative.");
+        } else if (maxGroupSize < 0) {
+            throw new UnsupportedOperationException("Could not register entity type " + type.getTranslationKey() + ": maxGroupSize " + maxGroupSize + " cannot be negative.");
+        } else if (minGroupSize > maxGroupSize) {
+            throw new UnsupportedOperationException("Could not register entity type " + type.getTranslationKey() + ": minGroupSize " + minGroupSize + " cannot be greater than maxGroupSize " + maxGroupSize + ".");
+        } else if (weight == 0 || minGroupSize == 0) {
+            return false;
+        }
+        BiomeModifications.addSpawn(predicate, type.getSpawnGroup(), type, weight, minGroupSize, maxGroupSize);
+        return true;
     }
 }

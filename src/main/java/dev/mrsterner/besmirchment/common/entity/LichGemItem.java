@@ -10,7 +10,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.text.TextColor;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Rarity;
 import net.minecraft.world.World;
@@ -27,9 +26,9 @@ public class LichGemItem extends Item {
     @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         if (isSouled(stack)){
-            tooltip.add(new TranslatableText("tooltip.besmirchment.souled").fillStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x8eed5e))));
+            tooltip.add(Text.translatable("tooltip.besmirchment.souled").fillStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x8eed5e))));
         }else{
-            tooltip.add(new TranslatableText("tooltip.besmirchment.empty").fillStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))));
+            tooltip.add(Text.translatable("tooltip.besmirchment.empty").fillStyle(Style.EMPTY.withColor(TextColor.fromFormatting(Formatting.GRAY))));
         }
         super.appendTooltip(stack, world, tooltip, context);
     }

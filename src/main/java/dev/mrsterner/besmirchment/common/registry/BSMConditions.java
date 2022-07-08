@@ -1,43 +1,44 @@
 package dev.mrsterner.besmirchment.common.registry;
 
+import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.Besmirchment;
 import vazkii.patchouli.api.PatchouliAPI;
 
 @SuppressWarnings("ConstantConditions")
 public class BSMConditions {
     public static void init(){
-        PatchouliAPI.get().setConfigFlag("bsm_final_broom", Besmirchment.config.enableFinalBroom);
-        PatchouliAPI.get().setConfigFlag("bsm_witchy_dye", Besmirchment.config.enableWitchyDye);
-        PatchouliAPI.get().setConfigFlag("bsm_elite_coffin", Besmirchment.config.enableEliteCoffin);
-        PatchouliAPI.get().setConfigFlag("bsm_love_potion", Besmirchment.config.enableLovePotion);
-        PatchouliAPI.get().setConfigFlag("bsm_universal_familiars", Besmirchment.config.universalFamiliars.enable);
-        PatchouliAPI.get().setConfigFlag("bsm_werepyres_spawn", Besmirchment.config.mobs.werepyreWeight > 0);
-        PatchouliAPI.get().setConfigFlag("bsm_werepyrism", Besmirchment.config.enableWerepyrism);
-        PatchouliAPI.get().setConfigFlag("bsm_beelzebub", Besmirchment.config.mobs.enableBeelzebub);
-        PatchouliAPI.get().setConfigFlag("bsm_tamable_Demons", Besmirchment.config.enableTamableDemons);
-        PatchouliAPI.get().setConfigFlag("bsm_sunscreen", Besmirchment.config.enableSunscreen);
-        PatchouliAPI.get().setConfigFlag("bsm_lichdom", Besmirchment.config.enableLichdom);
+        PatchouliAPI.get().setConfigFlag("bsm_final_broom", BSMConfig.enableFinalBroom);
+        PatchouliAPI.get().setConfigFlag("bsm_witchy_dye", BSMConfig.enableWitchyDye);
+        PatchouliAPI.get().setConfigFlag("bsm_elite_coffin", BSMConfig.enableEliteCoffin);
+        PatchouliAPI.get().setConfigFlag("bsm_love_potion", BSMConfig.enableLovePotion);
+        PatchouliAPI.get().setConfigFlag("bsm_universal_familiars", BSMConfig.universalFamiliars);
+        PatchouliAPI.get().setConfigFlag("bsm_werepyres_spawn", BSMConfig.werepyreWeight > 0);
+        PatchouliAPI.get().setConfigFlag("bsm_werepyrism", BSMConfig.enableWerepyrism);
+        PatchouliAPI.get().setConfigFlag("bsm_beelzebub", BSMConfig.enableBeelzebub);
+        PatchouliAPI.get().setConfigFlag("bsm_tamable_Demons", BSMConfig.enableTamableDemons);
+        PatchouliAPI.get().setConfigFlag("bsm_sunscreen", BSMConfig.enableSunscreen);
+        PatchouliAPI.get().setConfigFlag("bsm_lichdom", BSMConfig.enableLichdom);
         //BSMUtil.register(RecipeConds.RECIPE_CONDITION, "bsm_config", RecipeCondsUtil.stringParam(BSMConditions::getOption));
     }
 
     public static boolean getOption(String key){
         switch (key) {
             case "final_broom":
-                return Besmirchment.config.enableFinalBroom;
+                return BSMConfig.enableFinalBroom;
             case "witchy_dye":
-                return Besmirchment.config.enableWitchyDye;
+                return BSMConfig.enableWitchyDye;
             case "elite_coffin":
-                return Besmirchment.config.enableEliteCoffin;
+                return BSMConfig.enableEliteCoffin;
             case "love_potion":
-                return Besmirchment.config.enableLovePotion;
+                return BSMConfig.enableLovePotion;
             case "universal_familiars":
-                return Besmirchment.config.universalFamiliars.enable;
+                return BSMConfig.universalFamiliars;
             case "sunscreen":
-                return Besmirchment.config.enableSunscreen;
+                return BSMConfig.enableSunscreen;
             case "lichdom":
-                return Besmirchment.config.enableLichdom;
+                return BSMConfig.enableLichdom;
             case "beelzebub":
-                return Besmirchment.config.mobs.enableBeelzebub;
+                return BSMConfig.enableBeelzebub;
         }
         return false;
     }

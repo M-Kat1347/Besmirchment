@@ -22,7 +22,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Pair;
@@ -74,9 +74,9 @@ public class PhylacteryBlock extends Block implements BlockEntityProvider, Water
             }else{
                 int soulCount = ((PhylacteryBlockEntity) phylactery).souls;
                 if (soulCount == 1){ //imagine supporting dual-case in code that would be very funny I think
-                    player.sendMessage(new TranslatableText("message.besmirchment.phylactery_soul", ((PhylacteryBlockEntity) phylactery).souls), true);
+                    player.sendMessage(Text.translatable("message.besmirchment.phylactery_soul", ((PhylacteryBlockEntity) phylactery).souls), true);
                 }else {
-                    player.sendMessage(new TranslatableText("message.besmirchment.phylactery_souls", ((PhylacteryBlockEntity) phylactery).souls), true);
+                    player.sendMessage(Text.translatable("message.besmirchment.phylactery_souls", ((PhylacteryBlockEntity) phylactery).souls), true);
                 }
             }
             ((PhylacteryBlockEntity) phylactery).sync(world,pos);

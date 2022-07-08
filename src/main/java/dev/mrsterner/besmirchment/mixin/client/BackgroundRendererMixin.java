@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BackgroundRenderer.class)
 public abstract class BackgroundRendererMixin {
     @Inject(method = "applyFog", at = @At("HEAD"), cancellable = true)
-    private static void renderFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, CallbackInfo ci){
+    private static void renderFog(Camera camera, BackgroundRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo ci){
         if (BesmirchmentClient.getFogTicks() > 0){
             RenderSystem.setShaderFogStart(0);
             RenderSystem.setShaderFogEnd(4);

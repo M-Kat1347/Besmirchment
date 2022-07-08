@@ -18,10 +18,10 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
 import net.minecraft.block.BlockRenderType;
@@ -50,21 +50,18 @@ public class BesmirchmentClient implements ClientModInitializer {
     public void onInitializeClient() {
         BlockRenderLayerMap.INSTANCE.putBlocks(RenderLayer.getCutout(), BSMObjects.PHYLACTERY);
 
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.FINAL_BROOM, FinalBroomEntityRenderer::new);
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WITCHY_DYE, FlyingItemEntityRenderer::new);
+        EntityRendererRegistry.register(BSMEntityTypes.FINAL_BROOM, FinalBroomEntityRenderer::new);
+        EntityRendererRegistry.register(BSMEntityTypes.WITCHY_DYE, FlyingItemEntityRenderer::new);
 
         EntityModelLayerRegistry.registerModelLayer(WEREPYRE_MODEL_LAYER, WerepyreEntityModel::getTexturedModelData);
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WEREPYRE, WerepyreEntityRenderer::new);
+        EntityRendererRegistry.register(BSMEntityTypes.WEREPYRE, WerepyreEntityRenderer::new);
         EntityModelLayerRegistry.registerModelLayer(BEELZEBUB_MODEL_LAYER, BeelzebubEntityModel::getTexturedModelData);
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.BEELZEBUB, BeelzebubEntityRenderer::new);
+        EntityRendererRegistry.register(BSMEntityTypes.BEELZEBUB, BeelzebubEntityRenderer::new);
+
+        EntityRendererRegistry.register(BSMEntityTypes.INFECTIOUS_SPIT, InfectiousSpitEntityRenderer::new);
 
 
-        //EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.WEREPYRE, WerepyreEntityRenderer::new);
-        //EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.BEELZEBUB, (dispatcher, context) -> new BeelzebubEntityRenderer(dispatcher));
-        EntityRendererRegistry.INSTANCE.register(BSMEntityTypes.INFECTIOUS_SPIT, InfectiousSpitEntityRenderer::new);
-
-
-        BlockEntityRendererRegistry.INSTANCE.register(BSMBlockEntityTypes.PHYLACTERY, ctx -> new PhylacteryBlockEntityRenderer());
+        BlockEntityRendererRegistry.register(BSMBlockEntityTypes.PHYLACTERY, ctx -> new PhylacteryBlockEntityRenderer());
 
         FabricModelPredicateProviderRegistry.register(BSMObjects.DEMONIC_DEED,
         Besmirchment.id("variant"), (stack, world, entity, seed) -> TaglockItem.hasTaglock(stack) ? 1 : 0);
@@ -81,7 +78,7 @@ public class BesmirchmentClient implements ClientModInitializer {
                     if (shouldObscureVision(minecraftClient.player)){
                         fogTicks = 10;
                     }
-                    if (minecraftClient.options.keySprint.isPressed()){
+                    if (minecraftClient.options.sprintKey.isPressed()){
                         minecraftClient.player.setSprinting(true);
                     }
                     minecraftClient.player.setVelocity(minecraftClient.player.getRotationVector().multiply(minecraftClient.player.isSprinting() ? 0.8F : 0.5F));

@@ -1,5 +1,6 @@
 package dev.mrsterner.besmirchment.mixin;
 
+import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.registry.BSMStatusEffects;
 import dev.mrsterner.besmirchment.common.registry.BSMTags;
@@ -34,7 +35,7 @@ public abstract class BindFamiliarRitualFunctionMixin extends RitualFunction {
 
     @Inject(method = "start", at = @At(value = "INVOKE_ASSIGN", target = "net/minecraft/entity/LivingEntity.saveSelfNbt(Lnet/minecraft/nbt/NbtCompound;)Z", remap = true), locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true)
     private void start(ServerWorld world, BlockPos glyphPos, BlockPos effectivePos, Inventory inventory, boolean catFamiliar, CallbackInfo ci, boolean succeeded, ItemStack taglock, LivingEntity livingEntity, PlayerEntity closestPlayer, NbtCompound entityTag){
-        if (Besmirchment.config.universalFamiliars.enable && livingEntity.hasStatusEffect(BSMStatusEffects.LOVE) && !livingEntity.getType().isIn(BSMTags.ILLEGAL_FAMILIARS)){
+        if (BSMConfig.universalFamiliars && livingEntity.hasStatusEffect(BSMStatusEffects.LOVE) && !livingEntity.getType().isIn(BSMTags.ILLEGAL_FAMILIARS)){
             BWComponents.FAMILIAR_COMPONENT.get(livingEntity).setFamiliar(true);
             BWUniversalWorldState worldState = BWUniversalWorldState.get(world);
             NbtCompound familiarTag = new NbtCompound();

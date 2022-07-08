@@ -1,5 +1,6 @@
 package dev.mrsterner.besmirchment.mixin;
 
+import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.ai.DemonAttackWithOwnerGoal;
 import dev.mrsterner.besmirchment.common.entity.ai.DemonFollowOwnerGoal;
@@ -39,7 +40,7 @@ import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.ServerConfigHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Util;
@@ -116,13 +117,13 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
             ActionResult actionResult = super.interactMob(player, hand);
             if ((!actionResult.isAccepted() || this.isBaby()) && this.isOwner(player)) {
                 this.setSitting(!this.isSitting());
-                player.sendMessage(new TranslatableText(Besmirchment.MODID + ".message.demon_" + (isSitting() ? "sit" : "follow")), true);
+                player.sendMessage(Text.translatable(Besmirchment.MODID + ".message.demon_" + (isSitting() ? "sit" : "follow")), true);
                 this.jumping = false;
                 this.navigation.stop();
                 this.setTarget(null);
                 cir.setReturnValue(ActionResult.SUCCESS);
             }
-        } else if (Besmirchment.config.enableTamableDemons && !isTamed() && item == BSMObjects.DEMONIC_DEED && TaglockItem.hasTaglock(itemStack) && !isAttacking()) {
+        } else if (BSMConfig.enableTamableDemons && !isTamed() && item == BSMObjects.DEMONIC_DEED && TaglockItem.hasTaglock(itemStack) && !isAttacking()) {
             if (!player.getAbilities().creativeMode) {
                 itemStack.damage(1, player, breakingPlayer -> itemStack.decrement(1));
             }
@@ -188,13 +189,15 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
             this.world.addParticle(particleEffect, this.getParticleX(1.0D), this.getRandomBodyY() + 0.5D, this.getParticleZ(1.0D), d, e, f);
         }
     }
-
+/*
     @Inject(method = "onDeath", at = @At("TAIL"))
     public void onDeath(DamageSource source, CallbackInfo ci) {
         if (!this.world.isClient && this.world.getGameRules().getBoolean(GameRules.SHOW_DEATH_MESSAGES) && this.getOwner() instanceof ServerPlayerEntity) {
             this.getOwner().sendSystemMessage(this.getDamageTracker().getDeathMessage(), Util.NIL_UUID);
         }
     }
+
+ */
 
     @Override
     public boolean isSitting() {

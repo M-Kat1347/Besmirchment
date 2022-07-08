@@ -1,5 +1,6 @@
 package dev.mrsterner.besmirchment.mixin;
 
+import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.interfaces.DyeableEntity;
 import dev.mrsterner.besmirchment.common.registry.BSMTransformations;
@@ -145,7 +146,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
                 if (!isOnGround() && !hasStatusEffect(StatusEffects.SLOW_FALLING)){
                     addStatusEffect(new StatusEffectInstance(StatusEffects.SLOW_FALLING, 20, 0, false, false, false));
                 }
-                if (random.nextFloat() < Besmirchment.config.universalFamiliars.chickenFamiliarEggChance){
+                if (random.nextFloat() < BSMConfig.chickenFamiliarEggChance){
                     dropItem(new ItemStack(Items.EGG), true, true);
                 }
             }

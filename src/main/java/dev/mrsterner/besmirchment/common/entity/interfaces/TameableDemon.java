@@ -5,7 +5,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.mob.GhastEntity;
-import net.minecraft.entity.passive.HorseBaseEntity;
+import net.minecraft.entity.passive.AbstractHorseEntity;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ public interface TameableDemon {
                 return !demon.isTamed() || demon.getOwner() != owner;
             } else if (target instanceof PlayerEntity && owner instanceof PlayerEntity && !((PlayerEntity)owner).shouldDamagePlayer((PlayerEntity)target)) {
                 return false;
-            } else if (target instanceof HorseBaseEntity && ((HorseBaseEntity)target).isTame()) {
+            } else if (target instanceof AbstractHorseEntity && ((AbstractHorseEntity)target).isTame()) {
                 return false;
             } else {
                 return !(target instanceof TameableEntity) || !((TameableEntity)target).isTamed();

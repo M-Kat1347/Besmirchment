@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.10-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -16,72 +16,48 @@ loom {
 
 repositories {
 	maven {
-		name = "Bewitchment"
-		url = "https://www.cursemaven.com"
+		name "cardinal components, impersonate, player ability lib, trinkets"
+		url "https://ladysnake.jfrog.io/artifactory/mods"
 	}
 	maven {
-		name = 'Ladysnake Mods'
-		url = 'https://ladysnake.jfrog.io/artifactory/mods'
-		content {
-			includeGroup 'io.github.ladysnake'
-			includeGroupByRegex 'io\\.github\\.onyxstudios.*'
-		}
+		name "impersonate"
+		url "https://oss.sonatype.org/content/repositories/snapshots"
 	}
 	maven {
-		name = "wood api"
-		url = "https://maven.terraformersmc.com/"
+		name "reach entity attributes"
+		url "https://maven.jamieswhiteshirt.com/libs-release"
 	}
 	maven {
-		name = "reach"
-		url = "https://maven.jamieswhiteshirt.com/libs-release"
+		name "terraform wood api, trinkets"
+		url "https://maven.terraformersmc.com"
 	}
 	maven {
-		name = "cardinal"
-		url = "https://maven.abusedmaster.xyz/"
+		name "cloth config, rei"
+		url "https://maven.shedaniel.me"
 	}
 	maven {
-		name = "cloth config"
-		url = "https://maven.shedaniel.me/"
-	}
-	maven {
-		name = "patchouli"
-		url = "https://maven.blamejared.com"
-	}
-	maven {
-		name = "Mod Menu"
-		url =  "https://maven.terraformersmc.com/releases"
-	}
-	maven {
-		name = "Conditional Crafting"
-		url = "https://ytg1234.github.io/maven"
-	}
-
-	maven {
-		name = "dblsaiko"
-		url = "https://maven.dblsaiko.net/"
-	}
-	maven {
-		name = "Cotton"
-		url = "http://server.bbkr.space:8081/artifactory/libs-release/"
-		allowInsecureProtocol = true
-	}
-	maven {
-		name = "CurseForge"
-		url = "https://minecraft.curseforge.com/api/maven"
+		name "patchouli"
+		url "https://maven.blamejared.com"
 	}
 	maven {
 		name "appleskin"
 		url "https://maven.ryanliptak.com/"
 	}
 	maven {
-		name "impersonate"
-		url "https://oss.sonatype.org/content/repositories/snapshots"
+		name "mod menu"
+		url "https://api.modrinth.com/maven"
 	}
-
-
 	maven {
-		name = "jitpack"
-		url = "https://jitpack.io"
+		name "modrinth"
+		url "https://api.modrinth.com/maven"
+	}
+	maven {
+		name "jitpack"
+		url "https://jitpack.io"
+	}
+	maven {
+		name = "Bewitchment"
+		url = "https://www.cursemaven.com"
 	}
 }
 
@@ -103,7 +79,6 @@ dependencies {
 	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
-	//modImplementation "top.theillusivec4.somnus:somnus-fabric:${project.somnus_version}"
 	modImplementation("com.github.virtuoel:pehkui:${project.pehkui_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
@@ -113,13 +88,14 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 
-
 	modImplementation "curse.maven:bewitchment-394915:${project.bewitchment_version}"
-	//include(modImplementation("io.github.ytg1234:fabric-recipe-conditions:${project.conditional_recipes_version}"))
 	modCompileOnly("squeek.appleskin:appleskin-fabric:${appleskin_version}:api") {
 		transitive = false
 	}
-	modRuntime "squeek.appleskin:appleskin-fabric:${appleskin_version}"
+	modCompileOnly("squeek.appleskin:appleskin-fabric:${appleskin_version}:api") {
+		transitive = false
+	}
+	modImplementation "maven.modrinth:midnightlib:${midnightlib_version}"
 }
 
 processResources {
