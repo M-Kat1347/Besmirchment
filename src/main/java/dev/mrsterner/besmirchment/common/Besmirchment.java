@@ -32,6 +32,7 @@ import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.render.LightmapTextureManager;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -67,6 +68,7 @@ public class Besmirchment implements ModInitializer {
                 ((LichAccessor) handler.player).updateCachedSouls();
             }
         });
+
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, b) -> {
             ((LichAccessor) newPlayer).updateCachedSouls();
             ((WerepyreAccessor) newPlayer).setWerepyreVariant(((WerepyreAccessor) oldPlayer).getWerepyreVariant());
