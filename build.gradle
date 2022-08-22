@@ -76,16 +76,12 @@ dependencies {
 	modImplementation "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
 	include "io.github.ladysnake:PlayerAbilityLib:${pal_version}"
 
-	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
-		exclude(group: "net.fabricmc.fabric-api")
-	}
 	modImplementation("com.github.virtuoel:pehkui:${project.pehkui_version}") {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 	modImplementation "io.github.ladysnake:impersonate:${impersonate_version}"
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 	modImplementation "com.github.emilyalexandra:trinkets:${trinkets_version}"
-	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 
 	modImplementation "curse.maven:bewitchment-394915:${project.bewitchment_version}"

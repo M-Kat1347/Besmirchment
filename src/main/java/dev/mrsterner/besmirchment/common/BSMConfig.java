@@ -1,10 +1,6 @@
 package dev.mrsterner.besmirchment.common;
 
 import eu.midnightdust.lib.config.MidnightConfig;
-import me.shedaniel.autoconfig.ConfigData;
-import me.shedaniel.autoconfig.annotation.Config;
-import me.shedaniel.autoconfig.annotation.ConfigEntry;
-import me.shedaniel.autoconfig.annotation.ConfigEntry.Gui.RequiresRestart;
 
 
 public class BSMConfig extends MidnightConfig {
