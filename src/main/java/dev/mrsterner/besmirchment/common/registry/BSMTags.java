@@ -13,4 +13,7 @@ public class BSMTags {
 
     public static TagKey<Block> GHOST_IMPASSABLE = TagKey.of(Registry.BLOCK_KEY, Besmirchment.id("ghost_impassable"));
 
+    public static TagKey<Block> GHOST_WHITELIST = TagKey.of(Registry.BLOCK_KEY, Besmirchment.id("ghost_whitelist"));
+
+
 }
