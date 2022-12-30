@@ -59,6 +59,10 @@ repositories {
 		name = "Bewitchment"
 		url = "https://www.cursemaven.com"
 	}
+	maven {
+		name = "Architectury"
+		url  = "https://maven.architectury.dev/"
+	}
 }
 
 dependencies {
@@ -83,7 +87,7 @@ dependencies {
 	modImplementation "vazkii.patchouli:Patchouli:${project.patchouli_version}"
 	modImplementation "com.github.emilyalexandra:trinkets:${trinkets_version}"
 
-
+	modLocalRuntime "dev.architectury:architectury-fabric:6.2.46"
 	modImplementation "curse.maven:bewitchment-394915:${project.bewitchment_version}"
 	modCompileOnly("squeek.appleskin:appleskin-fabric:${appleskin_version}:api") {
 		transitive = false
@@ -92,6 +96,9 @@ dependencies {
 		transitive = false
 	}
 	modImplementation "maven.modrinth:midnightlib:${midnightlib_version}"
+
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-api-fabric:${rei_version}"
+	modRuntimeOnly "com.terraformersmc:modmenu:${mod_menu_version}"
 }
 
 processResources {
