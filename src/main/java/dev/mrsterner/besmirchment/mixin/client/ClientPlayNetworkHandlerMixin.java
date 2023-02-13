@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
@@ -23,9 +24,8 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientWorld world;
 
-    @Inject(method = "onEntitySpawn", at = @At("TAIL"))
-    private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo callbackInfo) {
-        EntityType<?> type = packet.getEntityTypeId();
+    @Inject(method = "onEntitySpawn", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void onEntitySpawn(EntitySpawnS2CPacket packet, CallbackInfo callbackInfo, EntityType<?> type) {
         double x = packet.getX();
         double y = packet.getY();
         double z = packet.getZ();
@@ -41,8 +41,8 @@ public class ClientPlayNetworkHandlerMixin {
             int id = packet.getId();
             entity.updateTrackedPosition(x, y, z);
             entity.refreshPositionAfterTeleport(x, y, z);
-            entity.prevPitch = (float) (packet.getPitch() * 360) / 256f;
-            entity.prevYaw = (float) (packet.getYaw() * 360) / 256f;
+            entity.setPitch((packet.getPitch() * 360F) / 256F);
+            entity.setYaw((packet.getYaw() * 360F) / 256F);
             entity.setId(id);
             entity.setUuid(packet.getUuid());
             world.addEntity(id, entity);
