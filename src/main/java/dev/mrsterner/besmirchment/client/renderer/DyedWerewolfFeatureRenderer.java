@@ -14,7 +14,6 @@ import net.minecraft.client.render.entity.feature.FeatureRendererContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class DyedWerewolfFeatureRenderer extends FeatureRenderer<WerewolfEntity, WerewolfEntityModel<WerewolfEntity>> {
@@ -28,11 +27,11 @@ public class DyedWerewolfFeatureRenderer extends FeatureRenderer<WerewolfEntity,
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, WerewolfEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
         int color = ((DyeableEntity) entity).getColor();
         if (color > -1) {
-            Vec3f rgb = new Vec3f(Vec3d.unpackRgb(color));
-            render(this.getContextModel(), this.getContextModel(), TINTED_TEXTURE, matrices, vertexConsumers, light, entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch, tickDelta, rgb.getX(), rgb.getY(), rgb.getZ());
+            Vec3d rgb = (Vec3d.unpackRgb(color));
+            render(this.getContextModel(), this.getContextModel(), TINTED_TEXTURE, matrices, vertexConsumers, light, entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch, tickDelta, (float) rgb.getX(),(float) rgb.getY(),(float) rgb.getZ());
         }else if(color == WitchyDyeItem.FUNNI_NUMBER){
-            Vec3f rgb = new Vec3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB((animationProgress % 100) / 100F, 1,1)));
-            render(this.getContextModel(), this.getContextModel(), TINTED_TEXTURE, matrices, vertexConsumers, light, entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch, tickDelta, rgb.getX(), rgb.getY(), rgb.getZ());
+            Vec3d rgb = Vec3d.unpackRgb(BSMUtil.HSBtoRGB((animationProgress % 100) / 100F, 1,1));
+            render(this.getContextModel(), this.getContextModel(), TINTED_TEXTURE, matrices, vertexConsumers, light, entity, limbAngle, limbDistance, animationProgress, headYaw, headPitch, tickDelta, (float) rgb.getX(), (float)rgb.getY(), (float)rgb.getZ());
         }
     }
 }

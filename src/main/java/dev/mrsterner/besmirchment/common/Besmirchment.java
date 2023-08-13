@@ -16,13 +16,12 @@ import moriyashiine.bewitchment.api.event.AllowVampireBurn;
 import moriyashiine.bewitchment.api.event.BloodSuckEvents;
 import moriyashiine.bewitchment.api.event.ReviveEvents;
 import moriyashiine.bewitchment.api.registry.Transformation;
-import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.client.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.BWConfig;
 import moriyashiine.bewitchment.common.entity.living.VampireEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.*;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -33,8 +32,6 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -42,7 +39,6 @@ import net.minecraft.util.Identifier;
 
 public class Besmirchment implements ModInitializer {
     public static final String MODID = "besmirchment";
-    public static final ItemGroup BESMIRCHMENT = FabricItemGroupBuilder.create(Besmirchment.id("group")).icon(() -> new ItemStack(BSMObjects.FINAL_BROOM)).build();
 
     @Override
     public void onInitialize() {
@@ -82,7 +78,7 @@ public class Besmirchment implements ModInitializer {
                             BloodSuckEvents.ON_BLOOD_SUCK.invoker().onBloodSuck(player, (LivingEntity) entity, toGive);
                             world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_HONEY_BOTTLE_DRINK, player.getSoundCategory(), 1, 0.5f);
                             if (!((LivingEntity) entity).isSleeping() || entityBlood.getBlood() < entityBlood.MAX_BLOOD / 2) {
-                                entity.damage(BWDamageSources.VAMPIRE, 2);
+                                entity.damage(BWDamageSources.create(world, BWDamageSources.VAMPIRE), 2);
                             }
                             playerBlood.fillBlood(toGive, false);
                             entityBlood.drainBlood(10, false);
@@ -116,7 +112,7 @@ public class Besmirchment implements ModInitializer {
                         transformationComponent.getTransformation().onAdded(playerEntity);
                         PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
                         SpawnSmokeParticlesPacket.send(playerEntity, playerEntity);
-                        playerEntity.world.playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
+                        playerEntity.getWorld().playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
                         int variant = -1;
                         if (source.getSource() instanceof WerepyreEntity) {
                             variant = source.getSource().getDataTracker().get(BWHostileEntity.VARIANT);

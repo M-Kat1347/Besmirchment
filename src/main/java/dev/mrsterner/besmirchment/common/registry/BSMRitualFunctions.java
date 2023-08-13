@@ -10,7 +10,7 @@ public class BSMRitualFunctions {
     public static final RitualFunction REACH_LICHDOM = new ReachLichdomRitualFunction();
 
     public static void init(){
-        BSMUtil.register(BWRegistries.RITUAL_FUNCTIONS, "color", COLOR);
-        BSMUtil.register(BWRegistries.RITUAL_FUNCTIONS, "reach_lichdom", REACH_LICHDOM);
+        BSMUtil.register(BWRegistries.RITUAL_FUNCTION, "color", COLOR);
+        BSMUtil.register(BWRegistries.RITUAL_FUNCTION, "reach_lichdom", REACH_LICHDOM);
     }
 }

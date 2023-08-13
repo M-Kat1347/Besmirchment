@@ -3,7 +3,6 @@ package dev.mrsterner.besmirchment.common.registry;
 import dev.mrsterner.besmirchment.common.BSMConfig;
 import dev.mrsterner.besmirchment.common.entity.*;
 import moriyashiine.bewitchment.common.entity.living.WerewolfEntity;
-import moriyashiine.bewitchment.mixin.SpawnRestrictionAccessor;
 import net.fabricmc.fabric.api.biome.v1.BiomeModifications;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
 import net.fabricmc.fabric.api.biome.v1.BiomeSelectors;
@@ -14,7 +13,7 @@ import net.minecraft.entity.EntityDimensions;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.SpawnRestriction;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 
@@ -31,17 +30,17 @@ public class BSMEntityTypes {
 
     public static final String BEELZEBUB_PLEDGE = "pledge.besmirchment.beelzebub";
     public static void init(){
-        BSMUtil.register(Registry.ENTITY_TYPE, "final_broom", FINAL_BROOM);
-        BSMUtil.register(Registry.ENTITY_TYPE, "witchy_dye", WITCHY_DYE);
-        BSMUtil.register(Registry.ENTITY_TYPE, "infectious_spit", INFECTIOUS_SPIT);
-        BSMUtil.register(Registry.ENTITY_TYPE, "werepyre", WEREPYRE);
+        BSMUtil.register(Registries.ENTITY_TYPE, "final_broom", FINAL_BROOM);
+        BSMUtil.register(Registries.ENTITY_TYPE, "witchy_dye", WITCHY_DYE);
+        BSMUtil.register(Registries.ENTITY_TYPE, "infectious_spit", INFECTIOUS_SPIT);
+        BSMUtil.register(Registries.ENTITY_TYPE, "werepyre", WEREPYRE);
         FabricDefaultAttributeRegistry.register(WEREPYRE, WerewolfEntity.createAttributes());
-        BSMUtil.register(Registry.ENTITY_TYPE, "beelzebub", BEELZEBUB);
+        BSMUtil.register(Registries.ENTITY_TYPE, "beelzebub", BEELZEBUB);
         FabricDefaultAttributeRegistry.register(BEELZEBUB, BeelzebubEntity.createAttributes());
         if (BSMConfig.werepyreWeight > 0) {
             if (registerEntitySpawn(BSMEntityTypes.WEREPYRE, BiomeSelectors.foundInOverworld().and(
                     context -> !context.getBiome().getSpawnSettings().getSpawnEntries(BSMEntityTypes.WEREPYRE.getSpawnGroup()).isEmpty()).and(BiomeSelectors.tag(ConventionalBiomeTags.TAIGA).or(BiomeSelectors.tag(ConventionalBiomeTags.FOREST))), BSMConfig.werepyreWeight, BSMConfig.werepyreMinGroupCount, BSMConfig.werepyreMaxGroupCount)) {
-                SpawnRestrictionAccessor.callRegister(BSMEntityTypes.WEREPYRE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WerepyreEntity::canSpawn);
+                SpawnRestriction.register(BSMEntityTypes.WEREPYRE, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, WerepyreEntity::canSpawn);
             }
         }
     }

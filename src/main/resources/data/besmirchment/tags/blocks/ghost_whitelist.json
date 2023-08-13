@@ -1,0 +1,20 @@
+{
+  "replace": false,
+  "values": [
+    "#dirt",
+    "#logs",
+    "#nylium",
+    "#planks",
+    "#stairs",
+    "#slabs",
+    "#terracotta",
+    "#walls",
+    "#wool",
+    "#snow",
+    "#ice",
+    "#base_stone_overworld",
+    "#base_stone_nether",
+    "#sand",
+    "gravel"
+  ]
+}

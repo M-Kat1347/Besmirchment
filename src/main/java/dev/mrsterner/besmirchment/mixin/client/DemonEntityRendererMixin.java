@@ -2,7 +2,7 @@ package dev.mrsterner.besmirchment.mixin.client;
 
 import dev.mrsterner.besmirchment.client.renderer.TamedDemonEntityRenderer;
 import moriyashiine.bewitchment.client.model.entity.living.DemonEntityModel;
-import moriyashiine.bewitchment.client.renderer.entity.living.DemonEntityRenderer;
+import moriyashiine.bewitchment.client.render.entity.living.DemonEntityRenderer;
 import moriyashiine.bewitchment.common.entity.living.DemonEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

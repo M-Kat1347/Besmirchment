@@ -19,7 +19,7 @@ import java.util.List;
 
 public class LichGemItem extends Item {
     public LichGemItem() {
-        super(new FabricItemSettings().group(Besmirchment.BESMIRCHMENT).maxCount(1).rarity(Rarity.UNCOMMON));
+        super(new FabricItemSettings().maxCount(1).rarity(Rarity.UNCOMMON));
     }
 
     @Override

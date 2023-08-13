@@ -34,7 +34,7 @@ public class BewitchmentAPIMixin {
     @Inject(method = "getTransformedPlayerEntity", at = @At("RETURN"), cancellable = true)
     private static void getTransformedPlayerEntity(PlayerEntity player, CallbackInfoReturnable<LivingEntity> cir){
         if (BSMTransformations.isWerepyre(player, false)){
-            WerepyreEntity entity = BSMEntityTypes.WEREPYRE.create(player.world);
+            WerepyreEntity entity = BSMEntityTypes.WEREPYRE.create(player.getWorld());
             entity.getDataTracker().set(BWHostileEntity.VARIANT, ((WerepyreAccessor) player).getWerepyreVariant());
             entity.setLastJumpTime(((WerepyreAccessor) player).getLastJumpTicks());
             entity.jumpBeginProgress = ((WerepyreAccessor) player).getLastJumpProgress();

@@ -21,8 +21,8 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
+import org.joml.Vector3f;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -71,7 +71,7 @@ public class InfectiousSpitEntity extends LlamaSpitEntity implements DyeableEnti
 
     @Override
     public void tick() {
-        if (world.isClient){
+        if (getWorld().isClient){
             this.spawnParticles(2);
         }
         super.tick();
@@ -81,7 +81,7 @@ public class InfectiousSpitEntity extends LlamaSpitEntity implements DyeableEnti
         super.onEntityHit(entityHitResult);
         Entity entity = this.getOwner();
         if (entity instanceof LivingEntity) {
-            entityHitResult.getEntity().damage(DamageSource.mobProjectile(this, (LivingEntity)entity).setProjectile(), 1.0F);
+            entityHitResult.getEntity().damage(getWorld().getDamageSources().mobProjectile(this, (LivingEntity)entity), 1.0F);
             if (entityHitResult.getEntity() instanceof LivingEntity){
                 LivingEntity hit = (LivingEntity) entityHitResult.getEntity();
                 for (StatusEffectInstance effect : effects) {
@@ -103,8 +103,9 @@ public class InfectiousSpitEntity extends LlamaSpitEntity implements DyeableEnti
             double b = (double)(j >> 0 & 255) / 255.0D;
 
             for(int k = 0; k < count; ++k) {
-                Vec3f rgb = new Vec3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB(random.nextFloat(), 1, 1)));
-                this.world.addParticle(new DustParticleEffect(rgb, 3), this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), getVelocity().x, getVelocity().y, getVelocity().z);
+                var v = Vec3d.unpackRgb(BSMUtil.HSBtoRGB(random.nextFloat(), 1, 1));
+                Vector3f rgb = new Vector3f((float) v.x, (float) v.y, (float) v.z);
+                this.getWorld().addParticle(new DustParticleEffect(rgb, 3), this.getParticleX(0.5D), this.getRandomBodyY(), this.getParticleZ(0.5D), getVelocity().x, getVelocity().y, getVelocity().z);
             }
 
         }

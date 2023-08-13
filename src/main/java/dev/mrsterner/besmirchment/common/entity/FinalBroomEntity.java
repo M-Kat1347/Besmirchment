@@ -21,10 +21,10 @@ public class FinalBroomEntity extends DragonsBloodBroomEntity {
     @Override
     public void tick() {
         super.tick();
-        if (age % 20 == 0 && getPrimaryPassenger() instanceof LivingEntity && !((LivingEntity) getPrimaryPassenger()).hasStatusEffect(StatusEffects.RESISTANCE)){
-            ((LivingEntity) getPrimaryPassenger()).addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 40, 1, true, false, false));
+        if (age % 20 == 0 && getFirstPassenger() instanceof LivingEntity && !((LivingEntity) getFirstPassenger()).hasStatusEffect(StatusEffects.RESISTANCE)){
+            ((LivingEntity) getFirstPassenger()).addStatusEffect(new StatusEffectInstance(StatusEffects.RESISTANCE, 40, 1, true, false, false));
         }
-        List<Entity> list = this.world.getOtherEntities(this, this.getBoundingBox().expand(0.20000000298023224D, -0.009999999776482582D, 0.20000000298023224D), EntityPredicates.canBePushedBy(this));
+        List<Entity> list = this.getWorld().getOtherEntities(this, this.getBoundingBox().expand(0.20000000298023224D, -0.009999999776482582D, 0.20000000298023224D), EntityPredicates.canBePushedBy(this));
         if (!list.isEmpty()) {
             for (Entity entity : list) {
                 if (!entity.hasPassenger(this)) {
@@ -37,7 +37,7 @@ public class FinalBroomEntity extends DragonsBloodBroomEntity {
     @Override
     public void pushAwayFrom(Entity entity) {
         if (entity instanceof LivingEntity && getVelocity().length() > 1){
-            entity.damage(DamageSource.FLY_INTO_WALL, (float) Math.min(getVelocity().lengthSquared(), 10));
+            entity.damage(entity.getWorld().getDamageSources().flyIntoWall(), (float) Math.min(getVelocity().lengthSquared(), 10));
             ((LivingEntity)entity).takeKnockback((float) getVelocity().length() * 0.5F, MathHelper.sin(this.getYaw() * 0.017453292F), (-MathHelper.cos(this.getYaw() * 0.017453292F)));
             this.setVelocity(this.getVelocity().multiply(0.6D, 1.0D, 0.6D));
         }

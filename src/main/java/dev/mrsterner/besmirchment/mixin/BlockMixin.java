@@ -24,7 +24,7 @@ public class BlockMixin {
     private static void getDroppedStacks(BlockState state, ServerWorld world, BlockPos pos, BlockEntity blockEntity, Entity entity, ItemStack stack, CallbackInfoReturnable<List<ItemStack>> cir) {
         if (entity instanceof LivingEntity) {
             if (state.getBlock() == BWObjects.GARLIC_CROP && BewitchmentAPI.isVampire(entity, true)) {
-                entity.damage(DamageSource.MAGIC, ((LivingEntity) entity).getMaxHealth() * 1 / 2f);
+                entity.damage(entity.getWorld().getDamageSources().magic(), ((LivingEntity) entity).getMaxHealth() * 1 / 2f);
             }
         }
     }

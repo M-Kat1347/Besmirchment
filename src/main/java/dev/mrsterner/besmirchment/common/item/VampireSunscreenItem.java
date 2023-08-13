@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 
 public class VampireSunscreenItem extends Item {
     public VampireSunscreenItem() {
-        super(new FabricItemSettings().group(Besmirchment.BESMIRCHMENT).maxCount(16));
+        super(new FabricItemSettings().maxCount(16));
     }
 
     public ItemStack finishUsing(ItemStack stack, World world, LivingEntity user) {

@@ -5,6 +5,9 @@ import dev.mrsterner.besmirchment.common.block.NoClipContext;
 import dev.mrsterner.besmirchment.common.registry.BSMTags;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.ShapeContext;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -18,19 +21,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class AbstractBlockStateMixin {
     @Inject(method = "getCollisionShape(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Lnet/minecraft/util/shape/VoxelShape;", at = @At("HEAD"), cancellable = true)
     private void getCollisionShape(BlockView world, BlockPos pos, ShapeContext context, CallbackInfoReturnable<VoxelShape> cir){
-        if (context instanceof NoClipContext && ((NoClipContext) context).bsm_isNoClipping()
-        && !world.getBlockState(pos).isIn(BSMTags.GHOST_IMPASSABLE))
-        {
-
-            if(BSMConfig.enablePhasingWhitelist)
-            {
+        if (context instanceof NoClipContext && ((NoClipContext) context).bsm_isNoClipping() && !world.getBlockState(pos).isIn(BSMTags.GHOST_IMPASSABLE)) {
+            if(BSMConfig.enablePhasingWhitelist) {
                 if(world.getBlockState(pos).isIn(BSMTags.GHOST_WHITELIST)) {
                     cir.setReturnValue(VoxelShapes.empty());
                 }
             } else {
                 cir.setReturnValue(VoxelShapes.empty());
             }
-
         }
     }
 }

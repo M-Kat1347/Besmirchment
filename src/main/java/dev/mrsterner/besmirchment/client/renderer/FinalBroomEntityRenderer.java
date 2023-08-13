@@ -13,8 +13,8 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 
 @Environment(EnvType.CLIENT)
 public class FinalBroomEntityRenderer extends BroomEntityRenderer<FinalBroomEntity> {
@@ -30,13 +30,13 @@ public class FinalBroomEntityRenderer extends BroomEntityRenderer<FinalBroomEnti
     @Override
     public void render(FinalBroomEntity entity, float yaw, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
         super.render(entity, yaw, tickDelta, matrices, vertexConsumers, light);
-        Vec3f rgb = new Vec3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB(((entity.age + tickDelta) % 100) / 100F, 1, 1)));
+        var rgb = (Vec3d.unpackRgb(BSMUtil.HSBtoRGB(((entity.age + tickDelta) % 100) / 100F, 1, 1)));
         matrices.push();
         matrices.translate(0.0D, -1.0D, 0.0D);
-        matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90.0F - yaw + 90.0F));
+        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90.0F - yaw + 90.0F));
         matrices.translate(0.0D, 0.0D, -0.35D);
         bristleModel.setAngles(entity, yaw, 0.0F, (float)(entity.age + entity.getId()), 0.0F, 0.0F);
-        bristleModel.render(matrices, vertexConsumers.getBuffer(bristleModel.getLayer(TEXTURE_BRISTLES)), 15728640, OverlayTexture.DEFAULT_UV, rgb.getX(), rgb.getY(), rgb.getZ(), 1.0F);
+        bristleModel.render(matrices, vertexConsumers.getBuffer(bristleModel.getLayer(TEXTURE_BRISTLES)), 15728640, OverlayTexture.DEFAULT_UV, (float)rgb.getX(), (float)rgb.getY(),(float) rgb.getZ(), 1.0F);
         matrices.pop();
     }
 

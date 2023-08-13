@@ -111,8 +111,8 @@ public class BesmirchmentClient implements ClientModInitializer {
             double y = player.getEyeY() + (double)(((float)((i >> 1) % 2) - 0.5F) * 0.1F);
             double z = player.getZ() + (double)(((float)((i >> 2) % 2) - 0.5F) * player.getWidth() * 0.8F);
             mutable.set(x, y, z);
-            BlockState blockState = player.world.getBlockState(mutable);
-            if (blockState.getRenderType() != BlockRenderType.INVISIBLE && blockState.shouldBlockVision(player.world, mutable)) {
+            BlockState blockState = player.getWorld().getBlockState(mutable);
+            if (blockState.getRenderType() != BlockRenderType.INVISIBLE && blockState.shouldBlockVision(player.getWorld(), mutable)) {
                 return true;
             }
         }

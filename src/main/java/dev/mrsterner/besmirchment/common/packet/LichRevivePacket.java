@@ -19,7 +19,7 @@ import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
+import org.joml.Vector3f;
 
 public class LichRevivePacket {
     public static final Identifier ID = Besmirchment.id("lich_revive");
@@ -42,8 +42,9 @@ public class LichRevivePacket {
                 Entity entity = world.getEntityById(id);
                 if (entity != null) {
                     for (int i = 0; i < 25; i++) {
-                        Vec3f rgb = new Vec3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB(world.random.nextFloat(), 1, 1)));
-                        entity.world.addParticle(new DustParticleEffect(rgb,2F), entity.getParticleX(1), entity.getRandomBodyY(), entity.getParticleZ(1), 0, 0, 0);
+                        var v = Vec3d.unpackRgb(BSMUtil.HSBtoRGB(world.random.nextFloat(), 1, 1));
+                        Vector3f rgb = new Vector3f((float)v.x,(float)v.y,(float)v.z);
+                        entity.getWorld().addParticle(new DustParticleEffect(rgb,2F), entity.getParticleX(1), entity.getRandomBodyY(), entity.getParticleZ(1), 0, 0, 0);
                     }
                     if (entity.equals(client.player)){
                         client.player.playSound(BSMSounds.LICH_REVIVE, 1, 1);

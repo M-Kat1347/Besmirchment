@@ -21,7 +21,7 @@ public class BSMConfig extends MidnightConfig {
     @Entry
     public static boolean enableLichdom = true;
     @Entry
-    public static boolean enablePhasingWhitelist = false;
+    public static boolean enablePhasingWhitelist = true;
     @Entry
     public static int werepyreWeight = 10;
     @Entry

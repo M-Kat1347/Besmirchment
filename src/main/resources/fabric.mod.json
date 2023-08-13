@@ -15,7 +15,7 @@
   "contributors": [
     ""
   ],
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/besmirchment/icon.png",
 
   "environment": "*",
@@ -41,9 +41,9 @@
   },
   "accessWidener": "besmirchment.accesswidener",
   "depends": {
-    "bewitchment": ">=1.19-5",
+    "bewitchment": ">=1.20-3",
     "fabricloader": ">=0.14.9",
     "fabric": ">=0.59.0",
-    "minecraft": "~1.19.2"
+    "minecraft": "~1.20.1"
   }
 }

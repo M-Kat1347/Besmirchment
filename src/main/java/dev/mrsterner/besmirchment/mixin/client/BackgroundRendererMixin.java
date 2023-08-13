@@ -16,9 +16,6 @@ public abstract class BackgroundRendererMixin {
         if (BesmirchmentClient.getFogTicks() > 0){
             RenderSystem.setShaderFogStart(0);
             RenderSystem.setShaderFogEnd(4);
-            //TODO
-            //RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-            //RenderSystem.setupNvFogDistance();
             ci.cancel();
             BesmirchmentClient.fogTicks--;
         }

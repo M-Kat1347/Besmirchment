@@ -4,12 +4,11 @@ import com.google.common.collect.Sets;
 import dev.mrsterner.besmirchment.common.registry.BSMEntityTypes;
 import dev.mrsterner.besmirchment.common.registry.BSMSounds;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.entity.Pledgeable;
-import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.client.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.misc.BWUtil;
-import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
+import moriyashiine.bewitchment.common.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.*;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.block.BlockState;
@@ -77,7 +76,7 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
     @Override
     public void tick() {
         super.tick();
-        if (!world.isClient) {
+        if (!getWorld().isClient) {
             bossBar.setPercent(getHealth() / getMaxHealth());
             LivingEntity target = getTarget();
             int timer = age + getId();
@@ -108,12 +107,12 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
     }
 
     private void spitAt(LivingEntity target) {
-        InfectiousSpitEntity spit = BSMEntityTypes.INFECTIOUS_SPIT.create(world);
+        InfectiousSpitEntity spit = BSMEntityTypes.INFECTIOUS_SPIT.create(getWorld());
         spit.init(this, target, selectPotionEffects());
         if (!this.isSilent()) {
-            this.world.playSound(null, this.getX(), this.getY(), this.getZ(), BSMSounds.ENTITY_GENERIC_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
+            this.getWorld().playSound(null, this.getX(), this.getY(), this.getZ(), BSMSounds.ENTITY_GENERIC_SPIT, this.getSoundCategory(), 1.0F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.2F);
         }
-        this.world.spawnEntity(spit);
+        this.getWorld().spawnEntity(spit);
         timeSinceLastAttack = 0;
     }
 
@@ -192,14 +191,14 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
         if (isAlive() && getTarget() == null && BewitchmentAPI.isWerewolf(player, true)) {
             ItemStack stack = player.getStackInHand(hand);
             if (stack.getItem() == BWObjects.GARLIC_BREAD) {
-                boolean client = world.isClient;
+                boolean client = getWorld().isClient;
                 if (!client) {
                     if (!player.isCreative()) {
                         stack.decrement(1);
                     }
                     PlayerLookup.tracking(player).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, player));
                     SpawnSmokeParticlesPacket.send(player, player);
-                    world.playSound(null, getBlockPos(), BWSoundEvents.ENTITY_GENERIC_PLING, player.getSoundCategory(), 1, 1);
+                    getWorld().playSound(null, getBlockPos(), BWSoundEvents.ENTITY_GENERIC_PLING, player.getSoundCategory(), 1, 1);
                     if (BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm()) {
                         TransformationAbilityPacket.useAbility(player, true);
                     }
@@ -259,7 +258,7 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
 
     @Override
     public void setTarget(@Nullable LivingEntity target) {
-        if (world.isDay()) {
+        if (getWorld().isDay()) {
             target = null;
         }
         super.setTarget(target);

@@ -37,7 +37,7 @@ public class SparklePacket {
             if (world != null) {
                 Entity entity = world.getEntityById(id);
                 if (entity != null) {
-                    entity.world.addParticle(ParticleTypes.END_ROD, entity.getParticleX(1), entity.getRandomBodyY(), entity.getParticleZ(1), 0, 0, 0);
+                    entity.getWorld().addParticle(ParticleTypes.END_ROD, entity.getParticleX(1), entity.getRandomBodyY(), entity.getParticleZ(1), 0, 0, 0);
                 }
             }
         });

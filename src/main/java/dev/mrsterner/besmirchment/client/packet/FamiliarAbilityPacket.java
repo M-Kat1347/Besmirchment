@@ -68,7 +68,7 @@ public class FamiliarAbilityPacket {
 
     public static void useAbility(PlayerEntity player){
         EntityType<?> familiar = BewitchmentAPI.getFamiliar(player);
-        World world = player.world;
+        World world = player.getWorld();
         if (familiar == EntityType.PARROT && !player.hasStatusEffect(BWStatusEffects.POLYMORPH)){
             Vec3d vec3d = player.getCameraPosVec(1);
             Vec3d vec3d2 = player.getRotationVec(1);
@@ -111,10 +111,10 @@ public class FamiliarAbilityPacket {
             .map(instance -> new StatusEffectInstance(instance.getEffectType(), 200, instance.getAmplifier())).collect(Collectors.toSet()));
             spit.setVelocity(player, player.getPitch(), player.headYaw, 0, 2, 0);
             if (!player.isSilent()) {
-                player.world.playSound(null, player.getX(), player.getY(), player.getZ(), BSMSounds.ENTITY_GENERIC_SPIT, player.getSoundCategory(), 1.0F, 1.0F + (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F);
+                player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), BSMSounds.ENTITY_GENERIC_SPIT, player.getSoundCategory(), 1.0F, 1.0F + (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.2F);
             }
 
-            player.world.spawnEntity(spit);
+            player.getWorld().spawnEntity(spit);
         }
         if (player.canModifyBlocks()) {
             if (EntityType.SHEEP.equals(familiar) && (player.getHungerManager().isNotFull() || player.isCreative())) {

@@ -22,18 +22,18 @@ public class ClientPlayNetworkHandlerMixin {
     @Shadow
     private ClientWorld world;
 
-    @ModifyReceiver(method = "onEntitySpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntitySpawnS2CPacket;getEntityTypeId()Lnet/minecraft/entity/EntityType;"))
+    @ModifyReceiver(method = "onEntitySpawn", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/EntitySpawnS2CPacket;getEntityType()Lnet/minecraft/entity/EntityType;"))
     private EntitySpawnS2CPacket onEntitySpawn(EntitySpawnS2CPacket packet, EntitySpawnS2CPacket packet2) {
         double x = packet.getX();
         double y = packet.getY();
         double z = packet.getZ();
 
         Entity entity = null;
-        if (packet2.getEntityTypeId() == BSMEntityTypes.FINAL_BROOM) {
+        if (packet2.getEntityType() == BSMEntityTypes.FINAL_BROOM) {
             entity = new FinalBroomEntity(BSMEntityTypes.FINAL_BROOM, world);
-        }else if (packet2.getEntityTypeId() == BSMEntityTypes.WITCHY_DYE){
+        }else if (packet2.getEntityType() == BSMEntityTypes.WITCHY_DYE){
             entity = new WitchyDyeEntity(BSMEntityTypes.WITCHY_DYE, world);
-        }else if (packet2.getEntityTypeId() == BSMEntityTypes.INFECTIOUS_SPIT){
+        }else if (packet2.getEntityType() == BSMEntityTypes.INFECTIOUS_SPIT){
             entity = new InfectiousSpitEntity(world, x, y, z, packet.getVelocityX(), packet.getVelocityY(), packet.getVelocityZ());
         }
         if (entity != null) {

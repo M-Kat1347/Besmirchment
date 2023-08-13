@@ -23,7 +23,8 @@
     "TaglockCraftingRecipeMixin",
     "TransformationAbilityPacketMixin",
     "VillagerEntityMixin",
-    "VillagerHostilesSensorMixin"
+    "VillagerHostilesSensorMixin",
+    "WerepyreHackMixin"
   ],
   "client": [
     "client.BackgroundRendererMixin",

@@ -22,24 +22,16 @@ public class BSMConditions {
     }
 
     public static boolean getOption(String key){
-        switch (key) {
-            case "final_broom":
-                return BSMConfig.enableFinalBroom;
-            case "witchy_dye":
-                return BSMConfig.enableWitchyDye;
-            case "elite_coffin":
-                return BSMConfig.enableEliteCoffin;
-            case "love_potion":
-                return BSMConfig.enableLovePotion;
-            case "universal_familiars":
-                return BSMConfig.universalFamiliars;
-            case "sunscreen":
-                return BSMConfig.enableSunscreen;
-            case "lichdom":
-                return BSMConfig.enableLichdom;
-            case "beelzebub":
-                return BSMConfig.enableBeelzebub;
-        }
-        return false;
+        return switch (key) {
+            case "final_broom" -> BSMConfig.enableFinalBroom;
+            case "witchy_dye" -> BSMConfig.enableWitchyDye;
+            case "elite_coffin" -> BSMConfig.enableEliteCoffin;
+            case "love_potion" -> BSMConfig.enableLovePotion;
+            case "universal_familiars" -> BSMConfig.universalFamiliars;
+            case "sunscreen" -> BSMConfig.enableSunscreen;
+            case "lichdom" -> BSMConfig.enableLichdom;
+            case "beelzebub" -> BSMConfig.enableBeelzebub;
+            default -> false;
+        };
     }
 }

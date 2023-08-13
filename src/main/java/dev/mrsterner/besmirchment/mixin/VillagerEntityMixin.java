@@ -1,14 +1,12 @@
 package dev.mrsterner.besmirchment.mixin;
 
 import dev.mrsterner.besmirchment.common.BSMConfig;
-import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.WerepyreEntity;
 import dev.mrsterner.besmirchment.common.entity.interfaces.VillagerWerepyreAccessor;
 import dev.mrsterner.besmirchment.common.registry.BSMEntityTypes;
 import dev.mrsterner.besmirchment.common.registry.BSMStatusEffects;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.component.CursesComponent;
-import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.client.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -50,18 +48,18 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void tick(CallbackInfo callbackInfo) {
-        if (!world.isClient && storedWerepyre != null) {
+        if (!getWorld().isClient && storedWerepyre != null) {
             if (despawnTimer > 0) {
                 despawnTimer--;
                 if (despawnTimer == 0) {
                     remove(RemovalReason.DISCARDED);
                 }
             }
-            if (age % 20 == 0 && world.isNight() && BewitchmentAPI.getMoonPhase(world) == 0 && world.isSkyVisible(getBlockPos())) {
-                WerepyreEntity entity = BSMEntityTypes.WEREPYRE.create(world);
+            if (age % 20 == 0 && getWorld().isNight() && BewitchmentAPI.getMoonPhase(getWorld()) == 0 && getWorld().isSkyVisible(getBlockPos())) {
+                WerepyreEntity entity = BSMEntityTypes.WEREPYRE.create(getWorld());
                 if (entity != null) {
                     PlayerLookup.tracking(this).forEach(player -> SpawnSmokeParticlesPacket.send(player, this));
-                    world.playSound(null, getX(), getY(), getZ(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, getSoundCategory(), getSoundVolume(), getSoundPitch());
+                    getWorld().playSound(null, getX(), getY(), getZ(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, getSoundCategory(), getSoundVolume(), getSoundPitch());
                     entity.readNbt(storedWerepyre);
                     entity.updatePositionAndAngles(getX(), getY(), getZ(), random.nextFloat() * 360, 0);
                     entity.setHealth(entity.getMaxHealth() * (getHealth() / getMaxHealth()));
@@ -74,7 +72,7 @@ public abstract class VillagerEntityMixin extends MerchantEntity implements Vill
                         despawnTimer = 2400;
                     }
                     entity.storedVillager = writeNbt(new NbtCompound());
-                    world.spawnEntity(entity);
+                    getWorld().spawnEntity(entity);
                     remove(RemovalReason.DISCARDED);
                 }
             }

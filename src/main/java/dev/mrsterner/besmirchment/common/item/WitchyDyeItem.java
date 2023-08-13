@@ -2,20 +2,24 @@ package dev.mrsterner.besmirchment.common.item;
 
 import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.WitchyDyeEntity;
+import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.thrown.ThrownItemEntity;
 import net.minecraft.item.*;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
+import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
 import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.List;
 
 public class WitchyDyeItem extends Item implements DyeableItem {
     public static final int FUNNI_NUMBER = -69;
@@ -70,8 +74,9 @@ public class WitchyDyeItem extends Item implements DyeableItem {
         }
     }
 
-    @Override
+
     public void appendStacks(ItemGroup group, DefaultedList<ItemStack> stacks) {
+        /*TODO
         if (isIn(group)) {
             stacks.add(new ItemStack(this));
             for (DyeColor value : DyeColor.values()) {
@@ -83,5 +88,7 @@ public class WitchyDyeItem extends Item implements DyeableItem {
             stacks.add(stack);
 
         }
+
+         */
     }
 }

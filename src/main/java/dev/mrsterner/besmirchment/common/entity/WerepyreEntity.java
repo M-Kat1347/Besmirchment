@@ -2,7 +2,7 @@ package dev.mrsterner.besmirchment.common.entity;
 
 import dev.mrsterner.besmirchment.common.entity.interfaces.VillagerWerepyreAccessor;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.client.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
@@ -22,11 +22,11 @@ import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.world.*;
 import net.minecraft.world.biome.Biome;
 import org.jetbrains.annotations.Nullable;
@@ -46,14 +46,14 @@ public class WerepyreEntity extends BWHostileEntity {
 
     public void tick() {
         super.tick();
-        if (!world.isClient && world.isDay() && !world.isRaining() && world.isSkyVisible(getBlockPos())) {
+        if (!getWorld().isClient && getWorld().isDay() && !getWorld().isRaining() && getWorld().isSkyVisible(getBlockPos())) {
             setOnFireFor(8);
         }
-        if (storedVillager != null && age % 20 == 0 && (world.isDay() || BewitchmentAPI.getMoonPhase(world) != 0)) {
-            VillagerEntity entity = EntityType.VILLAGER.create(world);
+        if (storedVillager != null && age % 20 == 0 && (getWorld().isDay() || BewitchmentAPI.getMoonPhase(getWorld()) != 0)) {
+            VillagerEntity entity = EntityType.VILLAGER.create(getWorld());
             if (entity instanceof VillagerWerepyreAccessor) {
                 PlayerLookup.tracking(this).forEach(player -> SpawnSmokeParticlesPacket.send(player, this));
-                world.playSound(null, getX(), getY(), getZ(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, getSoundCategory(), getSoundVolume(), getSoundPitch());
+                getWorld().playSound(null, getX(), getY(), getZ(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, getSoundCategory(), getSoundVolume(), getSoundPitch());
                 entity.readNbt(storedVillager);
                 entity.updatePositionAndAngles(getX(), getY(), getZ(), random.nextFloat() * 360, 0);
                 entity.setHealth(entity.getMaxHealth() * (getHealth() / getMaxHealth()));
@@ -63,7 +63,7 @@ public class WerepyreEntity extends BWHostileEntity {
                 BWComponents.CURSES_COMPONENT.get(this).getCurses().clear();
                 BWComponents.CURSES_COMPONENT.get(this).getCurses().forEach(BWComponents.CURSES_COMPONENT.get(this)::addCurse);
                 ((VillagerWerepyreAccessor) entity).setStoredWerepyre(writeNbt(new NbtCompound()));
-                world.spawnEntity(entity);
+                getWorld().spawnEntity(entity);
                 remove(RemovalReason.DISCARDED);
             }
         }
@@ -75,7 +75,7 @@ public class WerepyreEntity extends BWHostileEntity {
         if (getLastJumpTime() < 200) {
             setLastJumpTime(getLastJumpTime() + 1);
         }
-        if (world.isClient) {
+        if (getWorld().isClient) {
             if (getLastJumpTime() > 20) {
                 if (jumpBeginProgress > 0) {
                     jumpBeginProgress -= 0.1;

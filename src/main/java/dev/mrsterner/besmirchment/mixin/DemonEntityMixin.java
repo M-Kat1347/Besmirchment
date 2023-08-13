@@ -99,10 +99,10 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
     private void interactMob(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         ItemStack itemStack = player.getStackInHand(hand);
         Item item = itemStack.getItem();
-        if (!this.world.isClient && this.isTamed() && player.isSneaking()) { //add guard mode instead ig?
-            if (world.random.nextFloat() < 0.1) {
+        if (!this.getWorld().isClient && this.isTamed() && player.isSneaking()) { //add guard mode instead ig?
+            if (getWorld().random.nextFloat() < 0.1) {
                 heal(2);
-                this.world.sendEntityStatus(this, (byte) 7);
+                this.getWorld().sendEntityStatus(this, (byte) 7);
             }
             if (item == Items.CAKE) {
                 heal(40);
@@ -110,7 +110,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
                 if (!player.getAbilities().creativeMode) {
                     itemStack.decrement(1);
                 }
-                this.world.sendEntityStatus(this, (byte) 7);
+                this.getWorld().sendEntityStatus(this, (byte) 7);
                 cir.setReturnValue(ActionResult.SUCCESS);
                 return;
             }
@@ -132,7 +132,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
             this.navigation.stop();
             this.setTarget(null);
             this.setSitting(true);
-            this.world.sendEntityStatus(this, (byte) 7);
+            this.getWorld().sendEntityStatus(this, (byte) 7);
             cir.setReturnValue(ActionResult.SUCCESS);
         }
     }
@@ -186,7 +186,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
             double d = this.random.nextGaussian() * 0.02D;
             double e = this.random.nextGaussian() * 0.02D;
             double f = this.random.nextGaussian() * 0.02D;
-            this.world.addParticle(particleEffect, this.getParticleX(1.0D), this.getRandomBodyY() + 0.5D, this.getParticleZ(1.0D), d, e, f);
+            this.getWorld().addParticle(particleEffect, this.getParticleX(1.0D), this.getRandomBodyY() + 0.5D, this.getParticleZ(1.0D), d, e, f);
         }
     }
 /*
@@ -253,7 +253,7 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
     public LivingEntity getOwner() {
         try {
             UUID uUID = this.getOwnerUuid();
-            return uUID == null ? null : this.world.getPlayerByUuid(uUID);
+            return uUID == null ? null : this.getWorld().getPlayerByUuid(uUID);
         } catch (IllegalArgumentException var2) {
             return null;
         }

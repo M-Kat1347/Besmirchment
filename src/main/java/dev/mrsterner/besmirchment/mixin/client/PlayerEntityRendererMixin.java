@@ -7,7 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -23,10 +23,10 @@ public class PlayerEntityRendererMixin {
         }
     }
 
-    @Inject(method = "setupTransforms", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lnet/minecraft/util/math/Quaternion;)V", ordinal = 2, shift = At.Shift.AFTER))
+    @Inject(method = "setupTransforms", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/util/math/MatrixStack;multiply(Lorg/joml/Quaternionf;)V", ordinal = 2, shift = At.Shift.AFTER))
     private void ghostRollLetsGoooo(AbstractClientPlayerEntity abstractClientPlayerEntity, MatrixStack matrixStack, float f, float g, float h, CallbackInfo ci) {
         if (BSMTransformations.isLich(abstractClientPlayerEntity, true) && ((LichRollAccessor) abstractClientPlayerEntity).getLastRollTicks() < 20){
-            matrixStack.multiply(Vec3f.POSITIVE_Y.getRadialQuaternion((float) ((((LichRollAccessor) abstractClientPlayerEntity).getLastRollTicks() + h) / 20 * Math.PI * 2)));
+            matrixStack.multiply(RotationAxis.POSITIVE_Y.rotation((float) ((((LichRollAccessor) abstractClientPlayerEntity).getLastRollTicks() + h) / 20 * Math.PI * 2)));
         }
     }
 }

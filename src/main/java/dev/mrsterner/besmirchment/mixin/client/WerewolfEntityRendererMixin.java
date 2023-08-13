@@ -5,7 +5,7 @@ import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.interfaces.DyeableEntity;
 import dev.mrsterner.besmirchment.common.item.WitchyDyeItem;
 import moriyashiine.bewitchment.client.model.entity.living.WerewolfEntityModel;
-import moriyashiine.bewitchment.client.renderer.entity.living.WerewolfEntityRenderer;
+import moriyashiine.bewitchment.client.render.entity.living.WerewolfEntityRenderer;
 import moriyashiine.bewitchment.common.entity.living.WerewolfEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

@@ -33,7 +33,7 @@ public class FleeEntityGoalMixin {
     @Inject(method = "canStart", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/entity/LivingEntity;squaredDistanceTo(Lnet/minecraft/entity/Entity;)D"), cancellable = true)
     private void canStart(CallbackInfoReturnable<Boolean> cir) {
         if (targetEntity == null && !(mob instanceof HostileEntity)){
-            targetEntity = mob.world.getClosestPlayer(TargetPredicate.createNonAttackable().setBaseMaxDistance(12).setPredicate(player -> BSMTransformations.isLich(player, false)), mob);
+            targetEntity = mob.getWorld().getClosestPlayer(TargetPredicate.createNonAttackable().setBaseMaxDistance(12).setPredicate(player -> BSMTransformations.isLich(player, false)), mob);
             if (targetEntity != null) {
                 Vec3d vec3d = NoPenaltyTargeting.find(this.mob, 16, 7);
                 if (vec3d == null || this.targetEntity.squaredDistanceTo(vec3d.x, vec3d.y, vec3d.z) < this.targetEntity.squaredDistanceTo(this.mob)) {

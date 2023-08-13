@@ -30,9 +30,9 @@ public class WitchyDyeEntity extends ThrownItemEntity {
 
     protected void onCollision(HitResult hitResult) {
         super.onCollision(hitResult);
-        if (!world.isClient) {
+        if (!getWorld().isClient) {
             Box box = this.getBoundingBox().expand(2.0D, 2.0D, 2.0D);
-            List<LivingEntity> list = this.world.getNonSpectatingEntities(LivingEntity.class, box);
+            List<LivingEntity> list = this.getWorld().getNonSpectatingEntities(LivingEntity.class, box);
             int color = getItem().hasNbt() && getItem().getNbt().contains("Color") ? getItem().getNbt().getInt("Color") : -1;
             for (LivingEntity livingEntity : list) {
                 if (livingEntity instanceof DyeableEntity){
@@ -54,7 +54,7 @@ public class WitchyDyeEntity extends ThrownItemEntity {
                     }
                 }
             }
-            this.world.syncWorldEvent(2007, this.getBlockPos(), BSMObjects.WITCHY_DYE.getColor(this.getItem()));
+            this.getWorld().syncWorldEvent(2007, this.getBlockPos(), BSMObjects.WITCHY_DYE.getColor(this.getItem()));
             this.remove(RemovalReason.DISCARDED);
         }
     }

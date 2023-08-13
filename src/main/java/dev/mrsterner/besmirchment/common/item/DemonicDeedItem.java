@@ -18,7 +18,7 @@ import java.util.List;
 
 public class DemonicDeedItem extends Item {
     public DemonicDeedItem() {
-        super(new FabricItemSettings().group(Besmirchment.BESMIRCHMENT).maxCount(1).rarity(Rarity.RARE).fireproof().maxDamage(20));
+        super(new FabricItemSettings().maxCount(1).rarity(Rarity.RARE).fireproof().maxDamage(20));
     }
 
     @Override

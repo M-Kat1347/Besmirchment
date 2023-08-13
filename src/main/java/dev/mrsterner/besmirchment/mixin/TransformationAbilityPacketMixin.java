@@ -5,9 +5,8 @@ import dev.mrsterner.besmirchment.common.registry.BSMTransformations;
 import dev.mrsterner.besmirchment.common.transformation.LichAccessor;
 import dev.mrsterner.besmirchment.common.transformation.LichLogic;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.component.TransformationComponent;
-import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
-import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
+import moriyashiine.bewitchment.client.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.common.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWScaleTypes;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
@@ -47,7 +46,7 @@ public class TransformationAbilityPacketMixin {
     @Inject(method = "useAbility", at = @At(value = "HEAD"), cancellable = true)
     private static void useAbility(PlayerEntity player, boolean forced, CallbackInfo ci){
         if (BWComponents.TRANSFORMATION_COMPONENT.get(player).getTransformation() == BSMTransformations.LICH){
-            World world = player.world;
+            World world = player.getWorld();
             boolean isInAlternateForm = BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm();
             if (isInAlternateForm || BewitchmentAPI.drainMagic(player, 10, true)) {
                 world.playSound(null, player.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, player.getSoundCategory(), 1.0F, 1.0F);
@@ -56,7 +55,7 @@ public class TransformationAbilityPacketMixin {
             }
         }
         if (BWComponents.TRANSFORMATION_COMPONENT.get(player).getTransformation() == BSMTransformations.WEREPYRE && (forced || BSMTransformations.hasWerepyrePledge(player))){
-            World world = player.world;
+            World world = player.getWorld();
             boolean isInAlternateForm = BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm();
             ScaleData width = BWScaleTypes.MODIFY_WIDTH_TYPE.getScaleData(player);
             ScaleData height = BWScaleTypes.MODIFY_HEIGHT_TYPE.getScaleData(player);

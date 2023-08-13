@@ -30,7 +30,7 @@ import net.minecraft.world.explosion.Explosion;
 
 public class ScrollOfTormentItem extends Item {
     public ScrollOfTormentItem() {
-        super(new FabricItemSettings().group(Besmirchment.BESMIRCHMENT).maxCount(1).rarity(Rarity.UNCOMMON).fireproof());
+        super(new FabricItemSettings().maxCount(1).rarity(Rarity.UNCOMMON).fireproof());
     }
 
     @Override
@@ -38,13 +38,13 @@ public class ScrollOfTormentItem extends Item {
         if (!world.isClient && BSMConfig.enableBeelzebub && user instanceof PlayerEntity && BewitchmentAPI.drainMagic((PlayerEntity) user, 1, false)) {
             EntityHitResult hit = BSMUtil.hitscanEntity(world, user, 8, (target) -> target instanceof LivingEntity && !target.isSpectator() && user.canSee(target));
             if (hit != null && hit.getEntity() instanceof PigEntity) {
-                world.createExplosion(hit.getEntity(), DamageSource.MAGIC, null, hit.getPos().x, hit.getPos().y, hit.getPos().z, 1, true, Explosion.DestructionType.NONE);
+                world.createExplosion(hit.getEntity(), world.getDamageSources().magic(), null, hit.getPos().x, hit.getPos().y, hit.getPos().z, 1, true, World.ExplosionSourceType.NONE);
                 LightningEntity lightning = EntityType.LIGHTNING_BOLT.create(world);
                 lightning.setPosition(hit.getPos().x, hit.getPos().y, hit.getPos().z);
                 world.spawnEntity(lightning);
                 BeelzebubEntity beelzebub = BSMEntityTypes.BEELZEBUB.create(world);
                 beelzebub.updatePositionAndAngles(hit.getPos().x, hit.getPos().y, hit.getPos().z, user.getRandom().nextFloat() * 360, 0);
-                hit.getEntity().damage(new BWDamageSources.MagicPlayer(user), 42069);
+                hit.getEntity().damage(BWDamageSources.create(world, BWDamageSources.MAGIC_COPY), 42069);
                 world.spawnEntity(beelzebub);
                 stack.decrement(1);
             }

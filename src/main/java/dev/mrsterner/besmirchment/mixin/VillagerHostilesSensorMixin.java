@@ -25,8 +25,6 @@ public class VillagerHostilesSensorMixin {
         }
     }
 
-
-
     @Inject(method = "isCloseEnoughForDanger", at = @At("HEAD"), cancellable = true)
     private void getNearestHostile(LivingEntity villager, LivingEntity target, CallbackInfoReturnable<Boolean> cir){
         if (target instanceof PlayerEntity player && BSMTransformations.isLich(player, false)) {

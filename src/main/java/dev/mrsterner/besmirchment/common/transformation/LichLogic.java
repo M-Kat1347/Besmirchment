@@ -144,8 +144,8 @@ public class LichLogic {
             if (lich instanceof PlayerEntity player && BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm()){
                 BWComponents.TRANSFORMATION_COMPONENT.get(player).setAlternateForm(false);
             }
-            if (lich instanceof ServerPlayerEntity && (silver || source.isOutOfWorld() || (lastRevive < 600 && lich.isSneaking()))) {
-                if (!phylactery.getLeft().equals(lich.world)) {
+            if (lich instanceof ServerPlayerEntity && (silver || lich.getWorld().getDamageSources().outOfWorld() == source || (lastRevive < 600 && lich.isSneaking()))) {
+                if (!phylactery.getLeft().equals(lich.getWorld())) {
                     ((ServerPlayerEntity) lich).teleport(phylactery.getLeft(), lich.getX(), lich.getY(), lich.getZ(), lich.getYaw(), lich.getPitch());
                 }
                 BWUtil.attemptTeleport(lich, phylactery.getRight().getPos(), 2, false);
@@ -157,8 +157,8 @@ public class LichLogic {
     }
 
     public static Pair<ServerWorld, PhylacteryBlockEntity> getPhylactery(LivingEntity player) {
-        if (player.world instanceof ServerWorld) {
-            for (ServerWorld serverWorld : player.world.getServer().getWorlds()) {
+        if (player.getWorld() instanceof ServerWorld) {
+            for (ServerWorld serverWorld : player.getWorld().getServer().getWorlds()) {
                 BSMWorldState worldState = BSMWorldState.get(serverWorld);
                 if (worldState.phylacteries.containsKey(player.getUuid())) {
                     BlockEntity entity = serverWorld.getBlockEntity(worldState.phylacteries.get(player.getUuid()));

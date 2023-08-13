@@ -1,5 +1,6 @@
 package dev.mrsterner.besmirchment.mixin;
 
+import com.llamalad7.mixinextras.injector.WrapWithCondition;
 import dev.mrsterner.besmirchment.client.renderer.LichRollAccessor;
 import dev.mrsterner.besmirchment.common.block.entity.PhylacteryBlockEntity;
 import dev.mrsterner.besmirchment.common.entity.LichGemItem;
@@ -12,16 +13,14 @@ import dev.mrsterner.besmirchment.common.transformation.LichAccessor;
 import dev.mrsterner.besmirchment.common.transformation.LichLogic;
 import dev.mrsterner.besmirchment.common.transformation.WerepyreAccessor;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.component.BloodComponent;
 import moriyashiine.bewitchment.api.component.ContractsComponent;
 import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.registry.Transformation;
-import moriyashiine.bewitchment.client.network.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.client.packet.SpawnSmokeParticlesPacket;
 import moriyashiine.bewitchment.common.BWConfig;
-import moriyashiine.bewitchment.common.Bewitchment;
 import moriyashiine.bewitchment.common.entity.living.VampireEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
-import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
+import moriyashiine.bewitchment.common.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.*;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -39,13 +38,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DustParticleEffect;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.world.World;
+import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -53,6 +53,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import static moriyashiine.bewitchment.common.registry.BWDamageSources.MAGIC_COPY;
 
 @SuppressWarnings("ConstantConditions")
 @Mixin(value = LivingEntity.class, priority = 999)
@@ -99,10 +101,22 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
     public LivingEntityMixin(EntityType<?> type, World world) {
         super(type, world);
     }
+/*
+    @WrapWithCondition(method = "baseTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/LivingEntity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z", ordinal = 0))
+    private boolean isInsideWallLich(LivingEntity livingEntity, DamageSource source){
 
+        if (Besmi) {
+        boolean bl = world.getBlockState(pos).isIn(BSMTags.GHOST_WHITELIST);
+        boolean bl2 = world.getBlockState(pos).isIn(BSMTags.GHOST_IMPASSABLE);
+        }
+        return true;
+    }
+
+
+ */
     @ModifyVariable(method = "applyArmorToDamage", at = @At("HEAD"))
     private float modifyDamage1(float amount, DamageSource source) {
-        if (source.isProjectile()) {
+        if (source.isIn(DamageTypeTags.IS_PROJECTILE)) {
             if (source.getAttacker() instanceof PlayerEntity player) {
                 ContractsComponent accessor = BWComponents.CONTRACTS_COMPONENT.get(player);
                 if (accessor.hasContract(BSMContracts.CONQUEST)) {
@@ -115,7 +129,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
 
     @Inject(method = "tick", at = @At("TAIL"))
     private void tick(CallbackInfo ci) {
-        if (!world.isClient) {
+        if (!getWorld().isClient) {
             if (bsm_lastRevive < 1000 && isAlive()) {
                 bsm_lastRevive++;
             }
@@ -128,7 +142,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                 damage++;
             }
             if (damage > 0) {
-                damage(BWDamageSources.MAGIC_COPY, damage);
+                damage(BWDamageSources.create(getWorld(), MAGIC_COPY), damage);
             }
             //mathematically equal to not changing the blood at all
             if (getType().isIn(BWTags.HAS_BLOOD) && BSMTransformations.isWerepyre(this, true) && random.nextFloat() < (isSleeping() ? 1 / 50f : 1 / 500f)) {
@@ -162,7 +176,8 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                 BWComponents.TRANSFORMATION_COMPONENT.get(player).getTransformation().onAdded((PlayerEntity) (Object) this);
                 if (world.isClient) {
                     for (int i = 0; i < 20; i++) {
-                        Vec3f vecf = new Vec3f(Vec3d.unpackRgb(16711680));
+                        var v = Vec3d.unpackRgb(16711680);
+                        Vector3f vecf = new Vector3f((float) v.x,(float) v.y,(float) v.z);
                         //TODO check vecf for right color
                         world.addParticle(new DustParticleEffect(vecf,1F), getParticleX(1), getRandomBodyY(), getParticleZ(1), 0, 0, 0);
                     }
@@ -180,7 +195,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
             }
             updateCachedSouls();
         }
-        if (!world.isClient) {
+        if (!getWorld().isClient) {
                 if (cir.getReturnValue() && (Object) this instanceof PlayerEntity playerEntity && (BWComponents.CURSES_COMPONENT.get(playerEntity).hasCurse(BWCurses.SUSCEPTIBILITY) || !BWConfig.enableCurses)) {
                     TransformationComponent transformationComponent = BWComponents.TRANSFORMATION_COMPONENT.get(playerEntity);
                     Transformation transformation = transformationComponent.getTransformation();
@@ -193,7 +208,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                             transformationComponent.getTransformation().onAdded(playerEntity);
                             PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
                             SpawnSmokeParticlesPacket.send(playerEntity, playerEntity);
-                            playerEntity.world.playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
+                            playerEntity.getWorld().playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
                             int variant = -1;
                             if (source.getSource() instanceof WerepyreEntity) {
                                 variant = source.getSource().getDataTracker().get(BWHostileEntity.VARIANT);
@@ -220,7 +235,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
     private void swingHand(Hand hand, CallbackInfo ci) {
         if (BSMTransformations.isLich(this, true)) {
             ci.cancel();
-            if (world.isClient && bsm_lastRoll >= 20) {
+            if (getWorld().isClient && bsm_lastRoll >= 20) {
                 bsm_lastRoll = 0;
             }
         }
@@ -228,7 +243,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
 
     @Inject(method = "tickMovement", at = @At("TAIL"))
     private void tickMovement(CallbackInfo ci) {
-        if (world.isClient) {
+        if (getWorld().isClient) {
             bsm_lastRoll++;
         }
     }
@@ -285,7 +300,7 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
     private void readCustomDataFromTag(NbtCompound tag, CallbackInfo ci) {
         bsm_lastRevive = tag.getInt("BSMLastRevive");
         bsm_cachedSouls = tag.getInt("BSMSoulCache");
-        if (world instanceof ServerWorld) {
+        if (getWorld() instanceof ServerWorld) {
             updateCachedSouls();
         }
     }

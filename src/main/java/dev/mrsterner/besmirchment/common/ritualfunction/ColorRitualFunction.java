@@ -19,9 +19,9 @@ import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -41,7 +41,8 @@ public class ColorRitualFunction extends RitualFunction {
         super.tick(world, glyphPos, effectivePos, catFamiliar);
         if (world.isClient) {
             Random random = world.getRandom();
-            Vec3f rgb = new Vec3f(Vec3d.unpackRgb(BSMUtil.HSBtoRGB(random.nextFloat(), 1, 1)));
+            var v = Vec3d.unpackRgb(BSMUtil.HSBtoRGB(random.nextFloat(), 1, 1));
+            Vector3f rgb = new Vector3f((float) v.x,(float) v.y,(float) v.z);
             world.addParticle(new DustParticleEffect(rgb, 1 + random.nextFloat()), effectivePos.getX() + 0.5 + random.nextGaussian() * 2, effectivePos.getY() + random.nextFloat() * 2, effectivePos.getZ() + 0.5 + random.nextGaussian() * 2, random.nextGaussian(), random.nextGaussian(), random.nextGaussian());
         }else if (world.getTime() % 10 == 0){
             int amount = catFamiliar ? 12 : 4;

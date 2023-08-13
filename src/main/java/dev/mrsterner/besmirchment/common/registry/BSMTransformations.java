@@ -15,8 +15,8 @@ public class BSMTransformations {
     public static final Transformation WEREPYRE = new WerepyreTransformation();
     public static final Transformation LICH = new LichTransformation();
     public static void init(){
-        BSMUtil.register(BWRegistries.TRANSFORMATIONS, "werepyre", WEREPYRE);
-        BSMUtil.register(BWRegistries.TRANSFORMATIONS, "lich", LICH);
+        BSMUtil.register(BWRegistries.TRANSFORMATION, "werepyre", WEREPYRE);
+        BSMUtil.register(BWRegistries.TRANSFORMATION, "lich", LICH);
     }
 
     public static boolean isLich(Entity entity, boolean isGost){

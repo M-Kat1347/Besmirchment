@@ -1,20 +1,15 @@
 package dev.mrsterner.besmirchment.mixin;
 
 import dev.mrsterner.besmirchment.common.BSMConfig;
-import dev.mrsterner.besmirchment.common.Besmirchment;
 import dev.mrsterner.besmirchment.common.entity.interfaces.DyeableEntity;
 import dev.mrsterner.besmirchment.common.registry.BSMTransformations;
 import dev.mrsterner.besmirchment.common.transformation.LichAccessor;
 import dev.mrsterner.besmirchment.common.transformation.WerepyreAccessor;
 import dev.mrsterner.besmirchment.common.transformation.WerepyreTransformation;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
-import moriyashiine.bewitchment.api.component.BloodComponent;
-import moriyashiine.bewitchment.api.component.MagicComponent;
-import moriyashiine.bewitchment.api.component.TransformationComponent;
 import moriyashiine.bewitchment.api.event.AllowVampireBurn;
 import moriyashiine.bewitchment.api.event.AllowVampireHeal;
-import moriyashiine.bewitchment.common.component.entity.RespawnTimerComponent;
-import moriyashiine.bewitchment.common.network.packet.TransformationAbilityPacket;
+import moriyashiine.bewitchment.common.packet.TransformationAbilityPacket;
 import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWDamageSources;
 import moriyashiine.bewitchment.common.registry.BWObjects;
@@ -36,6 +31,7 @@ import net.minecraft.item.FoodComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -100,7 +96,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
         if (getLastJumpTicks() < 200){
             setLastJumpTicks(getLastJumpTicks() + 1);
         }
-        if (world.isClient){
+        if (getWorld().isClient){
             if (getLastJumpTicks() > 20) {
                 if (bsmJumpBeginProgress > 0) {
                     bsmJumpBeginProgress -= 0.1;
@@ -123,7 +119,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
                     boolean beelzebubPledge = BSMTransformations.hasWerepyrePledge((PlayerEntity) (Object) this);
                     //BSMTransformations.handleNourish((PlayerEntity) (Object) this);
 
-                    if (BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm() && BWComponents.RESPAWN_TIMER_COMPONENT.get(player).getRespawnTimer() <= 0 && world.isDay() && !world.isRaining() && world.isSkyVisible(getBlockPos())
+                    if (BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm() && BWComponents.RESPAWN_TIMER_COMPONENT.get(player).getRespawnTimer() <= 0 && getWorld().isDay() && !getWorld().isRaining() && getWorld().isSkyVisible(getBlockPos())
                             && AllowVampireBurn.EVENT.invoker().allowBurn((PlayerEntity) (Object) this)) {
                         setOnFireFor(8);
                     }
@@ -164,7 +160,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
     @Inject(method = "onDeath", at = @At("TAIL"))
     private void onDeath(DamageSource source, CallbackInfo ci){
         if (BewitchmentAPI.getFamiliar((PlayerEntity) (Object)this) == EntityType.PIG){
-            dropItem(new ItemStack(source.isFire() ? Items.COOKED_PORKCHOP : Items.PORKCHOP, random.nextInt(6) + 1), true, true);
+            dropItem(new ItemStack(source.isIn(DamageTypeTags.IS_FIRE) ? Items.COOKED_PORKCHOP : Items.PORKCHOP, random.nextInt(6) + 1), true, true);
         }
     }
 
@@ -185,7 +181,7 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
                     addStatusEffect(new StatusEffectInstance(StatusEffects.NAUSEA, 100, 1));
                 }
                 if (werepyre && (stack.getItem() == BWObjects.GARLIC || stack.getItem() == BWObjects.GRILLED_GARLIC || stack.getItem() == BWObjects.GARLIC_BREAD)) {
-                    damage(BWDamageSources.MAGIC_COPY, Float.MAX_VALUE);
+                    damage(BWDamageSources.create(world, BWDamageSources.MAGIC_COPY), Float.MAX_VALUE);
                 }
             }
         }
