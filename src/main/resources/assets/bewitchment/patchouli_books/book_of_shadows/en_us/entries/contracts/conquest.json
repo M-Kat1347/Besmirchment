@@ -1,0 +1,13 @@
+{
+  "category": "bewitchment:contracts",
+  "name": "Conquest",
+  "icon": "bewitchment:demonic_contract",
+  "advancement": "bewitchment:hidden_unlocks/demon_horn",
+  "entry_color": "C15600",
+  "pages": [
+    {
+      "type": "patchouli:text",
+      "text": "The forgotten horseman of Conquest fights but with a Bow. While under this contract, your damage from projectiles$() is doubled. "
+    }
+  ]
+}
