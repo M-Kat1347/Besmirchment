@@ -49,7 +49,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
 
     private static final TrackedData<Integer> WEREPYRE_VARIANT = DataTracker.registerData(PlayerEntity.class, TrackedDataHandlerRegistry.INTEGER);
 
-    @Environment(EnvType.CLIENT)
     public float bsmJumpBeginProgress = 0;
 
     @Shadow @Nullable
@@ -152,7 +151,6 @@ public abstract class PlayerEntityMixin extends LivingEntity implements DyeableE
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public float getLastJumpProgress() {
         return bsmJumpBeginProgress;
     }

@@ -174,7 +174,6 @@ public abstract class DemonEntityMixin extends BWHostileEntity implements Tameab
         dataTracker.startTracking(OWNER_UUID, Optional.empty());
     }
 
-    @Environment(EnvType.CLIENT)
     @Unique
     public void showEmoteParticle(boolean positive) {
         ParticleEffect particleEffect = ParticleTypes.HEART;

@@ -37,7 +37,6 @@ public class WerepyreEntity extends BWHostileEntity {
     public static final TrackedData<Integer> JUMP_TICKS = DataTracker.registerData(WerepyreEntity.class, TrackedDataHandlerRegistry.INTEGER);
     public NbtCompound storedVillager;
 
-    @Environment(EnvType.CLIENT)
     public float jumpBeginProgress = 0;
 
     public WerepyreEntity(EntityType<? extends HostileEntity> entityType, World world) {

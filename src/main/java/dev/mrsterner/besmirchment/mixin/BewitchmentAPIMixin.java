@@ -30,7 +30,6 @@ import java.util.List;
 public class BewitchmentAPIMixin {
 
 
-    @Environment(EnvType.CLIENT)
     @Inject(method = "getTransformedPlayerEntity", at = @At("RETURN"), cancellable = true)
     private static void getTransformedPlayerEntity(PlayerEntity player, CallbackInfoReturnable<LivingEntity> cir){
         if (BSMTransformations.isWerepyre(player, false)){

@@ -27,7 +27,6 @@ public class DemonicDeedItem extends Item {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         if (TaglockItem.hasTaglock(stack)) {
             tooltip.add((Text.translatable(TaglockItem.getTaglockName(stack))).formatted(Formatting.GRAY));

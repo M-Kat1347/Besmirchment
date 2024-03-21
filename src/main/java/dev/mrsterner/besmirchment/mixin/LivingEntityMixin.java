@@ -61,7 +61,6 @@ import static moriyashiine.bewitchment.common.registry.BWDamageSources.MAGIC_COP
 public abstract class LivingEntityMixin extends Entity implements LichRollAccessor, LichAccessor {
     private int bsm_lastRevive = 0;
     private int bsm_cachedSouls = 0;
-    @Environment(EnvType.CLIENT)
     private int bsm_lastRoll = 100;
 
 

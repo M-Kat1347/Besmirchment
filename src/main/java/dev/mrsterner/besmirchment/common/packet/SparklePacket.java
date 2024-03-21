@@ -29,7 +29,6 @@ public class SparklePacket {
         PlayerLookup.tracking(entity).forEach(player -> ServerPlayNetworking.send(player, ID, buf));
     }
 
-    @Environment(EnvType.CLIENT)
     public static void handle(MinecraftClient client, ClientPlayNetworkHandler networkHandler, PacketByteBuf buf, PacketSender sender) {
         int id = buf.readInt();
         client.execute(() -> {

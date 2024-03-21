@@ -23,7 +23,6 @@ public class LichGemItem extends Item {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context) {
         if (isSouled(stack)){
             tooltip.add(Text.translatable("tooltip.besmirchment.souled").fillStyle(Style.EMPTY.withColor(TextColor.fromRgb(0x8eed5e))));

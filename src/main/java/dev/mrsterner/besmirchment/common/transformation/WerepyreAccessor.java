@@ -10,6 +10,5 @@ public interface WerepyreAccessor {
     int getLastJumpTicks();
     void setLastJumpTicks(int ticks);
 
-    @Environment(EnvType.CLIENT)
     float getLastJumpProgress();
 }
