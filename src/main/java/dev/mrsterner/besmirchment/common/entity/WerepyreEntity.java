@@ -3,6 +3,7 @@ package dev.mrsterner.besmirchment.common.entity;
 import dev.mrsterner.besmirchment.common.entity.interfaces.VillagerWerepyreAccessor;
 import moriyashiine.bewitchment.api.BewitchmentAPI;
 import moriyashiine.bewitchment.client.packet.SpawnSmokeParticlesPacket;
+import moriyashiine.bewitchment.common.entity.living.WerewolfEntity;
 import moriyashiine.bewitchment.common.entity.living.util.BWHostileEntity;
 import moriyashiine.bewitchment.common.registry.BWComponents;
 import moriyashiine.bewitchment.common.registry.BWSoundEvents;
@@ -51,7 +52,9 @@ public class WerepyreEntity extends BWHostileEntity {
         if (storedVillager != null && age % 20 == 0 && (getWorld().isDay() || BewitchmentAPI.getMoonPhase(getWorld()) != 0)) {
             VillagerEntity entity = EntityType.VILLAGER.create(getWorld());
             if (entity instanceof VillagerWerepyreAccessor) {
-                PlayerLookup.tracking(this).forEach(player -> SpawnSmokeParticlesPacket.send(player, this));
+                if (!getWorld().isClient) {
+                    PlayerLookup.tracking(this).forEach(player -> SpawnSmokeParticlesPacket.send(player, this));
+                }
                 getWorld().playSound(null, getX(), getY(), getZ(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, getSoundCategory(), getSoundVolume(), getSoundPitch());
                 entity.readNbt(storedVillager);
                 entity.updatePositionAndAngles(getX(), getY(), getZ(), random.nextFloat() * 360, 0);

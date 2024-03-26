@@ -39,6 +39,7 @@ import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.particle.DustParticleEffect;
 import net.minecraft.registry.tag.DamageTypeTags;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Pair;
@@ -205,8 +206,11 @@ public abstract class LivingEntityMixin extends Entity implements LichRollAccess
                             transformationComponent.getTransformation().onRemoved(playerEntity);
                             transformationComponent.setTransformation(BSMTransformations.WEREPYRE);
                             transformationComponent.getTransformation().onAdded(playerEntity);
-                            PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
-                            SpawnSmokeParticlesPacket.send(playerEntity, playerEntity);
+                            if (playerEntity instanceof ServerPlayerEntity serverPlayerEntity) {
+                                PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
+                                SpawnSmokeParticlesPacket.send(serverPlayerEntity, playerEntity);
+                            }
+
                             playerEntity.getWorld().playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
                             int variant = -1;
                             if (source.getSource() instanceof WerepyreEntity) {

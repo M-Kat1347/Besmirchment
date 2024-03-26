@@ -196,8 +196,10 @@ public class BeelzebubEntity extends BWHostileEntity implements Pledgeable {
                     if (!player.isCreative()) {
                         stack.decrement(1);
                     }
-                    PlayerLookup.tracking(player).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, player));
-                    SpawnSmokeParticlesPacket.send(player, player);
+                    if (player instanceof ServerPlayerEntity serverPlayerEntity) {
+                        PlayerLookup.tracking(player).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, player));
+                        SpawnSmokeParticlesPacket.send(serverPlayerEntity, player);
+                    }
                     getWorld().playSound(null, getBlockPos(), BWSoundEvents.ENTITY_GENERIC_PLING, player.getSoundCategory(), 1, 1);
                     if (BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm()) {
                         TransformationAbilityPacket.useAbility(player, true);

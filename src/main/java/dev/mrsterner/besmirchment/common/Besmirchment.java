@@ -32,6 +32,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -110,8 +111,10 @@ public class Besmirchment implements ModInitializer {
                         transformationComponent.getTransformation().onRemoved(playerEntity);
                         transformationComponent.setTransformation(BSMTransformations.WEREPYRE);
                         transformationComponent.getTransformation().onAdded(playerEntity);
-                        PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
-                        SpawnSmokeParticlesPacket.send(playerEntity, playerEntity);
+                        if (playerEntity instanceof ServerPlayerEntity serverPlayerEntity) {
+                            PlayerLookup.tracking(playerEntity).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, playerEntity));
+                            SpawnSmokeParticlesPacket.send(serverPlayerEntity, playerEntity);
+                        }
                         playerEntity.getWorld().playSound(null, playerEntity.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_CURSE, playerEntity.getSoundCategory(), 1, 1);
                         int variant = -1;
                         if (source.getSource() instanceof WerepyreEntity) {

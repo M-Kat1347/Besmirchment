@@ -14,6 +14,7 @@ import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -59,8 +60,10 @@ public class TransformationAbilityPacketMixin {
             boolean isInAlternateForm = BWComponents.TRANSFORMATION_COMPONENT.get(player).isAlternateForm();
             ScaleData width = BWScaleTypes.MODIFY_WIDTH_TYPE.getScaleData(player);
             ScaleData height = BWScaleTypes.MODIFY_HEIGHT_TYPE.getScaleData(player);
-            PlayerLookup.tracking(player).forEach((foundPlayer) -> SpawnSmokeParticlesPacket.send(foundPlayer, player));
-            SpawnSmokeParticlesPacket.send(player, player);
+            if (player instanceof ServerPlayerEntity serverPlayerEntity) {
+                PlayerLookup.tracking(player).forEach(foundPlayer -> SpawnSmokeParticlesPacket.send(foundPlayer, player));
+                SpawnSmokeParticlesPacket.send(serverPlayerEntity, player);
+            }
             world.playSound(null, player.getBlockPos(), BWSoundEvents.ENTITY_GENERIC_TRANSFORM, player.getSoundCategory(), 1.0F, 1.0F);
             BWComponents.TRANSFORMATION_COMPONENT.get(player).setAlternateForm(!isInAlternateForm);
             if (isInAlternateForm) {
